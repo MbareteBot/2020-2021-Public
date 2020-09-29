@@ -7,7 +7,7 @@ from pybricks.tools import wait, DataLog
 
 from pybricks.iodevices import Ev3devSensor
 
-from control import PIDSystem
+from control import PIDSystem, RoboticTools
 
 import csv
 
@@ -24,7 +24,9 @@ class Robot:
 
     def __init__(self):
         
-        
+        Control = PIDSystem()
+        Tools = RoboticTools()
+
         self.left_steeringMotor = 0
         self.right_steeringMotor = 0
         self.letf_mainMotor = 0
@@ -54,6 +56,7 @@ class Robot:
 
         self.left_steeringMotor = Motor(left_motor_port, Direction.COUNTERCLOCKWISE)
         self.right_steeringMotor = Motor(right_motor_port, Direction.COUNTERCLOCKWISE)
+
 
     def setGyroSensor(self, port, inverse_direction = False):
         
@@ -151,8 +154,6 @@ class Robot:
         self.left_steeringMotor.reset_angle(0)
         self.right_steeringMotor.reset_angle(0)
 
-
-        Control = PIDSystem()
         Control.reset()
 
 
@@ -390,7 +391,7 @@ class Robot:
                 SensorData.log(BlackColorValue)
 
 
-    def LineFollower(target_line_value, sensor, distance):
+    def followLine(self, target_line_value, distance, sensor):
 
 
         Control.reset()
