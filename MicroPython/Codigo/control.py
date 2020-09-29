@@ -155,4 +155,9 @@ class RoboticTools():
         return (degrees * (wheel_diameter * math.pi)) / 360
 
 
+    def cmToDegrees(self, cm, wheel_diameter):
+
+        return (cm / (wheel_diameter * math.pi)) * 360
+
+
 
