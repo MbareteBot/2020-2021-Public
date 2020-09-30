@@ -7,6 +7,7 @@ from pybricks.tools import wait, DataLog
 from pybricks.iodevices import Ev3devSensor
 
 from control import PIDSystem, RoboticTools
+from ev3_device import MotorManager, ColorSensorManager, GyroSensorManager
 
 import csv
 
@@ -18,58 +19,28 @@ ev3 = EV3Brick()
 #ReadSensorData = open('SensorData.txt', 'r')
 
 SensorValues = [] 
+
 Control = PIDSystem()
+
 Tools = RoboticTools()
+
+
+
+
+
 class Robot:
 
     def __init__(self):
-        
 
+        self.Gyro = GyroSensorManager()
+        self.Motors = MotorManager()
+        self.ColorSensor = ColorSensorManager()
 
-        self.left_steeringMotor = 0
-        self.right_steeringMotor = 0
-        self.letf_mainMotor = 0
-        self.right_mainMotor = 0
-
-        self.gyro_direction = 1
-        self.motor_direction = Direction.CLOCKWISE
-
-        self.gyroSensor = 0
-        self.left_colorSensor = 0
-        self.right_colorSensor = 0
-        self.top_colorSensor = 0
 
         self.error_log = []
-        
-
+    
         self.speedMotorA = 0
         self.speedMotorD = 0
-
-
-
-
-    def setSteeringMotors(self, left_motor_port, right_motor_port, set_inverse_direction = False):
-
-        if set_inverse_direction:
-            self.motor_direction = Direction.COUNTERCLOCKWISE
-
-        self.left_steeringMotor = Motor(left_motor_port, Direction.COUNTERCLOCKWISE)
-        self.right_steeringMotor = Motor(right_motor_port, Direction.COUNTERCLOCKWISE)
-
-
-    def setGyroSensor(self, port, inverse_direction = False):
-        
-        if inverse_direction:
-            self.gyro_direction = -1
-        
-        self.gyroSensor = Ev3devSensor(port)
-
-
-    def setColorSensor(self, port_left, port_right, port_top):
-
-        self.left_colorSensor = Ev3devSensor(port_left)
-        self.right_colorSensor = Ev3devSensor(port_right)
-        self.top_colorSensor = Ev3devSensor(port_top)
 
 
     def LineSquaring(self):
@@ -159,9 +130,9 @@ class Robot:
         Turning = True
         while Turning:
 
-            error_value = target_angle - int(self.gyroSensor.read("GYRO-ANG")[0]) * self.gyro_direction
+            error_value = target_angle - Gyro.getAngle()
 
-            Control.setPID(error_value, 0.15, 0.8, 0.1)
+            Control.setPID(error_value, 0.5, 0.3, 0.1)
 
             self.left_steeringMotor.dc(Control.pid_output)
             self.right_steeringMotor.dc(Control.pid_output * -1)
@@ -187,8 +158,9 @@ class Robot:
 
         target_distance = Tools.cmToDegrees(target_distance, 6.24)
 
-        self.left_steeringMotor.reset_angle(0)
-        self.right_steeringMotor.reset_angle(0)
+        Motors.reset()
+        Gyro.reset()
+        Control.reset()
                 
         speed_kp = round(target_distance/ev3.battery.voltage()*0.1, 3)
         speed_ki = 0.1
@@ -200,12 +172,6 @@ class Robot:
         speed_output = 0
         max_integral_value = 120
 
-        StopDiagnostic = "Reached Target Distance"
-
-        Control.reset()
-
-
-        self.gyroSensor.read("GYRO-CAL")
 
         Running = True
         
@@ -214,14 +180,14 @@ class Robot:
   
             if use_gyro:
 
-                error_value = target_orientation - int(self.gyroSensor.read("GYRO-ANG")[0]) * self.gyro_direction
+                error_value = target_orientation - Gyro.getAngle()
                 kp_value = 4
-                ki_value = 0.09
+                ki_value = 0.1
                 kd_value = 0.1
         
             else:
 
-                error_value = self.right_steeringMotor.speed() - self.left_steeringMotor.speed()
+                error_value = Motors.right_steeringMotor.speed() - Motors.left_steeringMotor.speed()
                 kp_value = 0.2
                 ki_value = 0.001
                 kd_value = 0.01
@@ -240,12 +206,12 @@ class Robot:
 
             if target_distance > 0:
 
-                if self.right_steeringMotor.angle() < target_distance / 2:
+                if Motors.right_steeringMotor.angle() < target_distance / 2:
 
-                    speed_error = target_distance - (target_distance - (self.right_steeringMotor.angle())) 
+                    speed_error = target_distance - (target_distance - (Motors.right_steeringMotor.angle())) 
 
                 else:
-                    speed_error = target_distance - self.right_steeringMotor.angle()
+                    speed_error = target_distance - Motors.right_steeringMotor.angle()
 
 
                     if speed_error < 1 and speed_error > -1:
@@ -258,7 +224,7 @@ class Robot:
 
             else:
 
-                speed_error = target_distance - self.right_steeringMotor.angle()
+                speed_error = target_distance - Motors.right_steeringMotor.angle()
 
                 if speed_output > -8:
                     speed_output = -8
@@ -277,12 +243,12 @@ class Robot:
 
             if Control.error_value < 0:
 
-                self.left_steeringMotor.dc(speed_output)
-                self.right_steeringMotor.dc(speed_output + abs(Control.pid_output))
+                Motors.left_steeringMotor.dc(speed_output)
+                Motors.right_steeringMotor.dc(speed_output + abs(Control.pid_output))
 
             else:
-                self.left_steeringMotor.dc(speed_output + abs(Control.pid_output))
-                self.right_steeringMotor.dc(speed_output)               
+                Motors.left_steeringMotor.dc(speed_output + abs(Control.pid_output))
+                Motors.right_steeringMotor.dc(speed_output)               
 
 
 
@@ -344,17 +310,7 @@ class Robot:
 
 
 
-        self.left_steeringMotor.hold()
-        self.right_steeringMotor.hold()
-        wait(250)
-       
-        print("\n---Move Straight---")
-        print("\nTarget:", target_distance)
-        print("Motor Degrees:", round(abs(self.left_steeringMotor.angle() + self.right_steeringMotor.angle())/2))
-        print("Diagnostic:", StopDiagnostic)
-        print("Motor Precision:", round(abs(((self.MotorsAverageDegrees * 100)/target_distance)), 1), "%")
-        print("self.gyroSensor:", self.gyroSensor.angle())
-        print("\n---Move Straight---")
+        Motors.stop()
 
 
     def LightSensorCalibration(self):
@@ -411,6 +367,7 @@ class Robot:
         FollowingLine = True
 
         Speed = 40
+        
         while FollowingLine:
 
             error_value = int(sensor.read("COL-REFLECT")[0]) - target_line_value

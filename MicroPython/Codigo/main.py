@@ -10,8 +10,12 @@ from mbarete import *
 # Create your objects here.
 Robot = Robot()
 
-Robot.setSteeringMotors(Port.A, Port.D, True)
-Robot.setColorSensor(Port.S1, Port.S2, Port.S3)
-Robot.setGyroSensor(Port.S4, True)
+Robot.Gyro.setSensor(Port.S4, True)
 
-Robot.Straight(50, 0, 20)
+Robot.ColorSensor.setLeftSensor(Port.S1)
+
+Robot.Motors.setMotors(Port.A, Port.D, True)
+
+
+#Robot.Straight(50, 0, 20)
+Robot.Turn(-90)
