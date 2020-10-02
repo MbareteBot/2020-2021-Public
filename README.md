@@ -19,14 +19,6 @@ While you are reading the code, please keep in mind the following points:
  ```  
 
 
-Finally the code: 
-
-
-The code we use to control the robot is split into 4 files.
- 
-We recommend you to check them in this order:
-
-README.txt > control.py > ev3_device.py > mbarete.py > main.py
 
 
 Please, if possible share your opinion and possible suggestions to improve our code.

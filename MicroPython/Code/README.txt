@@ -1,8 +1,5 @@
 Hello!!!
 
-
-We are glad you are reading the code we use in our robot. 
-
-Please read everything in this order:
+Please read this folder in this order:
 
 README.txt > control.py > ev3_device.py > mbarete.py > main.py
