@@ -1,5 +1,4 @@
 #!/usr/bin/env pybricks-micropython
-from pybricks.hubs import EV3Brick
 from pybricks.parameters import Stop, Button
 from pybricks.tools import wait, DataLog
 

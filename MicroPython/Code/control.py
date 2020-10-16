@@ -8,9 +8,6 @@ class PIDSystem():
 
     def __init__(self):
 
-        # The diferent PID values are set as arrays, that reason for is that you can use
-        # the --same function-- to get a PID calculation multiple times in a --single loop--
-
         self.integral_value = 0
         self.derivative_value = 0
         self.error_value = 0
@@ -22,10 +19,6 @@ class PIDSystem():
 
 
     def execute(self, error_value, kp=0, ki=0, kd=0):
-
-        # Checks if the that index space is available, if its not, 
-        # simply add 0 and that would occupate the index value.
-
 
 
         self.error_value = error_value
