@@ -11,74 +11,46 @@ class PIDSystem():
         # The diferent PID values are set as arrays, that reason for is that you can use
         # the --same function-- to get a PID calculation multiple times in a --single loop--
 
-        self.integral_value = []
-        self.derivative_value = []
-        self.error_value = []
-        self.last_error_value = []
-        self.pid_output = []
+        self.integral_value = 0
+        self.derivative_value = 0
+        self.error_value = 0
+        self.last_error_value = 0
+        self.pid_output = 0
 
         self.max_integral_value = 110
 
 
-    # This funtion needs an error_value and other values to run the PID calculation. 
-    # and the last value it takes is an index parameter. 
 
-    # An example for this is that you want to use this function twice in the same --loop--,
-    # maybe one to control the robot heading and another to control the robot speed.
-    # If you simply have all the PID parameters as variables, and use the same funtion twice in the same loop
-    # those PID calculation funtions would overwrite each other.
-
-    # That is why we set them as array, so that the programmer simply chooses wich position in the array
-    # its parameters would take place. For example: to control the robot heading the programmer would only use
-    # the first index, and to control the speed he would use the second index.
-
-
-    # Example: 
-
-    # while True:
-
-    #   setPid(heading_error, kp, ki, kd, 0) ---> the heading calculation in first index
-
-    #   setPid(speed_error, kp, ki, kd, 1) ---> the speed calculation in the second index
-
-
-
-    def setPID(self, error_value, kp, ki, kd, index = 0):
+    def execute(self, error_value, kp=0, ki=0, kd=0):
 
         # Checks if the that index space is available, if its not, 
         # simply add 0 and that would occupate the index value.
 
-        if index > len(self.error_value) - 1:
-            self.integral_value.append(0)
-            self.derivative_value.append(0)
-            self.error_value.append(0)
-            self.last_error_value.append(0)
-            self.pid_output.append(0)
 
 
-        self.error_value[index] = error_value
-        self.integral_value[index] += error_value
-        self.derivative_value[index] = error_value  - self.last_error_value[index]
-        self.last_error_value[index] = error_value
+        self.error_value = error_value
+        self.integral_value += error_value
+        self.derivative_value = error_value  - self.last_error_value[index]
+        self.last_error_value = error_value
 
-        if self.integral_value[index] > self.max_integral_value:
-            self.integral_value[index] = self.max_integral_value
+        if self.integral_value > self.max_integral_value:
+            self.integral_value = self.max_integral_value
 
-        elif self.integral_value[index] < -self.max_integral_value:
-            self.integral_value[index] = -self.max_integral_value
+        elif self.integral_value < -self.max_integral_value:
+            self.integral_value = -self.max_integral_value
 
 
-        self.pid_output[index] = (self.error_value * kp) + (self.integral_value * ki) + (self.kd_value * kd)
+        self.output = (self.error_value * kp) + (self.integral_value * ki) + (self.kd_value * kd)
 
 
 
     def reset(self):
 
-        self.integral_value = []
-        self.derivative_value = []
-        self.error_value = []
-        self.last_error_value = []
-        self.pid_output = []
+        self.integral_value = 0
+        self.derivative_value = 0
+        self.error_value = 0
+        self.last_error_value = 0
+        self.pid_output = 0
 
         self.max_integral_value = 110
 

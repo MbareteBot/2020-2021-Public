@@ -20,10 +20,6 @@ from control import PIDSystem
 
 # This MotorManager class is meant to be used to set 2 Steering motors and 2 "Action" motors dedicated to control attachments.
 
-ev3 = EV3Brick()
-
-
-
 class MotorManager():
 
     def __init__(self):
@@ -49,9 +45,10 @@ class MotorManager():
         self.right_steeringMotor = Motor(right_motor_port, self.motor_direction)
 
 
-    # This are the motors that control the attachments}
-    # right now you can set them but they dont have a "personal" function
+
     def setActionMotors(self, left_motor_port, right_motor_port):
+        # This are the motors that control the attachments,
+        # right now you can set them but they do not have a "personal" function
 
         self.left_actionMotor = Motor(left_motor_port)
         self.right_actionMotor = Motor(right_motor_port)
@@ -64,6 +61,7 @@ class MotorManager():
         self.right_steeringMotor.reset_angle(0)
 
 
+
     def stop(self):
 
         Motors.left_steeringMotor.hold()
@@ -73,11 +71,6 @@ class MotorManager():
 
 
 
-
-
-
-
- 
 
 
 class ColorSensorManager():
@@ -94,8 +87,9 @@ class ColorSensorManager():
 
 
 
-    # The following functions lets you either set a sensor to a fisical port or get
-    # the reflected value reading from the sensor
+    # The following functions lets you either initialize a sensor to a fisical port or get
+    # the reflected value reading from the sensor.
+
     def leftSensor(self, port = 0):
 
         if port != 0:
@@ -126,8 +120,6 @@ class ColorSensorManager():
 
 
         
-
-
 class GyroSensorManager():
 
     # This class is only meant to control 1 GyroSensor and the sensor is set as a Ev3devSensor so it can have acces to more methods
@@ -152,7 +144,17 @@ class GyroSensorManager():
 
     def reset(self):
 
-        self.gyroSensor.read("GYRO-CAL")
+        while True:
+
+            self.gyroSensor.read("GYRO-CAL")
+
+            wait(200)
+
+            if self.getAngle() == 0:
+                break
+
+        wait(100)
+
 
 
 

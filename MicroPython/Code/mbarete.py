@@ -11,11 +11,6 @@ from ev3_device import MotorManager, ColorSensorManager, GyroSensorManager
 
 
 
-ev3 = EV3Brick()
-
-
-Tools = RoboticTools()
-
 
 
 
@@ -25,24 +20,25 @@ class Robot:
 
     def __init__(self):
 
-        self.Control = PIDSystem()
+        # Control system related classes
+        self.HeadingControl = PIDSystem()
+        self.SpeedControl = PIDSystem()
+        self.Tools = RoboticTools()
+
+
+        # Ev3 control related classes
         self.Gyro = GyroSensorManager()
         self.Motors = MotorManager()
         self.ColorSensors = ColorSensorManager()
-
-
-        self.error_log = []
-    
-        self.speedMotorA = 0
-        self.speedMotorD = 0
 
 
 
     def Turn(self, target_angle):
 
         self.Motors.reset()
-        self.Gyro.reset()
-        self.Control.reset()
+
+        self.SpeedControl.reset()
+
 
         Turning = True
 
@@ -50,13 +46,15 @@ class Robot:
 
             error_value = target_angle - self.Gyro.getAngle()
 
-            self.Control.setPID(error_value, 0.5, 0.3, 0.1)
 
-            self.left_steeringMotor.dc(self.Control.pid_output)
-            self.right_steeringMotor.dc(self.Control.pid_output * -1)
+            self.SpeedControl.execute(error_value, 0.5, 0.3, 0.1)
 
 
-            if  self.Control.error_value > -0.1 and self.Control.error_value < 0.1:
+            self.left_steeringMotor.dc(self.SpeedControl.output)
+            self.right_steeringMotor.dc(self.SpeedControl.output * -1)
+
+
+            if  error_value > -0.1 and error_value < 0.1:
 
                 Turning = False
                 self.Motors.stop()
@@ -66,18 +64,18 @@ class Robot:
 
 
 
-    def Straight(self, target_distance, target_orientation, target_duty_limit, use_gyro = True):
+    def Straight(self, target_distance, target_orientation = 0, target_duty_limit = 20, use_gyro = True):
 
+        # This functions allows the robot to accelerate and deccelerate as the robot
+        # gets towards a target distance.
+        
+        self.Motors.reset()
+        self.SpeedControl.reset()
+        self.HeadingControl.reset()
 
-        # This funtionts allows the robot to accelerate and deccelrate as it gets towards a target distance.
-        # And also control the robot heading.
 
         target_distance = Tools.cmToDegrees(target_distance, 6.24)
 
-        self.Motors.reset()
-        self.Gyro.reset()
-        self.Control.reset()
-                
         speed_kp = round(target_distance / ev3.battery.voltage() * 0.1, 3)
         speed_ki = 0.1
         speed_kd = 0.2
@@ -107,9 +105,9 @@ class Robot:
 
 
 
-            self.Control.setPID(heading_error, heading_kp, heading_ki, heading_kd, 0)
+            self.SpeedControl.execute(heading_error, heading_kp, heading_ki, heading_kd)
 
-            self.Control.setPID(speed_error, speed_kp, speed_ki, speed_kd, 1)
+            self.HeadingControl.execute(speed_error, speed_kp, speed_ki, speed_kd)
 
 
 
@@ -128,8 +126,8 @@ class Robot:
 
 
 
-                if self.Control.pid_output[1] < 8:
-                    self.Control.pid_output[1] = 8 
+                if self.SpeedControl.output < 8:
+                    self.SpeedControl.output = 8 
 
 
 
@@ -148,8 +146,8 @@ class Robot:
 
 
 
-                if self.Control.pid_output[1] > -8:
-                    self.Control.pid_output[1] = -8 
+                if self.SpeedControl.output > -8:
+                    self.SpeedControl.output = -8 
 
 
 
@@ -172,14 +170,14 @@ class Robot:
 
             # Here the robot implements the PID calculation to control the motors.
 
-            if self.Control.error_value[0] < 0:
+            if heading_error < 0:
 
-                self.Motors.left_steeringMotor.dc(self.Control.pid_output[1])
-                self.Motors.right_steeringMotor.dc(self.Control.pid_output[1] + abs(self.Control.pid_output[0]))
+                self.Motors.left_steeringMotor.dc(self.SpeedControl.output)
+                self.Motors.right_steeringMotor.dc(self.SpeedControl.output + abs(self.HeadingControl.output))
 
             else:
-                self.Motors.left_steeringMotor.dc(self.Control.pid_output[1] + abs(self.Control.pid_output[0]))
-                self.Motors.right_steeringMotor.dc(self.Control.pid_output[1])               
+                self.Motors.left_steeringMotor.dc(self.SpeedControl.output + abs(self.HeadingControl.output))
+                self.Motors.right_steeringMotor.dc(self.SpeedControl.output)               
 
 
 
@@ -190,7 +188,7 @@ class Robot:
 
         # This funtion simply follows a line
 
-        self.Control.reset()
+        self.HeadingControl.reset()
         self.Motors.reset()
 
         FollowingLine = True
@@ -212,17 +210,17 @@ class Robot:
 
 
 
-            self.Control.setPID(error_value, 0.2, 0.2, 2)
+            self.HeadingControl.execute(error_value, 0.2, 0.2, 2)
 
 
 
             if error_value > 0:
 
                 self.left_steeringMotor.dc(Speed)
-                self.right_steeringMotor.dc(Speed + self.Control.pid_output[0])
+                self.right_steeringMotor.dc(Speed + self.HeadingControl.output)
 
             else:
-                self.left_steeringMotor.dc(Speed + abs(self.Control.pid_output[0]))
+                self.left_steeringMotor.dc(Speed + abs(self.HeadingControl.output))
                 self.right_steeringMotor.dc(Speed)               
 
 
