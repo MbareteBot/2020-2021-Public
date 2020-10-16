@@ -45,8 +45,10 @@ class PIDSystem():
 
     def setPID(self, error_value, kp, ki, kd, index = 0):
 
-        # Checks if the that index space is available, if its not, simpy add 0 and that would occupate the index value.
-        if index > len(self.error_value):
+        # Checks if the that index space is available, if its not, 
+        # simply add 0 and that would occupate the index value.
+
+        if index > len(self.error_value) - 1:
             self.integral_value.append(0)
             self.derivative_value.append(0)
             self.error_value.append(0)
@@ -85,13 +87,13 @@ class PIDSystem():
 
 
 
-
+# -----------------------------------------------------------
 
 class OdometrySystem:
 
     # ----This Class is still in development----
     # ----We are still working on this class, so please, give us your feedback about this code---
-    # ----We didnt have much time to test it, so its basically almost theoretical so far---
+    # ----We didnt have much time to test it, so its basically mostly theoretical so far---
 
     # This class is used to implement an odometry sistem for the robot.
 

@@ -26,7 +26,5 @@ Please, if possible share your opinion and possible suggestions to improve our c
 Our email is: mbaretebot@gmail.com
 
 
-----------------------------------------
 
-Ps: This is a README file for Philip, we want to share our code with more people,
-so let us know if this README file is well done :D.
+

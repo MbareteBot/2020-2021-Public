@@ -49,7 +49,8 @@ class MotorManager():
         self.right_steeringMotor = Motor(right_motor_port, self.motor_direction)
 
 
-
+    # This are the motors that control the attachments}
+    # right now you can set them but they dont have a "personal" function
     def setActionMotors(self, left_motor_port, right_motor_port):
 
         self.left_actionMotor = Motor(left_motor_port)
@@ -74,11 +75,16 @@ class MotorManager():
 
 
 
-#  Class dedicated to control up to 3 color sensors (one in the left part of the robot, other in the right part and
-# a third one, probably to recognize attachments by a color code. 
+
+
+ 
 
 
 class ColorSensorManager():
+
+    #  Class dedicated to control up to 3 color sensors (one in the left part of the robot, 
+    # another in the right part and a third one (probably to recognize attachments by a color code).
+
 
     def __init__(self):
 
@@ -87,45 +93,37 @@ class ColorSensorManager():
         self.front_colorSensor = 0
 
 
-    def setLeftSensor(self, port):
 
-        self.left_colorSensor = Ev3devSensor(port)
+    # The following functions lets you either set a sensor to a fisical port or get
+    # the reflected value reading from the sensor
+    def leftSensor(self, port = 0):
 
-
-    def setRightSensor(self, port):
-
-        self.right_colorSensor = Ev3devSensor(port)
-
-
-    def setFrontSensor(self, port):
-
-        self.front_colorSensor = Ev3devSensor(port)
+        if port != 0:
+            self.left_colorSensor = Ev3devSensor(port)
+        else:
+            return int(self.left_colorSensor.read("COL-REFLECT")[0])
 
 
-    # This function returns all the sensors reflected values in an array.
-
-    def getReflected(self):
-
-        color_sensors = [self.left_colorSensor = 0,
-                        self.right_colorSensor = 0,
-                        self.front_colorSensor = 0]
-
-
-        sensors_reflected_values = []
-
-        for sensor in color_sensors:
-
-            # The sensors are intially set simply to "0". That means that if the programmer sets them with the "set" functions
-            # the sensors dont have a "0" value anymore (the sensors are now Ev3devSensor objects). 
-            # That means that the sensors can return a reflected value.
-
-            if sensor != 0:
-                sensors_reflected_values.append(int(sensor.read("COL-REFLECT")[0]))
+    def rightSensor(self, port = 0):
+    
+        if port != 0:
+            self.right_colorSensor = Ev3devSensor(port)
+        else:
+            return int(self.right_colorSensor.read("COL-REFLECT")[0])
 
 
-        return sensors_reflected_values
 
-        
+    def frontSensor(self, port = 0):
+
+        if port != 0:
+            self.front_colorSensor = Ev3devSensor(port)
+        else:
+            return int(self.front_colorSensor.read("COL-REFLECT")[0])
+
+
+
+
+
 
         
 
@@ -155,6 +153,7 @@ class GyroSensorManager():
     def reset(self):
 
         self.gyroSensor.read("GYRO-CAL")
+
 
 
     # This return the current gyro angle multiplied by 1 or -1

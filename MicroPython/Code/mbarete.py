@@ -3,6 +3,8 @@ from pybricks.hubs import EV3Brick
 from pybricks.parameters import Stop, Button
 from pybricks.tools import wait, DataLog
 
+
+# Local files
 from control import PIDSystem, RoboticTools
 from ev3_device import MotorManager, ColorSensorManager, GyroSensorManager
 
@@ -82,6 +84,7 @@ class Robot:
 
         Running = True
 
+
         moved_enough = False
         
         while Running:
@@ -125,10 +128,9 @@ class Robot:
 
 
 
-
-
                 if self.Control.pid_output[1] < 8:
                     self.Control.pid_output[1] = 8 
+
 
 
             else:
@@ -150,7 +152,11 @@ class Robot:
                     self.Control.pid_output[1] = -8 
 
 
-            # This check if the robot has acctually reached the target distance.
+
+
+
+
+            # This check if the robot has acctually reached the target distance and stops the robot.
             if moved_enough:
                 
                 if speed_error < 1 and speed_error > -1:
@@ -158,6 +164,9 @@ class Robot:
                     Running = False
 
                     self.Motors.stop()
+
+
+
 
 
 
@@ -190,11 +199,22 @@ class Robot:
 
         while FollowingLine:
 
-    
-            error_value = self.ColorSensors.getReflected()[0] - target_line_value
+
+            if sensor == "left":
+                error_value = self.ColorSensors.leftSensor() - target_line_value
+
+            else if sensor == "right":
+                error_value = self.ColorSensors.rightSensor() - target_line_value
+
+            else:
+
+                raise Exception('Sensor should be declared as {} or {}'.format('"left"', '"right"'))
+
 
 
             self.Control.setPID(error_value, 0.2, 0.2, 2)
+
+
 
             if error_value > 0:
 

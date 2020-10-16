@@ -1,5 +1,6 @@
-Hello!!!
+Hi there!!
 
-Please read this folder in this order:
+Its very important that you read this folder in this order:
 
-README.txt > control.py > ev3_device.py > mbarete.py > main.py
+README.txt >> control.py >> ev3_device.py >> mbarete.py >> main.py
+

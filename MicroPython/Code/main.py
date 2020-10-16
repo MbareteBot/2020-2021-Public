@@ -8,10 +8,15 @@ Robot = Robot()
 
 Robot.Gyro.setSensor(Port.S4, True)
 
-Robot.ColorSensor.setLeftSensor(Port.S1)
+Robot.ColorSensor.leftSensor(Port.S1)
+
+
+
 
 Robot.Motors.setMotors(Port.A, Port.D, True)
 
 
 
-Robot.Turn(-90)
+Robot.Turn(-90) # Turn the robot by 90 degrees
+
+Robot.Straight(30,0,20) # Move in a straight line for 30 cm, with a 0 angle orientation and with a duty limit of 20%
