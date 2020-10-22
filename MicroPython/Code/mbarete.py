@@ -1,21 +1,20 @@
 #!/usr/bin/env pybricks-micropython
-from pybricks.parameters import Stop, Button
-from pybricks.tools import wait, DataLog
 
 
-# Local files
 from control import PIDSystem, RoboticTools
-from ev3_device import MotorManager, ColorSensorManager, GyroSensorManager
+from ev3_device import MotorManager, ColorSensorManager, GyroSensorManager, Parameters
 
 
 
 
+Device = RobotParameters()
 
 
-
-# This class has built-in features to control an EV3 robot.
 
 class Robot:
+
+    # This class provides features to control an ev3 robot.
+
 
     def __init__(self):
 
@@ -23,6 +22,7 @@ class Robot:
         self.HeadingControl = PIDSystem()
         self.SpeedControl = PIDSystem()
         self.Tools = RoboticTools()
+
 
 
         # Ev3 control related classes
@@ -65,9 +65,7 @@ class Robot:
 
     def Straight(self, target_distance, target_orientation = 0, target_duty_limit = 20, use_gyro = True):
 
-        # This functions allows the robot to accelerate and deccelerate as the robot
-        # gets towards a target distance.
-        
+
         self.Motors.reset()
         self.SpeedControl.reset()
         self.HeadingControl.reset()
@@ -166,9 +164,6 @@ class Robot:
 
 
 
-
-            # Here the robot implements the PID calculation to control the motors.
-
             if heading_error < 0:
 
                 self.Motors.left_steeringMotor.dc(self.SpeedControl.output)
@@ -181,11 +176,13 @@ class Robot:
 
 
 
+    def actionMotor(self, motor, degrees, stall_detection = True):
 
+        if motor == Device.left:
 
-    def followLine(self, target_line_value, distance, sensor):
+            
 
-        # This funtion simply follows a line
+    def followLine(self, target_value, distance, sensor):
 
         self.HeadingControl.reset()
         self.Motors.reset()

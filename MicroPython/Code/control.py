@@ -72,7 +72,7 @@ class OdometrySystem:
 
 
 
-    # This function updates the robot current position, it recieves how much each wheel has moved and 
+    # This function updates the robot current position, it receives how much each wheel has moved and 
     # the angle the robot is oriented to.
 
     def updatePos(self, left_motor_degrees, right_motor_degrees, heading):
@@ -174,8 +174,6 @@ class OdometrySystem:
 
 class RoboticTools():
 
-    # Finally this is a class that provides the programmer with tools that might be useful in robotics.
-    # Kind of empty right now, but its pretty useful.
 
     def degreesToCm(self, degrees, wheel_diameter):
 

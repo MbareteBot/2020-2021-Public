@@ -1,26 +1,32 @@
 #!/usr/bin/env pybricks-micropython
+
+
 from pybricks.hubs import EV3Brick
 from pybricks.iodevices import Ev3devSensor
 from pybricks.ev3devices import Motor
+from pybricks.parameters import Stop
+from pybricks.tools import wait
 from pybricks.parameters import Port, Direction
 
 from control import PIDSystem
 
 
 
-# All this clases are used to control the ev3 devices (motors, gyro and color sensors).
+# All this classes are used to control the ev3 devices (motors, gyro and color sensors).
 
 # With this classes you can only have: 4 Motors, 1 Gyro and 3 Color Sensors
 
-# All the sensors are set as a Ev3devSensor from pybricks.iodevices. The main reason for this is that
-# they can acces to more features.
+# All the sensors are set as Ev3devSensors from pybricks.iodevices. The main reason for this is that
+# they can access to more features.
 
 
 
 
-# This MotorManager class is meant to be used to set 2 Steering motors and 2 "Action" motors dedicated to control attachments.
 
 class MotorManager():
+
+    # This class is meant to be used to control 2 "Steering" motors 
+    # and 2 "Action" motors dedicated to control attachments.
 
     def __init__(self):
 
@@ -33,7 +39,11 @@ class MotorManager():
         self.right_actionMotor = 0
 
         self.motor_direction = Direction.CLOCKWISE
-        self.gyro_direction = 1
+        
+
+        self.full = 0
+        self.steering = 0
+        self.action = 0
 
 
     def setSteeringMotors(self, left_motor_port, right_motor_port, set_inverse_direction = False):
@@ -47,25 +57,51 @@ class MotorManager():
 
 
     def setActionMotors(self, left_motor_port, right_motor_port):
-        # This are the motors that control the attachments,
-        # right now you can set them but they do not have a "personal" function
 
         self.left_actionMotor = Motor(left_motor_port)
         self.right_actionMotor = Motor(right_motor_port)
 
 
 
-    def reset(self):
 
-        self.left_steeringMotor.reset_angle(0)
-        self.right_steeringMotor.reset_angle(0)
+    def reset_angle(self, motors = self.full):
+
+        if motors == self.steering or self.full:
+            self.left_steeringMotor.reset_angle(0)
+            self.right_steeringMotor.reset_angle(0)
+
+        if motors == self.action or self.full:
+            self.left_actionMotor.reset_angle(0)
+            self.right_actionMotor.reset_angle(0)
+
+
+        else:
+            raise Exception("""Motor to reset should be named as following :
+                                        - self.Motors.steering
+                                        - self.Motors.action
+                                        - self.Motors.full """)
 
 
 
-    def stop(self):
 
-        Motors.left_steeringMotor.hold()
-        Motors.right_steeringMotor.hold()
+    def stop(self, motors = self.full):
+
+        if motors == self.steering or self.full:
+            self.left_steeringMotor.hold()
+            self.right_steeringMotor.hold()
+
+        if motors == self.action or self.full:
+            self.left_actionMotor.hold()
+            self.right_actionMotor.hold()
+
+
+        else:
+            raise Exception("""Motor to stop should be named as following :
+                                        - self.Motors.steering
+                                        - self.Motors.action
+                                        - self.Motors.full """)     
+
+    
         wait(250)
 
 
@@ -75,8 +111,8 @@ class MotorManager():
 
 class ColorSensorManager():
 
-    #  Class dedicated to control up to 3 color sensors (one in the left part of the robot, 
-    # another in the right part and a third one (probably to recognize attachments by a color code).
+    # Class dedicated to control up to 3 color sensors (one in the left part of the robot, 
+    # another one in the right part and a third one (probably to recognize attachments by a color code).
 
 
     def __init__(self):
@@ -87,8 +123,8 @@ class ColorSensorManager():
 
 
 
-    # The following functions lets you either initialize a sensor to a fisical port or get
-    # the reflected value reading from the sensor.
+    # The following functions lets you either initialize a sensor to an ev3 port or get
+    # the reflected value reading from that sensor.
 
     def leftSensor(self, port = 0):
 
@@ -122,9 +158,8 @@ class ColorSensorManager():
         
 class GyroSensorManager():
 
-    # This class is only meant to control 1 GyroSensor and the sensor is set as a Ev3devSensor so it can have acces to more methods
-    # such as the "GYRO-CAL" mode.
-    
+    # This class is only meant to control 1 GyroSensor
+
     def __init__(self):
 
         self.gyroSensor = 0
@@ -158,10 +193,27 @@ class GyroSensorManager():
 
 
 
-    # This return the current gyro angle multiplied by 1 or -1
+    # This function returns the current gyro angle multiplied by 1 or -1
     def getAngle(self):
 
         return int(self.gyroSensor.read("GYRO-ANG")[0]) * self.gyro_direction
+
+
+
+
+
+class RobotParameters():
+
+    def __init__(self):
+
+        self.left = "left"
+        self.right = "right"
+        self.front = "front"
+
+        self.full = "full"
+
+
+
 
 
 
