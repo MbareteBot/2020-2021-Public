@@ -27,14 +27,14 @@ class Robot:
 
         # Ev3 control related classes
         self.Gyro = GyroSensorManager()
-        self.Motors = MotorManager()
+        self.Motor = MotorManager()
         self.ColorSensors = ColorSensorManager()
 
 
 
     def Turn(self, target_angle):
 
-        self.Motors.reset()
+        self.Motor.reset(self.Motor.steering)
 
         self.SpeedControl.reset()
 
@@ -56,7 +56,7 @@ class Robot:
             if  error_value > -0.1 and error_value < 0.1:
 
                 Turning = False
-                self.Motors.stop()
+                self.Motor.stop()
  
        
 
@@ -68,7 +68,7 @@ class Robot:
 
         self.SpeedControl.reset()
         self.HeadingControl.reset()
-        self.Motors.reset(self.Motors.steering)
+        self.Motor.reset(self.Motor.steering)
 
 
         target_distance = Tools.cmToDegrees(target_distance, 6.24)
@@ -94,7 +94,7 @@ class Robot:
 
             else:
 
-                heading_error = self.Motors.right_steeringMotor.speed() - self.Motors.left_steeringMotor.speed()
+                heading_error = self.Motor.right_steeringMotor.speed() - self.Motor.left_steeringMotor.speed()
                 heading_kp = 0.2
                 heading_ki = 0.001
                 heading_kd = 0.01
@@ -111,15 +111,15 @@ class Robot:
 
             if target_distance > 0:
 
-                if self.Motors.right_steeringMotor.angle() < target_distance / 2:
+                if self.Motor.right_steeringMotor.angle() < target_distance / 2:
 
-                    speed_error = target_distance - (target_distance - (self.Motors.right_steeringMotor.angle())) 
+                    speed_error = target_distance - (target_distance - (self.Motor.right_steeringMotor.angle())) 
 
                 else:
 
                     moved_enough = True
 
-                    speed_error = target_distance - self.Motors.right_steeringMotor.angle()
+                    speed_error = target_distance - self.Motor.right_steeringMotor.angle()
 
 
 
@@ -131,15 +131,15 @@ class Robot:
             else:
 
 
-                if self.Motors.right_steeringMotor.angle() < target_distance / 2:
+                if self.Motor.right_steeringMotor.angle() < target_distance / 2:
 
-                    speed_error = target_distance - (target_distance - (self.Motors.right_steeringMotor.angle())) 
+                    speed_error = target_distance - (target_distance - (self.Motor.right_steeringMotor.angle())) 
 
                 else:
 
                     moved_enough = True
 
-                    speed_error = target_distance - self.Motors.right_steeringMotor.angle()
+                    speed_error = target_distance - self.Motor.right_steeringMotor.angle()
 
 
 
@@ -158,7 +158,7 @@ class Robot:
 
                     Running = False
 
-                    self.Motors.stop()
+                    self.Motor.stop()
 
 
 
@@ -166,12 +166,12 @@ class Robot:
 
             if heading_error < 0:
 
-                self.Motors.left_steeringMotor.dc(self.SpeedControl.output)
-                self.Motors.right_steeringMotor.dc(self.SpeedControl.output + abs(self.HeadingControl.output))
+                self.Motor.left_steeringMotor.dc(self.SpeedControl.output)
+                self.Motor.right_steeringMotor.dc(self.SpeedControl.output + abs(self.HeadingControl.output))
 
             else:
-                self.Motors.left_steeringMotor.dc(self.SpeedControl.output + abs(self.HeadingControl.output))
-                self.Motors.right_steeringMotor.dc(self.SpeedControl.output)               
+                self.Motor.left_steeringMotor.dc(self.SpeedControl.output + abs(self.HeadingControl.output))
+                self.Motor.right_steeringMotor.dc(self.SpeedControl.output)               
 
 
 
@@ -180,7 +180,7 @@ class Robot:
     def followLine(self, target_value, distance, sensor):
 
         self.HeadingControl.reset()
-        self.Motors.reset(self.Motors.steering)
+        self.Motor.reset(self.Motor.steering)
 
         FollowingLine = True
 
@@ -189,18 +189,7 @@ class Robot:
         while FollowingLine:
 
 
-            if sensor == Device.left:
-                error_value = self.ColorSensors.leftSensor() - target_line_value
-
-            else if sensor == Device.right:
-                error_value = self.ColorSensors.rightSensor() - target_line_value
-
-            else:
-
-                raise Exception("""Sensor should be declared as following:
-                                            -Device.left
-                                            -Device.right""")
-
+            error_value = int(self.ColorSensors.sensor.read("COL-REFLECT")[0]) - target_line_value
 
 
             self.HeadingControl.execute(error_value, 0.2, 0.2, 2)

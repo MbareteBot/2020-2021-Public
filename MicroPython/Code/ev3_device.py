@@ -247,15 +247,7 @@ class GyroSensorManager():
 
 
 
-class RobotParameters():
 
-    def __init__(self):
-
-        self.left = "left"
-        self.right = "right"
-        self.front = "front"
-
-        self.full = "full"
 
 
 
