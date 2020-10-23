@@ -76,7 +76,7 @@ class MotorManager():
 
 
         else:
-            raise Exception("""Motor to reset should be named as following :
+            raise Exception("""Motors to reset should be named as following :
                                         - self.Motors.steering
                                         - self.Motors.action
                                         - self.Motors.full """)

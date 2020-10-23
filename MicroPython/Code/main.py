@@ -21,7 +21,3 @@ Robot.Turn(90) # Turn the robot by 90 degrees
 Robot.Straight(30) # Move in a straight line for 30 cm
 
 
-Robot.Motors.reset_angle()
-
-
-Robot.Motors.left_actionMotor.reset_angle(0)
