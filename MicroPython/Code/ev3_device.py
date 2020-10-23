@@ -8,8 +8,8 @@ from pybricks.parameters import Stop
 from pybricks.tools import wait
 from pybricks.parameters import Port, Direction
 
-from control import PIDSystem
 
+from control import PIDSystem
 
 
 # All this classes are used to control the ev3 devices (motors, gyro and color sensors).
@@ -30,17 +30,21 @@ class MotorManager():
 
     def __init__(self):
 
-        self.Control = PIDSystem()
+        self.SpeedControl = PIDSystem()
 
+
+        # All available motors
         self.left_steeringMotor = 0
         self.right_steeringMotor = 0
-
         self.left_actionMotor = 0
         self.right_actionMotor = 0
+
+
 
         self.motor_direction = Direction.CLOCKWISE
         
 
+        # Parameters
         self.full = 0
         self.steering = 0
         self.action = 0
@@ -60,6 +64,46 @@ class MotorManager():
 
         self.left_actionMotor = Motor(left_motor_port)
         self.right_actionMotor = Motor(right_motor_port)
+
+
+
+    def run(self, motor, degrees, speed = 100, duty_limit = 20):
+
+
+        self.SpeedControl.reset()
+        self.Motors.reset(self.Motors.steering)
+
+        Running = True
+
+        while Running:
+
+
+            if motor.angle() < degrees/2:
+                error_value = degrees - (degrees - motor.angle())
+            else:
+                error_value = degrees - motor.angle()
+
+
+
+            if error_value > 50:
+                if motor.speed() < duty_limit:
+                    Running = False
+                    motor.hold()
+                    wait(100)                    
+
+
+
+            if error_value < 0.1 and error_value > -0.1:
+                Running = False
+                motor.hold()
+                wait(100)
+
+
+
+            SpeedControl.execute(error_value, speed * 0.007)
+
+            motor.dc(SpeedControl.output)  
+
 
 
 
@@ -132,6 +176,7 @@ class ColorSensorManager():
             self.left_colorSensor = Ev3devSensor(port)
         else:
             return int(self.left_colorSensor.read("COL-REFLECT")[0])
+
 
 
     def rightSensor(self, port = 0):
@@ -211,7 +256,6 @@ class RobotParameters():
         self.front = "front"
 
         self.full = "full"
-
 
 
 

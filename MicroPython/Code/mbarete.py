@@ -1,7 +1,7 @@
 #!/usr/bin/env pybricks-micropython
 
 
-from control import PIDSystem, RoboticTools
+from control import RoboticTools
 from ev3_device import MotorManager, ColorSensorManager, GyroSensorManager, Parameters
 
 
@@ -66,9 +66,9 @@ class Robot:
     def Straight(self, target_distance, target_orientation = 0, target_duty_limit = 20, use_gyro = True):
 
 
-        self.Motors.reset()
         self.SpeedControl.reset()
         self.HeadingControl.reset()
+        self.Motors.reset(self.Motors.steering)
 
 
         target_distance = Tools.cmToDegrees(target_distance, 6.24)
@@ -176,16 +176,11 @@ class Robot:
 
 
 
-    def actionMotor(self, motor, degrees, stall_detection = True):
-
-        if motor == Device.left:
-
-            
 
     def followLine(self, target_value, distance, sensor):
 
         self.HeadingControl.reset()
-        self.Motors.reset()
+        self.Motors.reset(self.Motors.steering)
 
         FollowingLine = True
 
@@ -194,15 +189,17 @@ class Robot:
         while FollowingLine:
 
 
-            if sensor == "left":
+            if sensor == Device.left:
                 error_value = self.ColorSensors.leftSensor() - target_line_value
 
-            else if sensor == "right":
+            else if sensor == Device.right:
                 error_value = self.ColorSensors.rightSensor() - target_line_value
 
             else:
 
-                raise Exception('Sensor should be declared as {} or {}'.format('"left"', '"right"'))
+                raise Exception("""Sensor should be declared as following:
+                                            -Device.left
+                                            -Device.right""")
 
 
 
