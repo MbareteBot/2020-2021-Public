@@ -8,6 +8,7 @@ The code is divided into diferent classes, each one is reponsible for a differen
 - control.py:
   - PIDSystem: Provides with functions to run a PID calculation.
   - Odometry System: Allows the use of sensors to estimate change in position over time. 
+  - RoboticTools: Minimal mathematical "tools" that might be useful for robotics.
   
 - ev3_device.py:
   - MotorManager: Facilitates control of ev3 Motors.
