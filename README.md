@@ -8,7 +8,7 @@ Repository main folders:
 
 
 
-- Visual Navigation: This is an interface that lets you code the robot in much easier way,
+- Visual Navigation: This is an interface that lets you code the robot in a much easier way,
 by creating a .txt file based on a path you create
 
 - MycroPython: Includes all the robot code our team uses for the current FLL Replay 2020-2019 Season
