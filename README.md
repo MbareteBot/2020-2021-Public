@@ -4,9 +4,7 @@
 We are Mbarete Bot a team from Paraguay. We are glad you are checking our code. 
 
 
-Repository main folders:
-
-
+## Repository folders description:
 
 - Visual Navigation: This is an interface that lets you code the robot in a much easier way,
 by creating a .txt file based on a path you create
