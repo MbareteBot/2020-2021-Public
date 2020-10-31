@@ -69,52 +69,70 @@ class MotorManager():
 
     def run(self, motor, degrees, speed = 100, duty_limit = 20):
 
-
+        raw_degrees = degrees
+        degrees = abs(degrees)
         self.SpeedControl.reset()
-        self.Motors.reset(self.Motors.steering)
+        motor.reset_angle(0)
 
         Running = True
 
+        moved_enough = False
+
+
+        if degrees >0:
+            orientation = 1
+        else:
+            orientation = -1
+
         while Running:
 
-
-            if motor.angle() < degrees/2:
-                error_value = degrees - (degrees - motor.angle())
+            
+            if abs(motor.angle()) < degrees/2:
+                error_value = degrees - (degrees - abs(motor.angle()))
             else:
-                error_value = degrees - motor.angle()
+                error_value = degrees - abs(motor.angle())
 
 
 
-            if error_value > 50:
-                if motor.speed() < duty_limit:
+
+
+            if error_value > degrees * 0.25 and moved_enough == False:
+                moved_enough = True
+
+
+
+
+            if moved_enough:
+
+
+                if (motor.speed() / 8) < duty_limit:
                     Running = False
                     motor.hold()
                     wait(100)                    
 
 
-
-            if error_value < 0.1 and error_value > -0.1:
-                Running = False
-                motor.hold()
-                wait(100)
-
-
-
-            SpeedControl.execute(error_value, speed * 0.007)
-
-            motor.dc(SpeedControl.output)  
+                if error_value < 0.1 and error_value > -0.1:
+                    Running = False
+                    motor.hold()
+                    wait(100)
 
 
 
+            self.SpeedControl.execute(error_value, speed * 0.007)
+
+            motor.dc(self.SpeedControl.output * orientation)  
+
+        Running = False
 
 
-    def reset_angle(self, motors = self.full):
 
-        if motors == self.steering or self.full:
+    def reset_angle(self, motors):
+
+        if motors == self.steering or motors == self.full:
             self.left_steeringMotor.reset_angle(0)
             self.right_steeringMotor.reset_angle(0)
 
-        if motors == self.action or self.full:
+        if motors == self.action or motors == self.full:
             self.left_actionMotor.reset_angle(0)
             self.right_actionMotor.reset_angle(0)
 
@@ -128,7 +146,7 @@ class MotorManager():
 
 
 
-    def stop(self, motors = self.full):
+    def stop(self, motors):
 
         if motors == self.steering or self.full:
             self.left_steeringMotor.hold()
@@ -242,14 +260,3 @@ class GyroSensorManager():
     def getAngle(self):
 
         return int(self.gyroSensor.read("GYRO-ANG")[0]) * self.gyro_direction
-
-
-
-
-
-
-
-
-
-
-

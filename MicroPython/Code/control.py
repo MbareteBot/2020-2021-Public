@@ -1,3 +1,5 @@
+#!/usr/bin/env pybricks-micropython
+
 import math
 
 
@@ -23,7 +25,7 @@ class PIDSystem():
 
         self.error_value = error_value
         self.integral_value += error_value
-        self.derivative_value = error_value  - self.last_error_value[index]
+        self.derivative_value = error_value  - self.last_error_value
         self.last_error_value = error_value
 
         if self.integral_value > self.max_integral_value:
@@ -33,7 +35,7 @@ class PIDSystem():
             self.integral_value = -self.max_integral_value
 
 
-        self.output = (self.error_value * kp) + (self.integral_value * ki) + (self.kd_value * kd)
+        self.output = (self.error_value * kp) + (self.integral_value * ki) + (self.derivative_value * kd)
 
 
 

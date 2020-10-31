@@ -1,15 +1,12 @@
 #!/usr/bin/env pybricks-micropython
 
 
-from control import RoboticTools
-from ev3_device import MotorManager, ColorSensorManager, GyroSensorManager, Parameters
+from control import PIDSystem, RoboticTools
+from ev3_device import *
 
 
 
-
-Device = RobotParameters()
-
-
+ev3 = EV3Brick()
 
 class Robot:
 
@@ -28,13 +25,13 @@ class Robot:
         # Ev3 control related classes
         self.Gyro = GyroSensorManager()
         self.Motor = MotorManager()
-        self.ColorSensors = ColorSensorManager()
+        self.ColorSensor = ColorSensorManager()
 
 
 
     def Turn(self, target_angle):
 
-        self.Motor.reset(self.Motor.steering)
+        self.Motor.reset_angle(self.Motor.steering)
 
         self.SpeedControl.reset()
 
@@ -49,14 +46,14 @@ class Robot:
             self.SpeedControl.execute(error_value, 0.5, 0.3, 0.1)
 
 
-            self.left_steeringMotor.dc(self.SpeedControl.output)
-            self.right_steeringMotor.dc(self.SpeedControl.output * -1)
+            self.Motor.left_steeringMotor.dc(self.SpeedControl.output)
+            self.Motor.right_steeringMotor.dc(self.SpeedControl.output * -1)
 
 
             if  error_value > -0.1 and error_value < 0.1:
 
                 Turning = False
-                self.Motor.stop()
+                self.Motor.stop(self.Motor.steering)
  
        
 
@@ -68,11 +65,12 @@ class Robot:
 
         self.SpeedControl.reset()
         self.HeadingControl.reset()
-        self.Motor.reset(self.Motor.steering)
+        self.Motor.reset_angle(self.Motor.steering)
 
 
-        target_distance = Tools.cmToDegrees(target_distance, 6.24)
+        target_distance = self.Tools.cmToDegrees(target_distance, 6.24)
 
+        speed_error = 0
         speed_kp = round(target_distance / ev3.battery.voltage() * 0.1, 3)
         speed_ki = 0.1
         speed_kd = 0.2
@@ -88,7 +86,7 @@ class Robot:
             if use_gyro:
 
                 heading_error = target_orientation - self.Gyro.getAngle()
-                heading_kp = 4
+                heading_kp = 2
                 heading_ki = 0.1
                 heading_kd = 0.1
 
@@ -158,7 +156,7 @@ class Robot:
 
                     Running = False
 
-                    self.Motor.stop()
+                    self.Motor.stop(self.Motor.steering)
 
 
 
@@ -180,7 +178,7 @@ class Robot:
     def followLine(self, target_value, distance, sensor):
 
         self.HeadingControl.reset()
-        self.Motor.reset(self.Motor.steering)
+        self.Motor.reset_angle(self.Motor.steering)
 
         FollowingLine = True
 
@@ -189,7 +187,7 @@ class Robot:
         while FollowingLine:
 
 
-            error_value = int(self.ColorSensors.sensor.read("COL-REFLECT")[0]) - target_line_value
+            error_value = sensor() - target_value
 
 
             self.HeadingControl.execute(error_value, 0.2, 0.2, 2)
@@ -198,12 +196,12 @@ class Robot:
 
             if error_value > 0:
 
-                self.left_steeringMotor.dc(Speed)
-                self.right_steeringMotor.dc(Speed + self.HeadingControl.output)
+                self.Motor.left_steeringMotor.dc(Speed)
+                self.Motor.right_steeringMotor.dc(Speed + self.HeadingControl.output)
 
             else:
-                self.left_steeringMotor.dc(Speed + abs(self.HeadingControl.output))
-                self.right_steeringMotor.dc(Speed)               
+                self.Motor.left_steeringMotor.dc(Speed + abs(self.HeadingControl.output))
+                self.Motor.right_steeringMotor.dc(Speed)               
 
 
 
