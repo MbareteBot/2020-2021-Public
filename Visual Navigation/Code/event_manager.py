@@ -2,10 +2,11 @@ import pygame, os, math
 from PIL import Image
 
 from pygame.locals import *
-from windowClass import *
+from window_manager import *
 from statsCreator import *
 
 
+imageManager = (ImageManager(1024, 768))
 
 
 class EventManager():
@@ -27,13 +28,15 @@ class EventManager():
 		self.win_width = 0
 		self.win_height = 0
 
+
+
 	def getPressedButton(self, buttons_xpos, buttons_ypos):
 
 
 		img_buttons_rect = []
 
-		for size in range(0,3):
-			img_buttons_rect.append([buttons_xpos[size], buttons_ypos[size], MainScreen.Imgs.img_buttons_size[size][0], MainScreen.Imgs.img_buttons_size[size][1]])
+		for size in range(0,len(buttons_xpos) - 1):
+			img_buttons_rect.append([buttons_xpos[size], buttons_ypos[size], imageManager.img_buttons_size[size][0], imageManager.img_buttons_size[size][1]])
 
 		for button in range(0,3):
 
@@ -97,10 +100,9 @@ class EventManager():
 
 			os.chdir("../..")
 			
-			directory_path = os.chdir(os.path.join(os.getcwd(), "MicroPython/Datos-Navegacion Visual"))
+			directory_path = os.chdir(os.path.join(os.getcwd(), "MicroPython/Code"))
 			self.changeDirectory = False
 
-		print("Save in: ", self.directory_path)
 
 
 		with open("RobotValues.txt","w") as Movement_Values: 
@@ -109,7 +111,9 @@ class EventManager():
 				Movement_Values.write("%s\n" % item)
 
 
-		RobotValues_txt = []
+		self.robot_movement_data = []
+
+
 
 		with open("RobotValues.txt","r") as f:
 
@@ -117,33 +121,59 @@ class EventManager():
 
 				RobotValues_txt_Check = line[:-1]
 
-				RobotValues_txt.append(RobotValues_txt_Check)
-
-			print("Valores Utilizados:", RobotValues_txt)
+				self.robot_movement_data.append(RobotValues_txt_Check)
 
 
 
 
-	def runStats(self):
-	
-		myGraphs = graphMaker(2,3)
 
-		mydata = [1,2,3,4,5]
-		mylegends = ["Tema1", "Tema2","Tema3", "Tema4","Tema5"]
+	def runStats(self, screen):
+		
+		robot_movement_data_id = []
 
-		myGraphs.plotGraph(mydata, mydata, "Progreso en Misiones", 0, 0)
-		myGraphs.pieGraph(mydata, mylegends, 1,0)
 
-		myGraphs.pieGraph(mydata, mylegends, 0,1)
-		myGraphs.plotGraph(mydata, mydata, None, 1,1)
 
-		#img_mat_user = pygame.image.save(self.surface, "img_mat_user.png")
+		for element in range(1, len(self.robot_movement_data)):
+			self.robot_movement_data.pop(element)
+			element += 1
+			if element >= len(self.robot_movement_data) - 1:
+				break
+
+
+
+		for element in range(0, len(self.robot_movement_data)):
+			self.robot_movement_data[element] = float(self.robot_movement_data[element])
+
+
+
+		for element in range(0, len(self.robot_movement_data)):
+			robot_movement_data_id.append("R" + str(element + 1))
+
+
+
+		mylegends = ["Tema1", "Tema2","Tema3", "Tema4"]
+
+
+		pygame.image.save(screen, "img_mat_user.png")
+
+
+
+		graphUI = graphMaker(2,3)
+
+
+
+		graphUI.barGraph(robot_movement_data_id, self.robot_movement_data, "Progreso en Misiones", 0, 0)
+		graphUI.pieGraph((1,2,3,4), mylegends, 1,0)
+
+		graphUI.pieGraph((1,2,3,4), mylegends, 0,1)
+		graphUI.plotGraph((1,2,3,4), mylegends, None, 1,1)
+
 		img_mat_user = Image.open("img_mat_user.png")
 		img_mat_user.thumbnail((2000, 1300))
-		myGraphs.showImage(img_mat_user,"Pista", 0,2)
-		myGraphs.pieGraph(mydata, mylegends, 1,2)
+		graphUI.showImage(img_mat_user,"Pista", 0,2)
+		graphUI.pieGraph((1,2,3,4), mylegends, 1,2)
 
-		myGraphs.showGraphs()	
+		graphUI.showGraphs()	
 
 
 
