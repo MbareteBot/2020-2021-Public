@@ -77,25 +77,19 @@ class ScreenManager():
 			
 
 
-	def label(self, text="Text", pos=(0,0), size=20, font='arial', color=(0,0,0)):
 
-		x,y = pos
-		font_object = pygame.font.SysFont(font, size)
-		text_surface = font_object.render(text, True, color)
-		text_rect = text_surface.get_rect()
-		text_rect.center = x, y
-		self.surface.blit(text_surface, text_rect)
-
-
-		
+	
 	def draw(self, element):
 
-
+		# Draw a button element
 		if element.skin_path == None:
+			# Button box
 			pygame.draw.rect(self.surface, element.bg_color, element.surface)
-			self.label(element.caption, 
-						((element.position[0] + element.width)/2, (element.position[1] + element.height)/2)
+			# Button caption, draw and center the caption within the button
+			self.surface.blit(element.label.surface, 
+						((element.position[0] + element.surface.width) - element.width/2 - element.label.width/2, (element.position[1] + element.surface.height + element.label.height)/2)
 						)
+
 		
 		else:				
 			self.surface.blit(element.surface)
@@ -119,6 +113,17 @@ class ScreenManager():
 #		self.graphical_elements.append(element)
 
 
+class Label():
+
+	def __init__(self,text="Text", position=(0,0), size=20, font='arial', color=(0,0,0)):
+
+		self.position = position
+		self.size = size
+		self.font_object = pygame.font.SysFont(font, self.size)
+		self.surface = self.font_object.render(text, True, color)
+		self.rect = self.surface.get_rect()
+		self.width, self.height = self.rect.width, self.rect.height
+		
 
 
 
@@ -152,6 +157,12 @@ class Button():
 		
 
 		self.hover_effect_enabled = True
+
+
+
+
+		self.label = Label(text=caption, position=(0,0), size=20, font='arial', color=(0,0,0))
+
 
 
 

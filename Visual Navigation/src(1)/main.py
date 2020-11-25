@@ -8,11 +8,25 @@ screen.setWindow(800,500)
 screen.setTitle("Program")
 
 
-def Buttons(positions, text):
+def Buttons():
 
-	btn = Button(position=positions, dimensions = (150,30), bg_color = (100,100,100), caption=text)
+	btn = Button(position=(50,50), dimensions = (150,30), bg_color = (100,100,100), caption="Click Aqui")
+	
+	if btn.hover():
+		btn.bg_color = (80,80,80)
+	else:
+		btn.bg_color = (100,100,100)
+
+
+	if btn.clicked():
+		btn.surface.width = 149
+		btn.surface.height = 29
+
 
 	screen.draw(btn)
+
+
+
 
 
 
@@ -32,7 +46,6 @@ def main():
 					bg_color = (200,200,200),
 					caption = "cta"):'''
 
-	btn1 = Button(position = (10,10), dimensions = (150,30), bg_color = (100,100,100), caption="Click")
 
 
 
@@ -54,10 +67,8 @@ def main():
 		
 
 		#Buttons((50,50),"Submit")
-		btn = Button(position=(50,50), dimensions = (100,30), bg_color = (100,100,100), caption="click")
 
-		screen.draw(btn)
-
+		Buttons()
 
 
 		screen.update()
