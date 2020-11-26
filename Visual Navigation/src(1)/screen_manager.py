@@ -29,7 +29,7 @@ class ScreenManager():
 		self.surface = pygame.display.set_mode((width, height))
 
 		self.width = width
-		self.width = height
+		self.height = height
 
 
 
@@ -82,17 +82,35 @@ class ScreenManager():
 	def draw(self, element):
 
 		# Draw a button element
-		if element.skin_path == None:
-			# Button box
-			pygame.draw.rect(self.surface, element.bg_color, element.surface)
-			# Button caption, draw and center the caption within the button
-			self.surface.blit(element.label.surface, 
-						((element.position[0] + element.surface.width) - element.width/2 - element.label.width/2, (element.position[1] + element.surface.height + element.label.height)/2)
-						)
 
-		
-		else:				
-			self.surface.blit(element.surface)
+		if element.__class__.__name__ == "Button":
+			if element.skin_path == None:
+				# Button box
+				pygame.draw.rect(self.surface, element.bg_color, element.rect)
+				# Button caption, draw and center the caption within the button
+				self.surface.blit(element.label.surface, (element.label.x, element.label.y))
+
+			
+			else:				
+				self.surface.blit(element.surface, (element.x, element.y))
+
+
+		elif element.__class__.__name__ == "Label":
+			# Drawing text
+			self.surface.blit(element.surface, (element.x, element.y))
+
+
+
+		elif element.__class__.__name__ == "Widget":
+
+
+			if element.skin_path == None:
+				pygame.draw.rect(self.surface, element.bg_color, element.surface)
+			
+			else:				
+				self.surface.blit(element.surface, (element.x, element.y))
+
+
 
 #		if element not in self.graphical_elements:
 #			self.graphical_elements.append(element)
@@ -115,15 +133,28 @@ class ScreenManager():
 
 class Label():
 
-	def __init__(self,text="Text", position=(0,0), size=20, font='arial', color=(0,0,0)):
+	def __init__(self,
+					text="Text", 
+					position=(0,0), 
+					size=20, 
+					font='arial', 
+					color=(0,0,0),
+					skin_path = None,
+					bg_color = None,
+					dimensions = None):
 
-		self.position = position
+
+		self.x, self.y = position
 		self.size = size
 		self.font_object = pygame.font.SysFont(font, self.size)
 		self.surface = self.font_object.render(text, True, color)
 		self.rect = self.surface.get_rect()
 		self.width, self.height = self.rect.width, self.rect.height
 		
+
+
+		# Centered position of the label within a container
+
 
 
 
@@ -137,33 +168,29 @@ class Button():
 					caption = "cta"):
 
 
-
 		self.width, self.height = dimensions
-		self.position = position
+		self.x, self.y = position
 		self.skin_path = skin_path
-
+		self.rect = pygame.Rect((self.x, self.y), (self.width, self.height))
 
 		if self.skin_path == None:
-			self.surface = pygame.Rect(self.position, (self.width, self.height))
 			self.caption = caption
 			self.bg_color = bg_color
 
-		else:
-
-			if dimensions == None:
-				self.surface = pygame.image.load(skin_path) 
-			else:
-				self.surface = pygame.transform.scale(pygame.image.load(skin_path), dimensions)
+		else:			
+			self.surface = pygame.transform.scale(pygame.image.load(skin_path), (self.width, self.height))
 		
 
 		self.hover_effect_enabled = True
 
 
 
-
 		self.label = Label(text=caption, position=(0,0), size=20, font='arial', color=(0,0,0))
 
 
+		# Coordenates for the center of the button
+		self.label.x = self.x + self.width - self.width/2 - self.label.width/2
+		self.label.y = (self.y + self.height + self.label.height)/2
 
 
 
@@ -171,7 +198,7 @@ class Button():
 	def hover(self):
 
 		if self.hover_effect_enabled:
-			if self.surface.collidepoint(pygame.mouse.get_pos()):
+			if self.rect.collidepoint(pygame.mouse.get_pos()):
 				return True
 			else:
 				return False
@@ -184,9 +211,44 @@ class Button():
 
 	def clicked(self):
 
-		if self.surface.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+		if self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
 			return True
 		else:
 			return False
+
+
+
+
+
+
+class Widget():
+
+	def __init__(self,
+					position,
+					dimensions,
+					color=(200,200,200),
+					skin_path=None):
+
+		self.x, self.y = position
+		self.width, self.height = dimensions
+		self.bg_color = color
+		self.skin_path = skin_path
+
+		if skin_path == None:
+			self.surface = pygame.Rect((self.x, self.y), (self.width, self.height))
+			self.bg_color = color
+
+		else:
+
+			if dimensions == None:
+				self.surface = pygame.image.load(skin_path) 
+			else:
+				self.surface = pygame.transform.scale(pygame.image.load(skin_path), dimensions)
+		
+
+
+
+
+
 
 
