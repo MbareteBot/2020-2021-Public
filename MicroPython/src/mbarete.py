@@ -205,4 +205,15 @@ class Robot:
 
 
 
+    def runCsv(self, file):
+
+        import csv
+        with open('mbdata.csv') as csv_file:
+
+            # ONLY USES THE SECOND ROW OF THE CSV FILE
+            csv_reader = list(csv.reader(csv_file, delimiter=','))[1]
+
+            # THE ELEMENTS IN THE ARRAY ARE LOADED AS STRINGS, CHANGE THAT
+            arr = [eval(row) for row in csv_reader]
+         
             

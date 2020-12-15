@@ -1,0 +1,17 @@
+<RCC>
+  <qresource prefix="img">
+    <file>img/photo-shutter.png</file>
+    <file>img/dotted-square.png</file>
+    <file>img/drop-silhouette.png</file>
+    <file>img/pair-of-lollipops.png</file>
+    <file>img/pencil.png</file>
+    <file>img/refresh.png</file>
+    <file>img/disquete.png</file>
+    <file>img/configuraciones.png</file>
+    <file>img/descargar.png</file>
+    <file>img/pista_replay_img.jpg</file>
+    <file>img/grafico-circular.png</file>
+    <file>img/menu.png</file>
+    <file>img/rayo.png</file>
+  </qresource>
+</RCC>
