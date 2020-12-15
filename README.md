@@ -1,12 +1,12 @@
 
 # Hello!!
 
-We are Mbarete Bot a team from Paraguay. We are glad you are checking our code. 
+We are Mbarete Bot a team from Paraguay and we are glad you are checking our code. 
 
 
 ## Repository folders description:
 
-- Visual Navigation: This is an interface that lets you code and plan an strategy for the robot in a much easier way.
+- Visual Navigation: This is an interface that lets you code and plan a strategy for the robot in a much easier way.
 
 - MycroPython: Includes all the robot code our team uses for the current FLL Replay 2020-2019 Season
 	- Features: 
