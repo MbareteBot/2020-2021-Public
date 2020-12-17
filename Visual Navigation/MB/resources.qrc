@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="img">
+    <file>img/camara-fotografica.png</file>
     <file>img/mas.png</file>
     <file>img/photo-shutter.png</file>
     <file>img/dotted-square.png</file>

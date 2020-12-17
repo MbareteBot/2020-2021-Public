@@ -230,6 +230,13 @@ class Ui_MainWindow(object):
         self.Btn_save.setText("")
         self.Btn_save.setObjectName("Btn_save")
         self.horizontalLayout_7.addWidget(self.Btn_save)
+        self.Btn_screenshot = QtWidgets.QPushButton(self.configBar)
+        self.Btn_screenshot.setMinimumSize(QtCore.QSize(40, 40))
+        self.Btn_screenshot.setMaximumSize(QtCore.QSize(40, 16777215))
+        self.Btn_screenshot.setStyleSheet("image: url(:/img/img/camara-fotografica.png);")
+        self.Btn_screenshot.setText("")
+        self.Btn_screenshot.setObjectName("Btn_screenshot")
+        self.horizontalLayout_7.addWidget(self.Btn_screenshot)
         self.Btn_openExistingPath = QtWidgets.QPushButton(self.configBar)
         self.Btn_openExistingPath.setMinimumSize(QtCore.QSize(40, 40))
         self.Btn_openExistingPath.setMaximumSize(QtCore.QSize(40, 16777215))
@@ -326,7 +333,10 @@ class Ui_MainWindow(object):
         self.Btn_straightLine.setShortcut("Alt+2")
 
         self.Btn_colorPick.clicked.connect(self.colorPicker)
+
         self.Btn_openExistingPath.clicked.connect(self.openExistingPath)
+
+        self.Btn_screenshot.clicked.connect(self.saveCapture)
 
 
 
@@ -595,10 +605,6 @@ class Ui_MainWindow(object):
                 print("\n---------------------------------")
                 print("Successfully saved binary file")
 
-                if buttonReply == QtWidgets.QMessageBox.Yes:
-                    screen = QtWidgets.QApplication.primaryScreen()
-                    screenshot = screen.grabWindow(self.Frame_mat_replay.winId())
-                    screenshot.save(path + 'capture.jpg', 'jpg')
 
 
         except:
@@ -623,6 +629,22 @@ class Ui_MainWindow(object):
         self.lastPressedBtn = "LINE"
         self.lineDrawing(self.Frame_mat_replay)
 
+
+    # TAKES A SCREENSHOT
+    def saveCapture(self):
+
+        path = QtWidgets.QFileDialog.getSaveFileName(MainWindow, "Select Directory", os.getcwd(),"Image files (*.png)")
+
+        try:
+
+            screen = QtWidgets.QApplication.primaryScreen()
+            screenshot = screen.grabWindow(self.Frame_mat_replay.winId())
+            screenshot.save(path[0], 'png')
+
+
+
+        except:
+            print("Fail to save capture")
 
 
     # TOOGLE MENU EFFECT 
@@ -662,4 +684,5 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
 
