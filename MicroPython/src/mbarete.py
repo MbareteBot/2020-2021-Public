@@ -205,15 +205,22 @@ class Robot:
 
 
 
-    def runCsv(self, file):
+    def runCsv(self):
 
         import csv
         with open('mbdata.csv') as csv_file:
 
-            # ONLY USES THE SECOND ROW OF THE CSV FILE
-            csv_reader = list(csv.reader(csv_file, delimiter=','))[1]
+            # ONLY USES THE THIRD ROW FROM THE CSV FILE
+            csv_reader = list(csv.reader(csv_file, delimiter=','))[2]
 
             # THE ELEMENTS IN THE ARRAY ARE LOADED AS STRINGS, CHANGE THAT
-            arr = [eval(row) for row in csv_reader]
-         
+            robotPath = [eval(row) for row in csv_reader]
+
+            # PERFORM EACH ACTION FROM THE CSV FILE (TURN AND DRIVE STRAIGHT)
+            for element in range(len(robotPath)):
+
+                self.Straight(robotPath[element])
+
+                if element < len(robotPath) - 1:
+                    self.Turn(robotPath[element])
             

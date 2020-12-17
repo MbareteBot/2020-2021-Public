@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import os, pickle
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -202,9 +202,6 @@ class Ui_MainWindow(object):
         self.Btn_square.setText("")
         self.Btn_square.setObjectName("Btn_square")
         self.horizontalLayout_7.addWidget(self.Btn_square)
-
-       
-
         self.Btn_straightLine = QtWidgets.QPushButton(self.configBar)
         self.Btn_straightLine.setMinimumSize(QtCore.QSize(40, 40))
         self.Btn_straightLine.setMaximumSize(QtCore.QSize(40, 16777215))
@@ -233,6 +230,13 @@ class Ui_MainWindow(object):
         self.Btn_save.setText("")
         self.Btn_save.setObjectName("Btn_save")
         self.horizontalLayout_7.addWidget(self.Btn_save)
+        self.Btn_openExistingPath = QtWidgets.QPushButton(self.configBar)
+        self.Btn_openExistingPath.setMinimumSize(QtCore.QSize(40, 40))
+        self.Btn_openExistingPath.setMaximumSize(QtCore.QSize(40, 16777215))
+        self.Btn_openExistingPath.setStyleSheet("image: url(:/img/img/mas.png);")
+        self.Btn_openExistingPath.setText("")
+        self.Btn_openExistingPath.setObjectName("Btn_openExistingPath")
+        self.horizontalLayout_7.addWidget(self.Btn_openExistingPath)
         self.verticalLayout_5.addWidget(self.configBar, 0, QtCore.Qt.AlignHCenter)
         self.mats = QtWidgets.QStackedWidget(self.Frame_matDesigner)
         self.mats.setMaximumSize(QtCore.QSize(16777215, 16777215))
@@ -255,6 +259,8 @@ class Ui_MainWindow(object):
         self.Frame_settings.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.Frame_settings.setFrameShadow(QtWidgets.QFrame.Raised)
         self.Frame_settings.setObjectName("Frame_settings")
+        self.horizontalLayout_8 = QtWidgets.QHBoxLayout(self.Frame_settings)
+        self.horizontalLayout_8.setObjectName("horizontalLayout_8")
         self.horizontalLayout_4.addWidget(self.Frame_settings)
         self.stackedWidget.addWidget(self.settings)
         self.graph_maker = QtWidgets.QWidget()
@@ -282,13 +288,6 @@ class Ui_MainWindow(object):
         self.mats.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
-
-
-
-
-
-
         self.clicksPositions = []
         self.squareClicksPositions = []
         self.globalMX = 0
@@ -310,26 +309,29 @@ class Ui_MainWindow(object):
         self.Frame_mat_replay.mouseReleaseEvent = self.mouseReleaseEvent
 
 
-        # BUTTONS FUNCTIONALLIY
+        # CREATING BUTTONS FUNCTIONALIY
 
         self.Btn_save.clicked.connect(self.savePath)
+        self.Btn_save.setShortcut("Ctrl+S")
+
         self.Btn_ToggleMenu.clicked.connect(self.toggleMenu)
 
         self.Btn_back.clicked.connect(self.goBack)
+        self.Btn_back.setShortcut("Ctrl+Z")
+
         self.Btn_square.clicked.connect(self.activateRectDrawing)
+        self.Btn_square.setShortcut("Alt+1")
+
         self.Btn_straightLine.clicked.connect(self.activateLineDrawing)
+        self.Btn_straightLine.setShortcut("Alt+2")
 
         self.Btn_colorPick.clicked.connect(self.colorPicker)
-
-
-        # GO BACK ONCE FUNCTIONALLITY
-        self.lastKeyPressed = 0
-        MainWindow.keyPressEvent = self.keyboardShortcuts
+        self.Btn_openExistingPath.clicked.connect(self.openExistingPath)
 
 
 
 
-        #self.Lbl_mat_replay.setPixmap(QtGui.QPixmap(":/img/pista_replay_img.jpg"))
+
         
 
 
@@ -339,23 +341,17 @@ class Ui_MainWindow(object):
 
 
 
-
+    # ACITVATE THE SPECIFIC PAINT EVENT FOR THE MAIN FRAME
     def activateRectDrawing(self, event):
         self.lastPressedBtn = "SQUARE"
-        self.Frame_mat_replay.update()
-
 
     def activateLineDrawing(self, event):
         self.lastPressedBtn = "LINE"
-        self.Frame_mat_replay.update()
 
 
 
-    def activateFreeHandDrawing(self, event):
-        self.lastPressedBtn = "FREE_HAND"
-        self.Frame_mat_replay.update()
 
-
+    # SETS THE PAINTER OBJECT BASED ON A COLOR -> IMPORTANT -> THIS IS USE TO DRAW ON THE FRAME
     def setPainter(self, color):
         self.painter = QtGui.QPainter()
         self.painter.begin(self.Frame_mat_replay)
@@ -366,7 +362,7 @@ class Ui_MainWindow(object):
 
 
 
-
+    # PART OF THE DRAG AND DRAW FUNCTIONALIY FOR DRAWING RECTS
     def mouseReleaseEvent(self, event):
 
         if self.lastPressedBtn == "SQUARE":
@@ -375,7 +371,7 @@ class Ui_MainWindow(object):
 
 
 
-
+    # THIS IS THE PAINT EVENT ASSOCIATED TO THE MAIN FRAME -> IT'S BASED ON THE lastPressedBtn VARIABLE
     def paintEvent(self, event):
 
         if self.lastPressedBtn == "SQUARE":
@@ -388,32 +384,32 @@ class Ui_MainWindow(object):
             self.lineDrawing(self.Frame_mat_replay)
 
 
-        elif self.lastPressedBtn == "FREE_HAND":
-            self.Frame_mat_replay.paintEvent = self.freeHandDrawing
-            self.freeHandDrawing(self.Frame_mat_replay)
-                
 
 
 
-
+    # DRAW BOTH LINES AND RECTS, THIS IS USED TO KEEP DRAWING OLDER SHAPES WHEN NEW SHAPES ARE BEING CREATED
+    # THIS MUST BE DONE ANY TIME YOU CHANGE THE PAINT EVENT OBJECT FOR THE MAIN FRAME, OTHERWISE ONLY ALL PAST SHAPES WILL BE DELETED
+    # ALL "DRAWINGS" ARE BASED ON AN ARRAY THAT STORES THE COORDENATES FOR THAT SHAPE
     def drawRectsAndLines(self):
 
         if len(self.rects) > 0:
 
+            self.setPainter(self.rectsColor)
             for rect in range(len(self.rects)):
-                self.setPainter(self.rectsColor)
                 self.painter.drawRect(self.rects[rect][0],self.rects[rect][1],self.rects[rect][2],self.rects[rect][3])
 
             self.painter.end()
 
-        if len(self.clicksPositions) > 1:
-            for click in range(len(self.clicksPositions)-1):
-                self.setPainter(self.linesColor)
-                self.painter.drawLine(self.clicksPositions[click][0],self.clicksPositions[click][1],self.clicksPositions[click+1][0],self.clicksPositions[click+1][1])
 
+        if len(self.clicksPositions) > 1:
+
+            self.setPainter(self.linesColor)
+            for click in range(len(self.clicksPositions)-1):
+                self.painter.drawLine(self.clicksPositions[click][0],self.clicksPositions[click][1],self.clicksPositions[click+1][0],self.clicksPositions[click+1][1])
             self.painter.end()
 
 
+    # SET A BUTTON COLOR WHEN IT'S CLICKED
     def setButtonsActiveStates(self):
 
         if self.lastPressedBtn == "SQUARE":
@@ -435,6 +431,7 @@ class Ui_MainWindow(object):
                                                f"background-color: {rectRgbColor};\n"
                                               "image: url(:/img/img/drop-silhouette.png);}")
      
+
         if self.lastPressedBtn == "LINE":
             self.Btn_straightLine.setStyleSheet("background-color: rgb(70,70,70);\n"
                                           "image: url(:/img/img/pair-of-lollipops.png);")
@@ -454,10 +451,12 @@ class Ui_MainWindow(object):
                                                f"background-color: {lineRgbColor};\n"
                                               "image: url(:/img/img/drop-silhouette.png);}")
 
+
+    # ANIMATES THE "DRAG AND DROP" ANIMATION WHEN DRAWIN A RECT - JUST THAT :)
     def rectDrawing(self, event):
 
 
-        # DRAW RECTANLGLE WHEN DRAG
+        # DRAW RECTANGLE WHEN DRAGING
         self.setButtonsActiveStates()
 
         self.drawRectsAndLines()
@@ -470,20 +469,18 @@ class Ui_MainWindow(object):
 
             self.painter.drawRect(self.squareClicksPositions[-1][0], self.squareClicksPositions[-1][1], self.globalMX - self.squareClicksPositions[-1][0], self.globalMY - self.squareClicksPositions[-1][1])
         
-            
-
-
 
         self.painter.end()
 
         self.Frame_mat_replay.update()
 
 
+        # THIS ALLOWS THE MAIN FRAME TO CHANGE BETWEEN PAINTS EVENTS (RECTDRAWING OR LINEDRAWING)
         self.Frame_mat_replay.paintEvent = self.paintEvent
 
 
 
-
+    # DRAW LINES
     def lineDrawing(self, event):
 
         self.setButtonsActiveStates()
@@ -506,6 +503,7 @@ class Ui_MainWindow(object):
             for click in range(len(self.clicksPositions)-1):
                 self.painter.drawLine(self.clicksPositions[click][0],self.clicksPositions[click][1],self.clicksPositions[click+1][0],self.clicksPositions[click+1][1])
 
+
         self.painter.end()
         self.Frame_mat_replay.update()
         self.Frame_mat_replay.paintEvent = self.paintEvent
@@ -525,16 +523,15 @@ class Ui_MainWindow(object):
 
 
 
-
+    # UPDATES THE MOUSE POSITIONS VARIABLE
     def mouseMoveEvent(self, event):
         self.globalMX = event.x()
         self.globalMY = event.y()
-        #self.stackedWidget.currentWidget().setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
 
 
 
+    # WHENEVER THE FRAME GETS CLICKED, ADD THE CLICK (X,Y) POSITION TO THE RESPECTIVE ARRAY, BASED ON THE PAINT EVENT
     def mousePressEvent(self, event):
-
 
         if self.lastPressedBtn == "SQUARE":
 
@@ -551,7 +548,7 @@ class Ui_MainWindow(object):
 
 
 
-
+    # DELETE THE LAST SHAPE 
     def goBack(self):
 
         if self.lastPressedBtn == "SQUARE":
@@ -574,9 +571,9 @@ class Ui_MainWindow(object):
 
 
 
-
+    # ASK FOR THE DIRECTORY AND SAVE THE CURRENT PATH (ONLY LINES ARE TAKING INTO ACCOUNG WHEN DEFINIG A "PATH") 
+    # ALL LINES ARE CONSIDERED AS THE PATH
     def savePath(self):
-        import csv, math
 
         realRobotCoordenates = []
 
@@ -586,71 +583,55 @@ class Ui_MainWindow(object):
             realRobotCoordenates.append([round(200/(MainWindow.width()/line[0])), round(130/(MainWindow.height()/(MainWindow.height()-line[1])))])
 
 
-
-        buttonReply = QtWidgets.QMessageBox.question(MainWindow, "Mbarete..", "Would you also like to save a capture?")
-        path = str(QtWidgets.QFileDialog.getExistingDirectory(MainWindow, "Select Directory"))
-        
-        print("COOR:", realRobotCoordenates)
-
-
-        realRobotAnglesDistances = []
-        for element in range(1,len(realRobotCoordenates)):
-
-            realRobotAnglesDistances.append(round(math.sqrt( (realRobotCoordenates[element - 1][0] - realRobotCoordenates[element][0])**2 + (realRobotCoordenates[element - 1][1] - realRobotCoordenates[element][1])**2),1))        
-
-            if element < len(realRobotCoordenates) - 1:
-                vector1_rel_x = realRobotCoordenates[element - 1][0] - realRobotCoordenates[element][0]
-                vector1_rel_y = realRobotCoordenates[element - 1][1] - realRobotCoordenates[element][1]
-
-                vector2_rel_x = realRobotCoordenates[element + 1][0] - realRobotCoordenates[element][0]
-                vector2_rel_y = realRobotCoordenates[element + 1][1] - realRobotCoordenates[element][1]
-
-
-                print("RelX1:", realRobotCoordenates[element - 1][0], realRobotCoordenates[element][0])
-                print("RelY1:", realRobotCoordenates[element + 1][1], realRobotCoordenates[element][1])
-                cross_product = vector1_rel_x  * vector2_rel_y - vector1_rel_y * vector2_rel_x
-
-                angle = math.acos((((vector1_rel_x  * vector2_rel_x) + (vector1_rel_y * vector2_rel_y) )) / (math.sqrt(vector1_rel_x**2 + vector1_rel_y**2) * math.sqrt(vector2_rel_x**2 + vector2_rel_y**2)))
-                
-                if cross_product < 0:
-                    angle = (180 - (angle * (180/math.pi))) * -1
-                else:
-                    angle = 180 - (angle * (180/math.pi))
-
-
-                realRobotAnglesDistances.append(round(angle))
-
-
-
-
-
-        print(realRobotAnglesDistances)
+        buttonReply = QtWidgets.QMessageBox.question(MainWindow, "Mbarete...", "Would you also like to save a capture?")
+        path = QtWidgets.QFileDialog.getSaveFileName(MainWindow, "Select Directory", os.getcwd(),"Mbarete files (*.mbarete)")
 
         try:
-            with open(path + "/mbdata.csv", "w", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow(self.clicksPositions)
-                writer.writerow(realRobotCoordenates)
-                writer.writerow(realRobotAnglesDistances)
+            with open(path[0], "wb") as file:
+
+                pickle.dump(self.clicksPositions, file)
+                pickle.dump(realRobotCoordenates, file)
+
+                print("\n---------------------------------")
+                print("Successfully saved binary file")
 
                 if buttonReply == QtWidgets.QMessageBox.Yes:
                     screen = QtWidgets.QApplication.primaryScreen()
                     screenshot = screen.grabWindow(self.Frame_mat_replay.winId())
-                    screenshot.save(path + '/capture.jpg', 'jpg')
+                    screenshot.save(path + 'capture.jpg', 'jpg')
+
 
         except:
-            pass
+            print("Fail to save binary file")
+
+
+    # OPEN AN EXISTING PATH (*.mbarete) AND DRAW THAT PATH ON THE MAIN FRAME
+    def openExistingPath(self):
+
+        path = QtWidgets.QFileDialog.getOpenFileName(MainWindow, "Select File", os.getcwd(),"Mbarete files (*.mbarete)")
+        path_data = []
+
+        with open(path[0], "rb") as f:
+
+            for _ in range(2):
+                path_data.append(pickle.load(f))
+
+            
+
+        self.clicksPositions = path_data[0]
+
+        self.lastPressedBtn = "LINE"
+        self.lineDrawing(self.Frame_mat_replay)
 
 
 
+    # TOOGLE MENU EFFECT 
     def toggleMenu(self):
 
-        # GET WIDTH
         width = self.LeftBar.width()
         maxExtend = 180
         standard = 60
 
-        # SET MAX WIDTH
         if width == 60:
             widthExtended = maxExtend
         else:
@@ -665,14 +646,6 @@ class Ui_MainWindow(object):
         self.animation.start()
 
 
-
-    def keyboardShortcuts(self, event):
-
-        if self.lastKeyPressed == QtCore.Qt.Key_Control and event.key() == QtCore.Qt.Key_Z:
-            self.goBack()
-
-
-        self.lastKeyPressed = event.key()
 
 
 
