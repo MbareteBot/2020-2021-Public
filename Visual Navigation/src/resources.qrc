@@ -1,13 +1,13 @@
 <RCC>
   <qresource prefix="img">
-    <file>img/camara-fotografica.png</file>
-    <file>img/mas.png</file>
-    <file>img/photo-shutter.png</file>
-    <file>img/dotted-square.png</file>
     <file>img/drop-silhouette.png</file>
-    <file>img/pair-of-lollipops.png</file>
+    <file>img/flecha-correcta.png</file>
+    <file>img/pausa.png</file>
     <file>img/pencil.png</file>
-    <file>img/refresh.png</file>
+    <file>img/reloj-de-pared.png</file>
+    <file>img/dotted-square.png</file>
+    <file>img/detener.png</file>
+    <file>img/pencil.png</file>
     <file>img/disquete.png</file>
     <file>img/configuraciones.png</file>
     <file>img/descargar.png</file>
