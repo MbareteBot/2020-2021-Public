@@ -12,13 +12,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    
+    def setupUI(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1147, 575)
         MainWindow.setMinimumSize(QtCore.QSize(1147, 575))
         MainWindow.setMaximumSize(QtCore.QSize(1147, 575))
         MainWindow.setMouseTracking(True)
         MainWindow.setStyleSheet("")
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setMaximumSize(QtCore.QSize(1147, 580))
         self.centralwidget.setObjectName("centralwidget")
