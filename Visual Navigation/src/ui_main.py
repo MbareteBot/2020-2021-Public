@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_MainWindow(object):
-    
+
     def setupUI(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1147, 575)
@@ -50,20 +50,22 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.Btn_ToggleMenu = QtWidgets.QPushButton(self.ToggleFrame)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.Btn_ToggleMenu.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.Btn_ToggleMenu.sizePolicy().hasHeightForWidth())
         self.Btn_ToggleMenu.setSizePolicy(sizePolicy)
         self.Btn_ToggleMenu.setStyleSheet("QPushButton {\n"
-"    image: url(:/img/img/menu.png);\n"
-"    border: 0px solid;\n"
-"    color: white\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(70,70,70);\n"
-"}")
+                                          "    image: url(:/img/img/menu.png);\n"
+                                          "    border: 0px solid;\n"
+                                          "    color: white\n"
+                                          "}\n"
+                                          "\n"
+                                          "QPushButton:hover {\n"
+                                          "    background-color: rgb(70,70,70);\n"
+                                          "}")
         self.Btn_ToggleMenu.setText("")
         self.Btn_ToggleMenu.setIconSize(QtCore.QSize(16, 16))
         self.Btn_ToggleMenu.setDefault(False)
@@ -93,7 +95,7 @@ class Ui_MainWindow(object):
         self.LeftBar.setMinimumSize(QtCore.QSize(60, 0))
         self.LeftBar.setMaximumSize(QtCore.QSize(60, 16777215))
         self.LeftBar.setStyleSheet("\n"
-"background-color: rgb(28, 29, 32);")
+                                   "background-color: rgb(28, 29, 32);")
         self.LeftBar.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.LeftBar.setFrameShadow(QtWidgets.QFrame.Raised)
         self.LeftBar.setLineWidth(0)
@@ -116,47 +118,48 @@ class Ui_MainWindow(object):
         self.Btn_pathCreator = QtWidgets.QPushButton(self.Btn_LeftFrame)
         self.Btn_pathCreator.setMinimumSize(QtCore.QSize(0, 40))
         self.Btn_pathCreator.setStyleSheet("QPushButton {\n"
-                                        "    color: white;\n"
-                                        "    image: url(:/img/img/rayo.png);\n"
-                                        "    border: 0px solid;\n"
-                                        "    \n"
-                                        "}\n"
-                                        "\n"
-                                        "QPushButton:hover {\n"
-                                        "    background-color: rgb(70, 70, 70);\n"
-                                        "}\n"
-"")
+                                           "    color: white;\n"
+                                           "    image: url(:/img/img/rayo.png);\n"
+                                           "    border: 0px solid;\n"
+                                           "    \n"
+                                           "}\n"
+                                           "\n"
+                                           "QPushButton:hover {\n"
+                                           "    background-color: rgb(70, 70, 70);\n"
+                                           "}\n"
+                                           "")
         self.Btn_pathCreator.setText("")
         self.Btn_pathCreator.setObjectName("Btn_pathCreator")
         self.verticalLayout_4.addWidget(self.Btn_pathCreator)
         self.Btn_graphs = QtWidgets.QPushButton(self.Btn_LeftFrame)
         self.Btn_graphs.setMinimumSize(QtCore.QSize(0, 40))
         self.Btn_graphs.setStyleSheet("QPushButton {\n"
-                                    "    image: url(:/img/img/grafico-circular.png);\n"
-                                    "    border: 0px solid;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton:hover {\n"
-                                    "    background-color: rgb(70, 70, 70);\n"
-                                    "}\n"
-                                    "")
+                                      "    image: url(:/img/img/grafico-circular.png);\n"
+                                      "    border: 0px solid;\n"
+                                      "}\n"
+                                      "\n"
+                                      "QPushButton:hover {\n"
+                                      "    background-color: rgb(70, 70, 70);\n"
+                                      "}\n"
+                                      "")
         self.Btn_graphs.setText("")
         self.Btn_graphs.setObjectName("Btn_graphs")
         self.verticalLayout_4.addWidget(self.Btn_graphs)
         self.Btn_timer = QtWidgets.QPushButton(self.Btn_LeftFrame)
         self.Btn_timer.setMinimumSize(QtCore.QSize(0, 40))
         self.Btn_timer.setStyleSheet("QPushButton {\n"
-                                    "    image: url(:/img/img/reloj-de-pared.png);\n"
-                                    "    border: 0px solid;\n"
-                                    "}\n"
-                                    "\n"
-                                    "QPushButton:hover {\n"
-                                    "    background-color: rgb(70, 70, 70);\n"
-                                    "}")
+                                     "    image: url(:/img/img/reloj-de-pared.png);\n"
+                                     "    border: 0px solid;\n"
+                                     "}\n"
+                                     "\n"
+                                     "QPushButton:hover {\n"
+                                     "    background-color: rgb(70, 70, 70);\n"
+                                     "}")
         self.Btn_timer.setText("")
         self.Btn_timer.setObjectName("Btn_timer")
         self.verticalLayout_4.addWidget(self.Btn_timer)
-        self.verticalLayout_3.addWidget(self.Btn_LeftFrame, 0, QtCore.Qt.AlignTop)
+        self.verticalLayout_3.addWidget(
+            self.Btn_LeftFrame, 0, QtCore.Qt.AlignTop)
         self.Btn_settings = QtWidgets.QPushButton(self.LeftBar)
         self.Btn_settings.setMinimumSize(QtCore.QSize(0, 40))
         self.Btn_settings.setStyleSheet("QPushButton {\n"
@@ -204,25 +207,29 @@ class Ui_MainWindow(object):
         self.Btn_square = QtWidgets.QPushButton(self.configBar)
         self.Btn_square.setMinimumSize(QtCore.QSize(40, 40))
         self.Btn_square.setMaximumSize(QtCore.QSize(40, 16777215))
-        self.Btn_square.setStyleSheet("image: url(:/img/img/dotted-square.png);")
+        self.Btn_square.setStyleSheet(
+            "image: url(:/img/img/dotted-square.png);")
         self.Btn_square.setText("")
         self.Btn_square.setObjectName("Btn_square")
         self.horizontalLayout_7.addWidget(self.Btn_square)
         self.Btn_straightLine = QtWidgets.QPushButton(self.configBar)
         self.Btn_straightLine.setMinimumSize(QtCore.QSize(40, 40))
         self.Btn_straightLine.setMaximumSize(QtCore.QSize(40, 16777215))
-        self.Btn_straightLine.setStyleSheet("image: url(:/img/img/pencil.png);")
+        self.Btn_straightLine.setStyleSheet(
+            "image: url(:/img/img/pencil.png);")
         self.Btn_straightLine.setText("")
         self.Btn_straightLine.setObjectName("Btn_straightLine")
         self.horizontalLayout_7.addWidget(self.Btn_straightLine)
         self.Btn_colorPick = QtWidgets.QPushButton(self.configBar)
         self.Btn_colorPick.setMinimumSize(QtCore.QSize(40, 40))
         self.Btn_colorPick.setMaximumSize(QtCore.QSize(40, 16777215))
-        self.Btn_colorPick.setStyleSheet("image: url(:/img/img/drop-silhouette.png);")
+        self.Btn_colorPick.setStyleSheet(
+            "image: url(:/img/img/drop-silhouette.png);")
         self.Btn_colorPick.setText("")
         self.Btn_colorPick.setObjectName("Btn_colorPick")
         self.horizontalLayout_7.addWidget(self.Btn_colorPick)
-        self.verticalLayout_5.addWidget(self.configBar, 0, QtCore.Qt.AlignHCenter)
+        self.verticalLayout_5.addWidget(
+            self.configBar, 0, QtCore.Qt.AlignHCenter)
         self.mats = QtWidgets.QStackedWidget(self.Frame_matDesigner)
         self.mats.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.mats.setStyleSheet("border-top: 2px solid rgb(70,70,70);")
@@ -230,8 +237,8 @@ class Ui_MainWindow(object):
         self.Frame_mat_replay = QtWidgets.QWidget()
         self.Frame_mat_replay.setAutoFillBackground(False)
         self.Frame_mat_replay.setStyleSheet("border-image: url(:/img/img/pista_replay_img.jpg);\n"
-"\n"
-"")
+                                            "\n"
+                                            "")
         self.Frame_mat_replay.setObjectName("Frame_mat_replay")
         self.mats.addWidget(self.Frame_mat_replay)
         self.verticalLayout_5.addWidget(self.mats)
@@ -242,7 +249,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.Frame_settings = QtWidgets.QFrame(self.Frame_graphMaker)
         self.Frame_settings.setStyleSheet("\n"
-"")
+                                          "")
         self.Frame_settings.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.Frame_settings.setFrameShadow(QtWidgets.QFrame.Raised)
         self.Frame_settings.setObjectName("Frame_settings")
@@ -283,16 +290,19 @@ class Ui_MainWindow(object):
         self.TimerBtns_Frame.setObjectName("TimerBtns_Frame")
         self.horizontalLayout_10 = QtWidgets.QHBoxLayout(self.TimerBtns_Frame)
         self.horizontalLayout_10.setObjectName("horizontalLayout_10")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_10.addItem(spacerItem)
         self.Btn_startTimer = QtWidgets.QPushButton(self.TimerBtns_Frame)
         self.Btn_startTimer.setMinimumSize(QtCore.QSize(150, 40))
         self.Btn_startTimer.setMaximumSize(QtCore.QSize(200, 16777215))
-        self.Btn_startTimer.setStyleSheet("image: url(:/img/img/flecha-correcta.png);")
+        self.Btn_startTimer.setStyleSheet(
+            "image: url(:/img/img/flecha-correcta.png);")
         self.Btn_startTimer.setText("")
         self.Btn_startTimer.setObjectName("Btn_startTimer")
         self.horizontalLayout_10.addWidget(self.Btn_startTimer)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_10.addItem(spacerItem1)
         self.Btn_stopTimer = QtWidgets.QPushButton(self.TimerBtns_Frame)
         self.Btn_stopTimer.setMinimumSize(QtCore.QSize(150, 40))
@@ -301,7 +311,8 @@ class Ui_MainWindow(object):
         self.Btn_stopTimer.setText("")
         self.Btn_stopTimer.setObjectName("Btn_stopTimer")
         self.horizontalLayout_10.addWidget(self.Btn_stopTimer)
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_10.addItem(spacerItem2)
         self.verticalLayout_6.addWidget(self.TimerBtns_Frame)
         self.horizontalLayout_9.addWidget(self.frame_2)
@@ -346,7 +357,6 @@ class Ui_MainWindow(object):
         self.mats.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
         # SETS UP THE DRAWING EFFECT WHEN CLICKING ON THE MATS
         self.Frame_mat_replay.mousePressEvent = self.mousePressEvent
         self.Frame_mat_replay.paintEvent = self.paintEvent
@@ -361,23 +371,24 @@ class Ui_MainWindow(object):
 
         # CREATING BUTTONS FUNCTIONALIY
 
-        #LEFT BAR BUTTONS 
-        self.Btn_ToggleMenu.clicked.connect(self.toggleMenu)
-        self.Btn_timer.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.Frame_timer))
-        self.Btn_graphs.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.Frame_graphMaker))
-        self.Btn_pathCreator.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.Frame_matDesigner))
+        # LEFT BAR BUTTONS
+        self.Btn_timer.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.Frame_timer))
+        self.Btn_graphs.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.Frame_graphMaker))
+        self.Btn_pathCreator.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.Frame_matDesigner))
 
-        # FRAME MAT DESIGNER 
+        # FRAME MAT DESIGNER
         self.Btn_square.clicked.connect(self.activateRectDrawing)
         self.Btn_square.setShortcut("Alt+1")
         self.Btn_straightLine.clicked.connect(self.activateLineDrawing)
         self.Btn_straightLine.setShortcut("Alt+2")
         self.Btn_colorPick.clicked.connect(self.colorPicker)
 
-
-        # FRAME TIMER 
+        # FRAME TIMER
         self.timer = QtCore.QTimer()
-        self.curr_time = QtCore.QTime(00,00,00)
+        self.curr_time = QtCore.QTime(00, 00, 00)
         self.timer.timeout.connect(self.showTimer)
         self.timer.start(10)
         self.TimerNumber.display("00:00")
@@ -385,17 +396,13 @@ class Ui_MainWindow(object):
         self.Btn_startTimer.clicked.connect(self.playTimer)
         self.Btn_stopTimer.clicked.connect(self.stopTimer)
 
-
         self.pressedBtn = "PAUSE"
-
-
-
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Mbarete"))
-        self.TimerNumber.setToolTip(_translate("MainWindow", "<html><head/><body><p>zxZ</p></body></html>"))
+        self.TimerNumber.setToolTip(_translate(
+            "MainWindow", "<html><head/><body><p>zxZ</p></body></html>"))
         self.menuArchivo.setTitle(_translate("MainWindow", "Archivo"))
         self.menuEditar.setTitle(_translate("MainWindow", "Editar"))
         self.actionGuardar.setText(_translate("MainWindow", "Guardar"))
@@ -405,8 +412,11 @@ class Ui_MainWindow(object):
         self.actionSalir.setText(_translate("MainWindow", "Salir"))
         self.actionDeshacer.setText(_translate("MainWindow", "Deshacer"))
         self.actionDeshacer.setShortcut(_translate("MainWindow", "Ctrl+Z"))
-        self.actionGenerar_Codigo.setText(_translate("MainWindow", "Generar Codigo"))
-        self.actionGenerar_Codigo.setShortcut(_translate("MainWindow", "Ctrl+Shift+D"))
-        self.actionTomar_Captura.setText(_translate("MainWindow", "Tomar Captura"))
-        self.actionTomar_Captura.setShortcut(_translate("MainWindow", "Ctrl+Shift+C"))
-
+        self.actionGenerar_Codigo.setText(
+            _translate("MainWindow", "Generar Codigo"))
+        self.actionGenerar_Codigo.setShortcut(
+            _translate("MainWindow", "Ctrl+Shift+D"))
+        self.actionTomar_Captura.setText(
+            _translate("MainWindow", "Tomar Captura"))
+        self.actionTomar_Captura.setShortcut(
+            _translate("MainWindow", "Ctrl+Shift+C"))

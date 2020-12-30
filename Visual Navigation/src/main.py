@@ -19,28 +19,7 @@ class APP(menuBar, matDesignerWidget, timerWidget, Ui_MainWindow):
 		self.lastPressedBtn = ""
 
 		self.rects = []
-
-
-	# TOOGLE MENU EFFECT 
-	def toggleMenu(self):
-
-	    width = self.LeftBar.width()
-	    maxExtend = 180
-	    standard = 60
-
-	    if width == 60:
-	        widthExtended = maxExtend
-	    else:
-	        widthExtended = standard
-
-	    # ANIMATION
-	    self.animation = QtCore.QPropertyAnimation(self.LeftBar, b"minimumWidth")
-	    self.animation.setDuration(400)
-	    self.animation.setStartValue(width)
-	    self.animation.setEndValue(widthExtended)
-	    self.animation.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
-	    self.animation.start()
-
+		self.graphicsElements = []
 
 
 
