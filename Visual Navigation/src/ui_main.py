@@ -368,6 +368,7 @@ class Ui_MainWindow(object):
         self.actionDeshacer.triggered.connect(self.goBack)
         self.actionAbrir.triggered.connect(self.openExistingPath)
         self.actionTomar_Captura.triggered.connect(self.saveCapture)
+        self.actionGenerar_Codigo.triggered.connect(self.generateCode)
 
         # CREATING BUTTONS FUNCTIONALIY
 
