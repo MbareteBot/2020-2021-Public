@@ -56,24 +56,28 @@ export default function Mission(props) {
   const [pickerValue, setPickerValue] = useState();
   const [pointsAddedByPicker, setPointsAddedByPicker] = useState(0);
   const [pickerLastValue, setPickerLastValue] = useState("NaN");
+  if (!props.enable && isMissionEnabled) {
+    toggleMissionSwitch();
+    handleCounter(false, props.counterHandler, props.points);
+  }
   return (
     <View style={styles.container}>
       <View style={styles.options}>
         <View style={styles.missionInfo}>
           { props.imgSource != undefined ? (
             <View style={styles.missionImg}>
-                <Image
-                  source={props.imgSource}
-                  style={{width: 60, height: 60, borderRadius: 2, backgroundColor: "white"}}
-                />
-              </View>
+              <Image
+                source={props.imgSource}
+                style={{width: 60, height: 60, borderRadius: 2, backgroundColor: "white"}}
+              />
+            </View>
             ) : null }
             <CText style={{fontSize: 17}}>{props.name}</CText>
         </View>
         <Switch
           trackColor={{ false: "gray", true: "lightblue" }}
           thumbColor={"white"}
-          style={{flex: 1}}
+          style={{flex: 2}}
           ios_backgroundColor={"#3E3E3E"}
           value={isMissionEnabled}
           onValueChange={(switchState) => {
@@ -82,7 +86,7 @@ export default function Mission(props) {
           }} />
       </View>
 
-      { isMissionEnabled ? (
+      { isMissionEnabled ?  (
         <View style={styles.missionDescription}>
           <CText>{props.description}</CText>
         </View> ) : null }

@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 import Scorer from "./screens/Scorer";
-import Timer from "./screens/Timer";
+import StopWatch from "./screens/StopWatch";
 
 const Stack = createStackNavigator();
 
@@ -17,7 +17,7 @@ export default function App() {
           component={Scorer} />
         <Stack.Screen 
           name="Timer" 
-          component={Timer} />
+          component={StopWatch} />
       </Stack.Navigator>
     </NavigationContainer>
   )

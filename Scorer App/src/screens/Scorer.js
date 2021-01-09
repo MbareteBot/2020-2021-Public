@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, Button } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View, ScrollView, Button, StatusBar } from 'react-native';
 import CText from '../components/CustomText';
 import Mission from '../components/Mission';
 import NavBar from '../components/NavBar';
 import Header from '../components/Header';
+import { set } from 'react-native-reanimated';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const constants = require("../constants.json")
 
 export default function Scorer({ navigation }) {
   const [currentScore, setCurrentScore] = useState(0);
-  const [enagleAllMissions, setEnableAllMissions] = useState(false);
+  const [enagleAllMissions, setEnableAllMissions] = useState(true);
+  const setTrue = () => setEnableAllMissions(true);
   const mainRoot = "../assets/missions/";
   return (
     <View style={styles.container}>
@@ -236,19 +238,21 @@ export default function Scorer({ navigation }) {
                           [constants.black, constants.black,constants.black,constants.black,constants.black]]} />
 
         <View style={styles.footer}>
-          <Button 
-              title="Reset" 
-              onPress={() => {setEnableAllMissions(prevState => !prevState)
-              console.log("off")}} />
+          <TouchableOpacity
+            onPressIn={() => setEnableAllMissions(false)}
+            onPressOut={() => setEnableAllMissions(true)} >
+            <View style={styles.button}>
+              <CText>Reset</CText>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
 
       <View>
-
-      <NavBar 
-        icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
-        active={[0, constants.darkYellow]}
-        pageNavigationHandler={navigation.navigate} />
+        <NavBar 
+          icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
+          active={[0, constants.darkYellow]}
+          pageNavigationHandler={navigation.navigate} />
       </View>
       
     </View>
@@ -273,6 +277,10 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontFamily: "normal",
+  },
+  button: {
+    backgroundColor: "gray",
+    padding: 10
   },
   footer: {
     flexDirection: "row",

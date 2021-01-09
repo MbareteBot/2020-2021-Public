@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { elastic } from "react-native/Libraries/Animated/src/Easing";
 import CText from "../components/CustomText";
 import Header from "../components/Header";
 import NavBar from "../components/NavBar";
 
 const constants = require("../constants.json")
 
-export default function Timer({ navigation }) {
+export default function StopWatch({ navigation }) {
   const [playButton, setPlayButton] = useState("ios-play-outline");
   const [time, setTime] = useState(["00","00","00"]);
   const [timeInterval, setTimeInterval] = useState(0);
@@ -54,7 +53,7 @@ export default function Timer({ navigation }) {
   return (
     <View style={styles.container}>
       <Header>
-        <CText style={{fontSize: 23}}>Timer</CText>
+        <CText style={{fontSize: 23}}>StopWatch</CText>
       </Header>
       <View style={styles.stopwatchContainer}>
         <View style={styles.stopwatchElementsContainer}>
