@@ -63,8 +63,8 @@ export default function Mission(props) {
           { props.imgSource != undefined ? (
             <View style={styles.missionImg}>
                 <Image
-                source={props.imgSource}
-                style={{width: 40, height: 40}}
+                  source={props.imgSource}
+                  style={{width: 60, height: 60, borderRadius: 2, backgroundColor: "white"}}
                 />
               </View>
             ) : null }

@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { elastic } from "react-native/Libraries/Animated/src/Easing";
 import CText from "../components/CustomText";
+import Header from "../components/Header";
 import NavBar from "../components/NavBar";
 
 const constants = require("../constants.json")
@@ -14,7 +15,6 @@ export default function Timer({ navigation }) {
   const [elapsedTime, setElapsedTime] = useState(0);
 
   const timeToString = elapsedTime => {
-    
     let initialHours = elapsedTime / 3600000;
     let hours = Math.floor(initialHours);
     let min = Math.floor((initialHours - hours) * 60);
@@ -51,10 +51,11 @@ export default function Timer({ navigation }) {
     setTime(["00","00","00"])
   }
 
-
   return (
     <View style={styles.container}>
-      
+      <Header>
+        <CText style={{fontSize: 23}}>Timer</CText>
+      </Header>
       <View style={styles.stopwatchContainer}>
         <View style={styles.stopwatchElementsContainer}>
           <View style={styles.stopwatchElementContainer}>

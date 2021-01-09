@@ -1,5 +1,9 @@
 { 
   "primaryColor": "#fff",
   "primaryBgColor": "#3B4457",
-  "secondaryColor": "#424C61"
+  "secondaryColor": "#424C61",
+  "magenta": "magenta",
+  "yellow": "rgb(234,234,0)",
+  "black": "black",
+  "darkYellow": "#EAAB3E"
 }
