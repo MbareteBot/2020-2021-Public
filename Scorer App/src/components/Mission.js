@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Switch, Image } from "react-native";
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
 import CText from "./CustomText"
 
+const constants = require("../constants.json")
 
 export default function Mission(props) {
 
@@ -13,51 +14,54 @@ export default function Mission(props) {
   const [pointsAddedByOptions, setPointsAddedByOptions] = useState(0);
   const [isMissionEnabled, setIsMissionEnabled] = useState(false);
   const [isEnabled, setIsEnabled] = useState([]);
-  const [pickerValue, setPickerValue] = useState();
-  const toggleMissionSwitch = () => setIsMissionEnabled(prevState => {
-    if (props.state != undefined) props.state(!prevState)
-    if (prevState) {
-      setPointsAddedByOptions(0)
-      setIsEnabled([])
-    }
-    return !prevState
-  });
-  
+
   const handleCounter = (state, counterHandler, points) => {
-    if (state) counterHandler(prevPoints => prevPoints + points)
+    if (state) counterHandler(prevPoints => (prevPoints + points + pointsAddedByPicker));
     else { 
-      counterHandler(prevPoints => ((prevPoints - points) - pointsAddedByOptions))
+      counterHandler(prevPoints => ((prevPoints - points) - pointsAddedByOptions - pointsAddedByPicker));
     }
   }
+  const toggleMissionSwitch = () => setIsMissionEnabled(prevState => {
+    if (props.state != undefined) props.state(!prevState);
+    if (prevState) {
+      setPointsAddedByOptions(0);
+      setPointsAddedByPicker(0);
+      setIsEnabled([]);
+      if (props.pickerOptions) {
+        setPickerValue(props.pickerOptions[1][0]);
+        setPickerLastValue(0);
+      }
+    } 
+    return !prevState
+  });
   const toggleSwitch = (index) => setIsEnabled(prevStates => {
     if (prevStates.length == 0) for (let i = 0; i < props.options[0].length; i++) prevStates.push(false)
     var updatedStates = prevStates;
     var state = 0;
     for (state in updatedStates) {
-      if (state == index) updatedStates[index] = !updatedStates[index]
+      if (state == index) updatedStates[index] = !updatedStates[index];
     }
-    return updatedStates
+    return updatedStates;
   });
   const handleCounterOptions = (state, counterHandler, points) => {
     if (state) {
       counterHandler(prevPoints => prevPoints + points);
-      setPointsAddedByOptions(prevState => prevState + points)
+      setPointsAddedByOptions(prevState => prevState + points);
     }
     else {
-      counterHandler(prevPoints => prevPoints - points)    
-      setPointsAddedByOptions(prevState => prevState - points)
+      counterHandler(prevPoints => prevPoints - points);
+      setPointsAddedByOptions(prevState => prevState - points);
     }
   }
-
-  const [pointsAddedByPicker, setPointsAddedByPicker] = useState(0)
-  const [pickerLastValue, setPickerLastValue] = useState("NaN")
-
+  const [pickerValue, setPickerValue] = useState();
+  const [pointsAddedByPicker, setPointsAddedByPicker] = useState(0);
+  const [pickerLastValue, setPickerLastValue] = useState("NaN");
   return (
     <View style={styles.container}>
       <View style={styles.options}>
         <View style={styles.missionInfo}>
           { props.imgSource != undefined ? (
-              <View style={styles.missionImg}>
+            <View style={styles.missionImg}>
                 <Image
                 source={props.imgSource}
                 style={{width: 40, height: 40}}
@@ -70,7 +74,7 @@ export default function Mission(props) {
           trackColor={{ false: "gray", true: "lightblue" }}
           thumbColor={"white"}
           style={{flex: 1}}
-          ios_backgroundColor={"#3e3e3e"}
+          ios_backgroundColor={"#3E3E3E"}
           value={isMissionEnabled}
           onValueChange={(switchState) => {
             toggleMissionSwitch();
@@ -78,37 +82,36 @@ export default function Mission(props) {
           }} />
       </View>
 
-      
       { isMissionEnabled ? (
         <View style={styles.missionDescription}>
           <CText>{props.description}</CText>
         </View> ) : null }
 
+      { props.pickerOptions && isMissionEnabled ? (
+          <View style={styles.picker}>
+            <Picker
+              selectedValue={pickerValue}
+              onValueChange={(value) => {
+                setPointsAddedByPicker(value)
+                console.log("value changed " + value)
+                if (pickerLastValue != "NaN") {
+                  handleCounter(false, props.counterHandler, pickerLastValue)
+                }
+                handleCounter(true, props.counterHandler, value)
+                setPickerValue(value)
+                setPickerLastValue(value)
+                }} >
+              {props.pickerOptions[0].map((val, index) => 
+                <Picker.Item 
+                  label={val} 
+                  value={props.pickerOptions[1][index]} 
+                  color={props.pickerOptions[2][index]}
+                  key={Math.random()} />
+              )}
+            </Picker>
+          </View>
+      ): null }  
 
-        { props.pickerOptions && isMissionEnabled ? (
-            <View style={styles.picker} key={Math.random()}>
-              <Picker
-                selectedValue={pickerValue}
-                onValueChange={(value) => {
-                  setPointsAddedByPicker(value)
-                  if (pickerLastValue != "NaN") {
-                    handleCounter(false, props.counterHandler, pickerLastValue)
-                  }
-                  handleCounter(true, props.counterHandler, value)
-                  setPickerLastValue(value)
-                  setPickerValue(value)
-                  }} >
-                {props.pickerOptions[0].map((val, index) => 
-                  <Picker.Item 
-                    label={val} 
-                    value={props.pickerOptions[1][index]} 
-                    color={props.pickerOptions[2][index]} />
-                )}
-              </Picker>
-            </View>
-        ): null }  
-
-        
       { props.options && isMissionEnabled ? (
         props.options[0].map((value, index) => 
           <View style={styles.options} key={index.toString()}>
@@ -147,7 +150,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     margin: 10,
     marginVertical: 4,
-    backgroundColor: "#424C61",
+    backgroundColor: constants.secondaryColor,
   },
   missionInfo: {
     flexDirection: "row",
@@ -163,7 +166,7 @@ const styles = StyleSheet.create({
   },
   missionDescription: {
     alignItems: "center",
-    marginTop: 10
+    marginTop: 10,
   },
   options: {
     marginTop: 10,
