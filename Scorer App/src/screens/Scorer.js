@@ -4,7 +4,6 @@ import CText from '../components/CustomText';
 import Mission from '../components/Mission';
 import NavBar from '../components/NavBar';
 import Header from '../components/Header';
-import { set } from 'react-native-reanimated';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const constants = require("../constants.json")
@@ -28,14 +27,14 @@ export default function Scorer({ navigation }) {
       <ScrollView>
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m0.png")}
+          imgSource={require(mainRoot + "m0-min.png")}
           name="M00 | Equipment Inspection Bonus" 
           description="If all your equipment fits in the small inspection space"
           counterHandler={setCurrentScore}
           points={25} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m1.png")}
+          imgSource={require(mainRoot + "m1-min.png")}
           name="M01 | Innovation Project" 
           description="The robot moves
           your Innovation
@@ -47,7 +46,7 @@ export default function Scorer({ navigation }) {
           points={20} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m2.png")}
+          imgSource={require(mainRoot + "m2-min.png")}
           name="M02 | Step Counter" 
           description="The robot slides the
           step counter slow
@@ -61,7 +60,7 @@ export default function Scorer({ navigation }) {
                           [constants.magenta, constants.yellow, constants.black]]} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m3.png")}
+          imgSource={require(mainRoot + "m3-min.png")}
           name="M03 | Slide" 
           description="The robot slides the
           people (called “slide
@@ -77,7 +76,7 @@ export default function Scorer({ navigation }) {
                   [10,20]]} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m4.png")}
+          imgSource={require(mainRoot + "m4-min.png")}
           name="M04 | Bench" 
           description="The robot removes
           the backrest,
@@ -94,7 +93,7 @@ export default function Scorer({ navigation }) {
                   [15]]} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m5.png")}
+          imgSource={require(mainRoot + "m5-min.png")}
           name="M05 | Basketball" 
           description="The robot raises the
           crate up the post
@@ -107,7 +106,7 @@ export default function Scorer({ navigation }) {
                           [constants.black, constants.black]]} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m6.png")}
+          imgSource={require(mainRoot + "m6-min.png")}
           name="M06 | Pull-Up Bar" 
           description="The robot passes completely under the bar any time. Separately, it is held off the mat by the bar at the end of the match."
           counterHandler={setCurrentScore}
@@ -116,7 +115,7 @@ export default function Scorer({ navigation }) {
                     [15,15]]} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m7.png")}
+          imgSource={require(mainRoot + "m7-min.png")}
           name="M07 | Robot Dance" 
           description="The robot is dancing
           on the dance floor
@@ -126,7 +125,7 @@ export default function Scorer({ navigation }) {
           points={20} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m8.png")}
+          imgSource={require(mainRoot + "m8-min.png")}
           name="M08 | Boccia" 
           description="If both share models have sent only one cube
           anywhere onto the opposing field and those cubes
@@ -140,7 +139,7 @@ export default function Scorer({ navigation }) {
                     [5,10]]} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m9.png")}
+          imgSource={require(mainRoot + "m9-min.png")}
           name="M09 | Tire Flip" 
           description="The robot flips
           tires so their white
@@ -158,7 +157,7 @@ export default function Scorer({ navigation }) {
                     [10,15]]} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m10.png")}
+          imgSource={require(mainRoot + "m10-min.png")}
           name="M10 | Cell Phone" 
           description="The robot flips the
           cell phone white
@@ -167,7 +166,7 @@ export default function Scorer({ navigation }) {
           points={15} />
         <Mission
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m11.png")}
+          imgSource={require(mainRoot + "m11-min.png")}
           name="M11 | Treadmill" 
           description="The robot spins
           the rollers to move
@@ -182,7 +181,7 @@ export default function Scorer({ navigation }) {
       
         <Mission 
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m12.png")}
+          imgSource={require(mainRoot + "m12-min.png")}
           name="M12 | Row Machine" 
           description="The robot moves
           the free wheel out of
@@ -195,7 +194,7 @@ export default function Scorer({ navigation }) {
                     [15,15]]} />
         <Mission 
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m13.png")}
+          imgSource={require(mainRoot + "m13-min.png")}
           name="M13 | Weight Machine" 
           description="During the match,
           the robot moves the
@@ -209,7 +208,7 @@ export default function Scorer({ navigation }) {
                           ["blue", constants.magenta, "rgb(2304,234,0)"]]} />
         <Mission 
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m14.png")}
+          imgSource={require(mainRoot + "m14-min.png")}
           name="M14 | Health Units" 
           description="The robot collects
           health units from
@@ -223,7 +222,7 @@ export default function Scorer({ navigation }) {
                           [constants.black, constants.black,constants.black, constants.black,constants.black, constants.black]]} />
         <Mission 
           enable={enagleAllMissions} 
-          imgSource={require(mainRoot + "m15.png")}
+          imgSource={require(mainRoot + "m15-min.png")}
           name="M15 | Precision" 
           description="The less often you
           interrupt the robot
