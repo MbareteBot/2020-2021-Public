@@ -177,8 +177,7 @@ export default function Scorer({ navigation }) {
           points={5}
           pickerOptions={[["Gray", "Red", "Orange", "rgb(2304,234,0)", "Light green", "Dark green"],
                           [0,5,10,15,20,25],
-                          ["gray", "red", "orange", "rgb(2304,234,0)", "lightgreen", "darkgreen"]]} />
-      
+                          ["gray", "red", "orange", "rgb(2304,234,0)", "lightgreen", "darkgreen"]]} />    
         <Mission 
           enable={enagleAllMissions} 
           imgSource={require(mainRoot + "m12-min.png")}
@@ -235,7 +234,6 @@ export default function Scorer({ navigation }) {
           pickerOptions={[["1","2","3","4","5","6"],
                           [0,5,15,25,40,55],
                           [constants.black, constants.black,constants.black,constants.black,constants.black]]} />
-
         <View style={styles.footer}>
           <TouchableOpacity
             onPressIn={() => setEnableAllMissions(false)}
@@ -246,24 +244,16 @@ export default function Scorer({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-
       <View>
         <NavBar 
-          icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
+          icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "StopWatch"]]}
           active={[0, constants.darkYellow]}
           pageNavigationHandler={navigation.navigate} />
       </View>
-      
     </View>
-
   );
 }
 
-/*
-      <View style={styles.totalScore}>
-        <CText>Total: {currentScore}</CText>
-
-      </View> */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

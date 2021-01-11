@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, View, StatusBar } from "react-native";
-import CText from "./CustomText"
 
 const constants = require("../constants.json")
 

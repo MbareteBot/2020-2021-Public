@@ -13,17 +13,15 @@ export default function StopWatch({ navigation }) {
   const [timeInterval, setTimeInterval] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
 
-  const timeToString = elapsedTime => {
-    let initialHours = elapsedTime / 3600000;
-    let hours = Math.floor(initialHours);
-    let min = Math.floor((initialHours - hours) * 60);
-    let sec = Math.floor((((initialHours - hours) * 60) - min) * 60);
-    let msec = Math.floor((((((initialHours - hours) * 60) - min) * 60) - sec) * 60)
+  const msecToString = initialMsec => {
+    let msec = Math.floor((initialMsec % 1000) / 10)
+    let sec = Math.floor((initialMsec / 1000) % 60)
+    let min = Math.floor((initialMsec / (1000 * 60)) % 60)
 
     let formattedMin = min.toString().padStart(2, "0");
     let formattedSec = sec.toString().padStart(2, "0");
     let formattedMsec = msec.toString().padStart(2, "0");
-    return [formattedMin,formattedSec,formattedMsec];
+    return [formattedMin.toString(),formattedSec.toString(),formattedMsec.toString()];
   }
 
   const handleControl = () => {
@@ -33,10 +31,10 @@ export default function StopWatch({ navigation }) {
       setTimeInterval(setInterval(() => {
         setElapsedTime(Date.now() - startTime_);
         setElapsedTime(prevState => {
-          setTime(timeToString(prevState));
+          setTime(msecToString(prevState));
           return prevState;
         })
-      }, 1))
+      }, 50))
     } else {
       setPlayButton("ios-play-outline");
       clearInterval(timeInterval);
@@ -52,30 +50,44 @@ export default function StopWatch({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Header>
-        <CText style={{fontSize: 23}}>StopWatch</CText>
-      </Header>
+      <NavBar 
+        title={[["StopWatch", "Timer"],["StopWatch", "Timer"]]}
+        active={[0, constants.darkYellow]}
+        pageNavigationHandler={navigation.navigate} />
       <View style={styles.stopwatchContainer}>
         <View style={styles.stopwatchElementsContainer}>
+            <View style={styles.stopWatchRow}>
+            <CText style={styles.stopWatchLabel}>MM</CText>
           <View style={styles.stopwatchElementContainer}>
             <CText style={styles.stopwatchElement}>{time[0]}</CText>
+            </View>
           </View>
           <CText style={styles.stopwatchElementDividor}>:</CText>
+            <View style={styles.stopWatchRow}>
+            <CText style={styles.stopWatchLabel}>SS</CText>
           <View style={styles.stopwatchElementContainer}>
             <CText style={styles.stopwatchElement}>{time[1]}</CText>
+            </View>
           </View>
           <CText style={styles.stopwatchElementDividor}>:</CText>
+            <View style={styles.stopWatchRow}>
+            <CText style={styles.stopWatchLabel}>MS</CText>
           <View style={styles.stopwatchElementContainer}>
             <CText style={styles.stopwatchElement}>{time[2]}</CText>
+            </View>
           </View>
         </View>
         <View style={styles.stopwatchControls}>
-            <Icon 
-              name={playButton} 
-              size={50} 
-              color={constants.primaryBgColor} 
-              onPress={() => handleControl()} />
-          <Icon name="ios-stop" size={50} color={constants.primaryBgColor} onPress={() => handleStop()} />
+          <Icon 
+            name={playButton} 
+            size={50} 
+            color={constants.primaryBgColor} 
+            onPress={() => handleControl()} />
+          <Icon 
+            name="ios-stop" 
+            size={50} 
+            color={constants.primaryBgColor} 
+            onPress={() => handleStop()} />
         </View>
       </View>
       <NavBar 
@@ -113,11 +125,18 @@ const styles = StyleSheet.create({
   stopwatchElementDividor: {
     color: constants.primaryBgColor,
     fontSize: 40,
+    marginTop: 15
   },
   stopwatchControls: {
     flexDirection: "row",
     marginTop: 30,
     justifyContent: "space-evenly",
     width: "50%"
+  },
+  stopWatchLabel: {
+    color: constants.secondaryColor
+  },
+  stopWatchRow: {
+    alignItems: "center",
   }
 })
