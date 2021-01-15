@@ -150,8 +150,8 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 8,
     paddingHorizontal: 25,
-    paddingTop: 10,
-    paddingBottom: 20,
+    paddingTop: "2%",
+    paddingBottom: "4%",
     margin: 10,
     marginVertical: 4,
     backgroundColor: constants.secondaryColor,

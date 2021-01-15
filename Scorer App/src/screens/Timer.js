@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, View, TextInput } from "react-native";
+import { StyleSheet, View, TextInput, Keyboard } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import CText from "../components/CustomText";
 import NavBar from "../components/NavBar"
@@ -9,12 +9,13 @@ const constants = require("../constants.json")
 export default function Timer({ navigation }) {
   const [playButton, setPlayButton] = useState("ios-play-outline");
   const [time, setTime] = useState([0,0,0]);
-  const elapsedTime = useRef(null)
+  const elapsedTime = useRef(null);
   const timeInterval = useRef(null);
-  const formateMsec = initialMsec => {
+  const isMounted = useRef(true);
 
-    let sec = Math.floor((initialMsec / 1000) % 60)
-    let min = Math.floor((initialMsec / (1000 * 60)) % 60)
+  const formateMsec = initialMsec => {
+    let sec = Math.floor((initialMsec / 1000) % 60);
+    let min = Math.floor((initialMsec / (1000 * 60)) % 60);
     let hours = Math.floor((initialMsec / (1000 * 60 * 60)) % 24);
 
     let formattedHour = hours.toString().padStart(2, "0");
@@ -22,27 +23,35 @@ export default function Timer({ navigation }) {
     let formattedSec = sec.toString().padStart(2, "0");
     return [formattedHour.toString(),formattedMin.toString(),formattedSec.toString()];
   }
-  const handleControl = () => {
-    if (timeInterval.current == null) {
-      elapsedTime.current = ((time[0] * 3600000) + (time[1] * 60000) + (time[2] * 1000));
-      setPlayButton("ios-pause-outline");
-      if (elapsedTime.current >= 1) {
-        timeInterval.current = setInterval(() => {
-          elapsedTime.current -= 1000
-          setTime(formateMsec(elapsedTime.current))
-          if (elapsedTime.current <= 100) handleStop();
-        }, 1000)} 
-  } else {
-    clearInterval(timeInterval.current);
-    timeInterval.current = null;
-    setPlayButton("ios-play-outline"); }
-  }
+
+  
+    const handleControl = () => {
+      
+      if (timeInterval.current == null) {
+        elapsedTime.current = ((time[0] * 3600000) + (time[1] * 60000) + (time[2] * 1000));
+        if (elapsedTime.current >= 1) {
+          Keyboard.dismiss()
+          setPlayButton("ios-pause-outline");
+          timeInterval.current = setInterval(() => {
+            elapsedTime.current -= 1000
+            setTime(formateMsec(elapsedTime.current))
+            if (elapsedTime.current <= 100) handleStop();
+          }, 1000)} 
+      } else {
+        clearInterval(timeInterval.current);
+        timeInterval.current = null;
+        setPlayButton("ios-play-outline"); 
+      }
+      }
+    
+    
   const handleStop = () => {
     clearInterval(timeInterval.current);
     timeInterval.current = null
     setTime([0,0,0]);
     setPlayButton("ios-play-outline");
   }
+
   return (
     <View style={styles.container}>
        <NavBar 
@@ -103,7 +112,8 @@ export default function Timer({ navigation }) {
         <NavBar 
           icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
           active={[1, constants.darkYellow]}
-          pageNavigationHandler={navigation.navigate} />
+          pageNavigationHandler={navigation.navigate}
+          timeManagement={["Timer", elapsedTime.current]} />
     </View>
   );
 }

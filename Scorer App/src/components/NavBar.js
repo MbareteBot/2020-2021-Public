@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons"
 import CText from "./CustomText";
-
+import { useRoute } from '@react-navigation/native';
 const constants = require("../constants.json")
 
 export default function NavBar(props) {
   /*
     args: [[icons(name)], [iconPage], [activeIcon]] 
   */
+  const route = useRoute();
   const [color, setColor] = useState(constants.primaryColor)
   return (
       <View style={styles.container}>
@@ -31,7 +32,7 @@ export default function NavBar(props) {
                       name={iconName} 
                       size={30} 
                       color={color} 
-                      onPress={() => props.pageNavigationHandler(props.icons[1][index])}/>      
+                      onPress={() => props.pageNavigationHandler(props.icons[1][index], { screenName: route.name, lastScreenTimeManagement: [props.timeManagement] ? props.timeManagement : "null" })}/>      
         
           })
         }
@@ -50,7 +51,7 @@ export default function NavBar(props) {
                 }
                 return <TouchableOpacity 
                         key={index}
-                        onPress={() => props.pageNavigationHandler(props.title[1][index])}>
+                        onPress={() => props.pageNavigationHandler(props.title[1][index], {screenName: route.name})}>
                         <CText 
                           style={styles.title}>{title}</CText>
                         </TouchableOpacity>

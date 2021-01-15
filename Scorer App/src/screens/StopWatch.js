@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import CText from "../components/CustomText";
@@ -8,10 +8,12 @@ import NavBar from "../components/NavBar";
 const constants = require("../constants.json")
 
 export default function StopWatch({ navigation }) {
+
   const [playButton, setPlayButton] = useState("ios-play-outline");
   const [time, setTime] = useState(["00","00","00"]);
   const [timeInterval, setTimeInterval] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const isMounted = useRef(true);
 
   const msecToString = initialMsec => {
     let msec = Math.floor((initialMsec % 1000) / 10)
@@ -24,22 +26,30 @@ export default function StopWatch({ navigation }) {
     return [formattedMin.toString(),formattedSec.toString(),formattedMsec.toString()];
   }
 
+  // useEffect(() => {
+  //   return () => {isMounted.current = false}
+  // })
+  
   const handleControl = () => {
-    if (playButton == "ios-play-outline") { 
-      setPlayButton("ios-pause-outline");
-      var startTime_ = Date.now() - elapsedTime;
-      setTimeInterval(setInterval(() => {
-        setElapsedTime(Date.now() - startTime_);
-        setElapsedTime(prevState => {
-          setTime(msecToString(prevState));
-          return prevState;
-        })
-      }, 50))
-    } else {
-      setPlayButton("ios-play-outline");
-      clearInterval(timeInterval);
-    }
+   // if (isMounted.current) {
+      if (playButton == "ios-play-outline") { 
+        setPlayButton("ios-pause-outline");
+        var startTime_ = Date.now() - elapsedTime;
+        setTimeInterval(setInterval(() => {
+          setElapsedTime(Date.now() - startTime_);
+          setElapsedTime(prevState => {
+            setTime(msecToString(prevState));
+            return prevState;
+          })
+        }, 50))
+      } else {
+        setPlayButton("ios-play-outline");
+        clearInterval(timeInterval);
+      }
+    //}
+    //isMounted.current = true;
   }
+
 
   const handleStop = () => {
     setPlayButton("ios-play-outline");
@@ -93,7 +103,8 @@ export default function StopWatch({ navigation }) {
       <NavBar 
         icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
         active={[1, "#EAAB3E"]}
-        pageNavigationHandler={navigation.navigate} />
+        pageNavigationHandler={navigation.navigate}
+        timeManagement={["StopWatch", elapsedTime]} />
     </View>
   )
 } 

@@ -18,7 +18,7 @@ export default function App() {
           component={Scorer} />
         <Stack.Screen 
           name="StopWatch" 
-          component={StopWatch} />
+          component={StopWatch}/>
         <Stack.Screen 
           name="Timer" 
           component={Timer} />
