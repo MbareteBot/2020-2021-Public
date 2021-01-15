@@ -14,8 +14,6 @@ export default function Scorer({ navigation, route }) {
   try {
     //SETS WICH SCREEN THE "TIME" BUTTON SHOULD TAKE YOU TO
     var lastScreen = route.params.screenName;
-    //SETS THE FLOATING TIMER-STOPWATCH
-    var lastScreenTimeManagement = route.params.lastScreenTimeManagement;
   } catch(e) {
     var lastScreen = "StopWatch";
     var lastScreenTimeManagement = "None"
@@ -23,66 +21,7 @@ export default function Scorer({ navigation, route }) {
 
   const [currentScore, setCurrentScore] = useState(0);
   const [enagleAllMissions, setEnableAllMissions] = useState(true);
-  
-  /*
-    if (lastScreenTimeManagement[0] == "StopWatch") {
-      console.log("stopwatchhh")
-      const msecToString = initialMsec => {
-        let msec = Math.floor((initialMsec % 1000) / 10)
-        let sec = Math.floor((initialMsec / 1000) % 60)
-        let min = Math.floor((initialMsec / (1000 * 60)) % 60)
-    
-        let formattedMin = min.toString().padStart(2, "0");
-        let formattedSec = sec.toString().padStart(2, "0");
-        let formattedMsec = msec.toString().padStart(2, "0");
-        return [formattedMin.toString(),formattedSec.toString(),formattedMsec.toString()];
-      }
-      const [elapsedTime, setElapsedTime] = useState(0);
-      var startTime_ = Date.now() - lastScreenTimeManagement[1];
-      console.log("set start time")
-      setTimeInterval(setInterval(() => {
-        console.log("workin")
-        setElapsedTime(Date.now() - startTime_);
-        setElapsedTime(prevState => {
-          setTime(msecToString(prevState));
-          return prevState;
-        })
-      }, 50))
-      console.log("set interval")
-    }*/
 
-  const formateMsec = initialMsec => {
-    let msec = Math.floor((initialMsec % 1000) / 10)
-    let sec = Math.floor((initialMsec / 1000) % 60)
-    let min = Math.floor((initialMsec / (1000 * 60)) % 60)
-
-    let formattedMin = min.toString().padStart(2, "0");
-    let formattedSec = sec.toString().padStart(2, "0");
-    let formattedMsec = msec.toString().padStart(2, "0");
-    return [formattedMin.toString(),formattedSec.toString(),formattedMsec.toString()];
-  }
-
-
-  const [time, setTime] = useState(formateMsec(lastScreenTimeManagement[1]));
-  const timeInterval = useRef(0);
-  const elapsedTime = useRef(0);
-  elapsedTime.current = lastScreenTimeManagement[1]
-  console.log("elapsed " + elapsedTime.current)
-  if (lastScreenTimeManagement[0] == "Timer" ) {
-    
-    timeInterval.current = setInterval(() => {
-      elapsedTime.current -= 1000
-      setTime(formateMsec(elapsedTime.current))
-      console.log(formateMsec(elapsedTime.current))
-      if (elapsedTime.current <= 100) {
-        setTime([0,0,0])
-        clearInterval(timeInterval.current)
-      }
-    }, 1000)
-
-    //setTime(lastScreenTimeManagement[1])
-  }
-  
   const mainRoot = "../assets/missions/";
   return (
     <View style={styles.container}>
@@ -95,13 +34,6 @@ export default function Scorer({ navigation, route }) {
               <CText style={{fontSize: 23, color: constants.darkYellow}}>{currentScore}</CText>
             </View>
         </Header>
-          { lastScreenTimeManagement != "None" ? (
-          <View style={styles.floatingElement}>
-            <TouchableOpacity onPress={() => navigation.navigate(lastScreenTimeManagement[0])} >
-              <CText style={styles.floatingElementText}>({time[0]}:{time[1]}:{time[2]})</CText>
-            </TouchableOpacity>
-          </View>
-          ): null}
       <ScrollView>
         <Mission
           enable={enagleAllMissions} 
@@ -358,18 +290,4 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.9)",
   },
-  floatingElement: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    backgroundColor: "rgb(210,210,210)",
-    position: "absolute",
-    right: 0,
-    top: StatusBar.currentHeight,
-    borderTopLeftRadius: 4,
-    borderBottomLeftRadius: 4,
-    zIndex: 1
-  },
-  floatingElementText: {
-    color: constants.primaryBgColor
-  }
 });

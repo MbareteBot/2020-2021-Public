@@ -7,11 +7,12 @@ import NavBar from "../components/NavBar"
 const constants = require("../constants.json")
 
 export default function Timer({ navigation }) {
+
   const [playButton, setPlayButton] = useState("ios-play-outline");
   const [time, setTime] = useState([0,0,0]);
   const elapsedTime = useRef(null);
   const timeInterval = useRef(null);
-  const isMounted = useRef(true);
+  const [isRunning, setIsRunning] = useState(false)
 
   const formateMsec = initialMsec => {
     let sec = Math.floor((initialMsec / 1000) % 60);
@@ -25,27 +26,28 @@ export default function Timer({ navigation }) {
   }
 
   
-    const handleControl = () => {
-      
-      if (timeInterval.current == null) {
-        elapsedTime.current = ((time[0] * 3600000) + (time[1] * 60000) + (time[2] * 1000));
-        if (elapsedTime.current >= 1) {
-          Keyboard.dismiss()
-          setPlayButton("ios-pause-outline");
-          timeInterval.current = setInterval(() => {
-            elapsedTime.current -= 1000
-            setTime(formateMsec(elapsedTime.current))
-            if (elapsedTime.current <= 100) handleStop();
-          }, 1000)} 
-      } else {
-        clearInterval(timeInterval.current);
-        timeInterval.current = null;
-        setPlayButton("ios-play-outline"); 
-      }
-      }
-    
-    
+  const handleControl = () => {
+    if (timeInterval.current == null) {
+      elapsedTime.current = ((time[0] * 3600000) + (time[1] * 60000) + (time[2] * 1000));
+      if (elapsedTime.current >= 1) {
+        setIsRunning(true)
+        Keyboard.dismiss()
+        setTime(formateMsec(elapsedTime.current))
+        setPlayButton("ios-pause-outline");
+        timeInterval.current = setInterval(() => {
+          elapsedTime.current -= 1000
+          setTime(formateMsec(elapsedTime.current))
+          if (elapsedTime.current <= 100) handleStop();
+        }, 1000)} 
+    } else {
+      clearInterval(timeInterval.current);
+      timeInterval.current = null;
+      setPlayButton("ios-play-outline"); 
+    }
+    }
+       
   const handleStop = () => {
+    setIsRunning(false)
     clearInterval(timeInterval.current);
     timeInterval.current = null
     setTime([0,0,0]);
@@ -54,10 +56,12 @@ export default function Timer({ navigation }) {
 
   return (
     <View style={styles.container}>
-       <NavBar 
-        title={[["StopWatch", "Timer"],["StopWatch", "Timer"]]}
-        active={[1, constants.darkYellow]}
-        pageNavigationHandler={navigation.navigate} />
+      {!isRunning ? (
+        <NavBar 
+          title={[["StopWatch", "Timer"],["StopWatch", "Timer"]]}
+          active={[1, constants.darkYellow]}
+          pageNavigationHandler={navigation.navigate} />
+        ):null }
         <View style={styles.timerContainer}>
           <View style={styles.timerInputContainer}>
             <View style={styles.timerRow}>
@@ -109,11 +113,13 @@ export default function Timer({ navigation }) {
               onPress={() => handleStop()} />
           </View>
         </View>
+        {!isRunning ? (
         <NavBar 
           icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
           active={[1, constants.darkYellow]}
           pageNavigationHandler={navigation.navigate}
           timeManagement={["Timer", elapsedTime.current]} />
+          ):null }
     </View>
   );
 }

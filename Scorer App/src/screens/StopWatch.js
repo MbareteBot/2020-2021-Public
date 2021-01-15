@@ -13,7 +13,7 @@ export default function StopWatch({ navigation }) {
   const [time, setTime] = useState(["00","00","00"]);
   const [timeInterval, setTimeInterval] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const isMounted = useRef(true);
+  const [isRunning, setIsRunning] = useState(false)
 
   const msecToString = initialMsec => {
     let msec = Math.floor((initialMsec % 1000) / 10)
@@ -26,14 +26,12 @@ export default function StopWatch({ navigation }) {
     return [formattedMin.toString(),formattedSec.toString(),formattedMsec.toString()];
   }
 
-  // useEffect(() => {
-  //   return () => {isMounted.current = false}
-  // })
+
   
   const handleControl = () => {
-   // if (isMounted.current) {
       if (playButton == "ios-play-outline") { 
         setPlayButton("ios-pause-outline");
+        setIsRunning(true)
         var startTime_ = Date.now() - elapsedTime;
         setTimeInterval(setInterval(() => {
           setElapsedTime(Date.now() - startTime_);
@@ -46,24 +44,24 @@ export default function StopWatch({ navigation }) {
         setPlayButton("ios-play-outline");
         clearInterval(timeInterval);
       }
-    //}
-    //isMounted.current = true;
   }
-
 
   const handleStop = () => {
     setPlayButton("ios-play-outline");
     setElapsedTime(0);
+    setIsRunning(false)
     clearInterval(timeInterval);
     setTime(["00","00","00"])
   }
 
   return (
     <View style={styles.container}>
+      {!isRunning ? (
       <NavBar 
         title={[["StopWatch", "Timer"],["StopWatch", "Timer"]]}
         active={[0, constants.darkYellow]}
         pageNavigationHandler={navigation.navigate} />
+        ): null}
       <View style={styles.stopwatchContainer}>
         <View style={styles.stopwatchElementsContainer}>
             <View style={styles.stopWatchRow}>
@@ -100,11 +98,13 @@ export default function StopWatch({ navigation }) {
             onPress={() => handleStop()} />
         </View>
       </View>
+      {!isRunning ? (
       <NavBar 
         icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
         active={[1, "#EAAB3E"]}
         pageNavigationHandler={navigation.navigate}
         timeManagement={["StopWatch", elapsedTime]} />
+        ): null}
     </View>
   )
 } 
