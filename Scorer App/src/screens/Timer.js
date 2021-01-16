@@ -1,18 +1,36 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, View, TextInput, Keyboard } from "react-native";
+import { StyleSheet, View, TextInput, Keyboard, Animated, StatusBar } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import CText from "../components/CustomText";
-import NavBar from "../components/NavBar"
+import NavBar from "../components/NavBar";
 
-const constants = require("../constants.json")
+const constants = require("../constants.json");
 
 export default function Timer({ navigation }) {
+
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true
+    }).start(() => setEnableInput("auto"));
+  };
+
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true
+    }).start(() => setEnableInput("none"));
+  };
 
   const [playButton, setPlayButton] = useState("ios-play-outline");
   const [time, setTime] = useState([0,0,0]);
   const elapsedTime = useRef(null);
   const timeInterval = useRef(null);
-  const [isRunning, setIsRunning] = useState(false)
+  const [enableInput, setEnableInput] = useState("auto")
 
   const formateMsec = initialMsec => {
     let sec = Math.floor((initialMsec / 1000) % 60);
@@ -25,13 +43,12 @@ export default function Timer({ navigation }) {
     return [formattedHour.toString(),formattedMin.toString(),formattedSec.toString()];
   }
 
-  
   const handleControl = () => {
     if (timeInterval.current == null) {
       elapsedTime.current = ((time[0] * 3600000) + (time[1] * 60000) + (time[2] * 1000));
       if (elapsedTime.current >= 1) {
-        setIsRunning(true)
         Keyboard.dismiss()
+        fadeOut();
         setTime(formateMsec(elapsedTime.current))
         setPlayButton("ios-pause-outline");
         timeInterval.current = setInterval(() => {
@@ -44,24 +61,28 @@ export default function Timer({ navigation }) {
       timeInterval.current = null;
       setPlayButton("ios-play-outline"); 
     }
-    }
+  }
        
   const handleStop = () => {
-    setIsRunning(false)
+    setIsRunning(false);
     clearInterval(timeInterval.current);
     timeInterval.current = null
     setTime([0,0,0]);
     setPlayButton("ios-play-outline");
+    fadeIn();
   }
 
   return (
     <View style={styles.container}>
-      {!isRunning ? (
-        <NavBar 
-          title={[["StopWatch", "Timer"],["StopWatch", "Timer"]]}
-          active={[1, constants.darkYellow]}
-          pageNavigationHandler={navigation.navigate} />
-        ):null }
+      <StatusBar 
+        style="light" 
+        backgroundColor="#3B4457"/>
+          <Animated.View style={{opacity: fadeAnim}} pointerEvents={enableInput}>
+            <NavBar 
+              title={[["StopWatch", "Timer"],["StopWatch", "Timer"]]}
+              active={[1, constants.darkYellow]}
+              pageNavigationHandler={navigation.navigate} />
+          </Animated.View>
         <View style={styles.timerContainer}>
           <View style={styles.timerInputContainer}>
             <View style={styles.timerRow}>
@@ -113,13 +134,13 @@ export default function Timer({ navigation }) {
               onPress={() => handleStop()} />
           </View>
         </View>
-        {!isRunning ? (
-        <NavBar 
-          icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
-          active={[1, constants.darkYellow]}
-          pageNavigationHandler={navigation.navigate}
-          timeManagement={["Timer", elapsedTime.current]} />
-          ):null }
+        <Animated.View style={{opacity: fadeAnim}} pointerEvents={enableInput}>
+          <NavBar 
+            icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
+            active={[1, constants.darkYellow]}
+            pageNavigationHandler={navigation.navigate}
+            timeManagement={["Timer", elapsedTime.current]} />
+        </Animated.View>
     </View>
   );
 }
@@ -166,6 +187,5 @@ const styles = StyleSheet.create({
   },
   timerRow: {
     alignItems: "center",
-  }
-
+  },
 })

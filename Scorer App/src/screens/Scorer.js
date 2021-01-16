@@ -4,8 +4,6 @@ import CText from '../components/CustomText';
 import Mission from '../components/Mission';
 import NavBar from '../components/NavBar';
 import Header from '../components/Header';
-import { useLinkProps } from '@react-navigation/native';
-import { elastic } from 'react-native/Libraries/Animated/src/Easing';
 
 const constants = require("../constants.json")
 
@@ -65,9 +63,9 @@ export default function Scorer({ navigation, route }) {
           the better."
           counterHandler={setCurrentScore}
           points={10}
-          pickerOptions={[["Magenta", "Yellow", "Middle"],
-                          [0,5,10],
-                          [constants.magenta, constants.yellow, constants.black]]} />
+          picker={["Select where the bottom of the pointer is",["Magenta", "Yellow", "Middle"],
+                  [0,5,10],
+                  [constants.magenta, constants.yellow, constants.black]]} />
         <Mission
           enable={enagleAllMissions} 
           imgSource={require(mainRoot + "m3-min.png")}
@@ -79,9 +77,9 @@ export default function Scorer({ navigation, route }) {
           them to other areas."
           counterHandler={setCurrentScore}
           points={5}
-          pickerOptions={[["1 Figure", "2 Figures"],
-                          [0,15],
-                          [constants.black, constants.black]]} 
+          picker={["Select how many figures are down the slide",["1 Figure", "2 Figures"],
+                  [0,15],
+                  [constants.black, constants.black]]} 
           options={[["If a slide figure is completely in home","If a slide figure is held completely off the mat by the heavy tire and is touching nothing else"],
                   [10,20]]} />
         <Mission
@@ -96,9 +94,9 @@ export default function Scorer({ navigation, route }) {
           spaces."
           counterHandler={setCurrentScore}
           points={10}
-          pickerOptions={[["1", "2", "3"],
-                          [10,20,30],
-                          [constants.black, constants.black, constants.black]]} 
+          picker={["Select how many cubes are into the hopscotch spaces",["0","1", "2", "3"],
+                  [0,10,20,30],
+                  [constants.black, constants.black, constants.black]]} 
           options={[["If the backrest is completely out of both of its holes"],
                   [15]]} />
         <Mission
@@ -111,9 +109,9 @@ export default function Scorer({ navigation, route }) {
           it."
           counterHandler={setCurrentScore}
           points={10}
-          pickerOptions={[["Middle height’s white stopper", "Height’s white stopper"],
-                          [15,20],
-                          [constants.black, constants.black]]} />
+          picker={["Select where crate rests",["Middle height’s white stopper", " Top height’s white stopper"],
+                  [15,20],
+                  [constants.black, constants.black]]} />
         <Mission
           enable={enagleAllMissions} 
           imgSource={require(mainRoot + "m6-min.png")}
@@ -139,10 +137,10 @@ export default function Scorer({ navigation, route }) {
           name="M08 | Boccia" 
           description="If both share models have sent only one cube
           anywhere onto the opposing field and those cubes
-          color-match each other"
+          color-match each other."
           counterHandler={setCurrentScore}
           points={25}
-          pickerOptions={[[...Array(18)].map((a,b) => ((b-1) + 1).toString()),
+          picker={["Select how many cubes are completely frame or target",[...Array(18)].map((a,b) => ((b-1) + 1).toString()),
                           [...Array(18)].map((a,b) => (((b-1) + 1) * 5)),
                           [...Array(18)].fill(constants.black)]}
           options={[["If there are cubes completely in your frame or target", "If there is at least one yellow cube completely in your target"], 
@@ -156,13 +154,12 @@ export default function Scorer({ navigation, route }) {
           centers face up and
           moves them into
           their large target
-          circle.
-          Select the amount of tires completely in the large target circle."
+          circle."
           counterHandler={setCurrentScore}
           points={0}
-          pickerOptions={[["0","1","2"],
-                          [0,5,10],
-                          [constants.black, constants.black, constants.black]]}
+          picker={["Select the amount of tires completely in the large target circle",["0","1","2"],
+                  [0,5,10],
+                  [constants.black, constants.black, constants.black]]}
           options={[["If the light (blue tread) tire is white center up", "If the heavy (black tread) tire is white center up:"],
                     [10,15]]} />
         <Mission
@@ -185,7 +182,7 @@ export default function Scorer({ navigation, route }) {
           possible."
           counterHandler={setCurrentScore}
           points={5}
-          pickerOptions={[["Gray", "Red", "Orange", "rgb(2304,234,0)", "Light green", "Dark green"],
+          picker={["Select the color that the pointer points to",["Gray", "Red", "Orange", "Yellow", "Light green", "Dark green"],
                           [0,5,10,15,20,25],
                           ["gray", "red", "orange", "rgb(2304,234,0)", "lightgreen", "darkgreen"]]} />    
         <Mission 
@@ -208,11 +205,10 @@ export default function Scorer({ navigation, route }) {
           description="During the match,
           the robot moves the
           lever until the little
-          yellow stopper falls.
-          Select the lever setting"
+          yellow stopper falls."
           counterHandler={setCurrentScore}
           points={10}
-          pickerOptions={[["Blue", "Magenta", "Yellow"],
+          picker={["Select the lever setting",["Blue", "Magenta", "Yellow"],
                           [0,5,10],
                           ["blue", constants.magenta, "rgb(2304,234,0)"]]} />
         <Mission 
@@ -226,9 +222,9 @@ export default function Scorer({ navigation, route }) {
           target areas."
           counterHandler={setCurrentScore}
           points={5}
-          pickerOptions={[["1","2","3","4","5","6"],
-                          [0,5,10,15,20,25],
-                          [constants.black, constants.black,constants.black, constants.black,constants.black, constants.black]]} />
+          picker={["Select",["1","2","3","4","5","6"],
+                  [0,5,10,15,20,25],
+                  [constants.black, constants.black,constants.black, constants.black,constants.black, constants.black]]} />
         <Mission 
           enable={enagleAllMissions} 
           imgSource={require(mainRoot + "m15-min.png")}
@@ -241,7 +237,7 @@ export default function Scorer({ navigation, route }) {
           Select how many tokens are left."
           counterHandler={setCurrentScore}
           points={5}
-          pickerOptions={[["1","2","3","4","5","6"],
+          picker={["Select how many tokens are left on the field.",["1","2","3","4","5","6"],
                           [0,5,15,25,40,55],
                           [constants.black, constants.black,constants.black,constants.black,constants.black]]} />
         <View style={styles.footer}>

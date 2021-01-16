@@ -21,19 +21,21 @@ export default function Mission(props) {
       counterHandler(prevPoints => ((prevPoints - points) - pointsAddedByOptions - pointsAddedByPicker));
     }
   }
+  
   const toggleMissionSwitch = () => setIsMissionEnabled(prevState => {
     if (props.state != undefined) props.state(!prevState);
     if (prevState) {
       setPointsAddedByOptions(0);
       setPointsAddedByPicker(0);
       setIsEnabled([]);
-      if (props.pickerOptions) {
-        setPickerValue(props.pickerOptions[1][0]);
+      if (props.picker) {
+        setPickerValue(props.picker[1][0]);
         setPickerLastValue(0);
       }
     } 
     return !prevState
   });
+
   const toggleSwitch = (index) => setIsEnabled(prevStates => {
     if (prevStates.length == 0) for (let i = 0; i < props.options[0].length; i++) prevStates.push(false)
     var updatedStates = prevStates;
@@ -43,6 +45,7 @@ export default function Mission(props) {
     }
     return updatedStates;
   });
+
   const handleCounterOptions = (state, counterHandler, points) => {
     if (state) {
       counterHandler(prevPoints => prevPoints + points);
@@ -53,6 +56,7 @@ export default function Mission(props) {
       setPointsAddedByOptions(prevState => prevState - points);
     }
   }
+
   const [pickerValue, setPickerValue] = useState();
   const [pointsAddedByPicker, setPointsAddedByPicker] = useState(0);
   const [pickerLastValue, setPickerLastValue] = useState("NaN");
@@ -60,6 +64,7 @@ export default function Mission(props) {
     toggleMissionSwitch();
     handleCounter(false, props.counterHandler, props.points);
   }
+
   return (
     <View style={styles.container}>
       <View style={styles.options}>
@@ -90,29 +95,33 @@ export default function Mission(props) {
         <View style={styles.missionDescription}>
           <CText>{props.description}</CText>
         </View> ) : null }
-
-      { props.pickerOptions && isMissionEnabled ? (
-          <View style={styles.picker}>
-            <Picker
-              selectedValue={pickerValue}
-              onValueChange={(value) => {
-                setPointsAddedByPicker(value)
-                console.log("value changed " + value)
-                if (pickerLastValue != "NaN") {
-                  handleCounter(false, props.counterHandler, pickerLastValue)
-                }
-                handleCounter(true, props.counterHandler, value)
-                setPickerValue(value)
-                setPickerLastValue(value)
-                }} >
-              {props.pickerOptions[0].map((val, index) => 
-                <Picker.Item 
-                  label={val} 
-                  value={props.pickerOptions[1][index]} 
-                  color={props.pickerOptions[2][index]}
-                  key={Math.random()} />
-              )}
+        
+      { props.picker && isMissionEnabled ? (
+          
+        <View style={{marginTop: 10}}>
+            <CText>{props.picker[0]}</CText>
+            <View style={styles.picker}>
+              <Picker
+                selectedValue={pickerValue}
+                onValueChange={(value) => {
+                  setPointsAddedByPicker(value)
+                  console.log("value changed " + value)
+                  if (pickerLastValue != "NaN") {
+                    handleCounter(false, props.counterHandler, pickerLastValue)
+                  }
+                  handleCounter(true, props.counterHandler, value)
+                  setPickerValue(value)
+                  setPickerLastValue(value)
+                  }} >
+                {props.picker[1].map((val, index) => 
+                  <Picker.Item 
+                    label={val} 
+                    value={props.picker[2][index]} 
+                    color={props.picker[3][index]}
+                    key={Math.random()} />
+                )}
             </Picker>
+            </View>
           </View>
       ): null }  
 
@@ -120,7 +129,7 @@ export default function Mission(props) {
         props.options[0].map((value, index) => 
           <View style={styles.options} key={index.toString()}>
             <View style={styles.optionDescription}>
-            <CText>{value}</CText>
+              <CText>{value}</CText>
             </View>
             <View>
               <Switch
@@ -173,7 +182,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   options: {
-    marginTop: 10,
+    marginTop: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -190,7 +199,7 @@ const styles = StyleSheet.create({
   picker: {
     borderWidth: 1,
     backgroundColor: "#fff",
-    marginTop: 10
+    marginTop: 5
   },
 
 })

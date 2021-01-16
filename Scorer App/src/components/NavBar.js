@@ -12,7 +12,7 @@ export default function NavBar(props) {
   const route = useRoute();
   const [color, setColor] = useState(constants.primaryColor)
   return (
-      <View style={styles.container}>
+      <View style={[styles.container, props.style]}>
       { props.icons ? (
         <View style={styles.iconContainer}>
         {

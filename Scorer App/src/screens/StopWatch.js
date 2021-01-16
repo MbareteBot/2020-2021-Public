@@ -1,24 +1,41 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useState, useRef } from "react";
+import { View, StyleSheet, StatusBar, Animated } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import CText from "../components/CustomText";
-import Header from "../components/Header";
 import NavBar from "../components/NavBar";
 
 const constants = require("../constants.json")
 
 export default function StopWatch({ navigation }) {
 
+  const fadeAnim = useRef(new Animated.Value(1)).current
+
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true
+    }).start(() => setEnableInput("auto"));
+  };
+
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true
+    }).start(() => setEnableInput("none"));
+  };
+
   const [playButton, setPlayButton] = useState("ios-play-outline");
   const [time, setTime] = useState(["00","00","00"]);
   const [timeInterval, setTimeInterval] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false)
+  const [enableInput, setEnableInput] = useState("auto")
 
   const msecToString = initialMsec => {
-    let msec = Math.floor((initialMsec % 1000) / 10)
-    let sec = Math.floor((initialMsec / 1000) % 60)
-    let min = Math.floor((initialMsec / (1000 * 60)) % 60)
+    let msec = Math.floor((initialMsec % 1000) / 10);
+    let sec = Math.floor((initialMsec / 1000) % 60);
+    let min = Math.floor((initialMsec / (1000 * 60)) % 60);
 
     let formattedMin = min.toString().padStart(2, "0");
     let formattedSec = sec.toString().padStart(2, "0");
@@ -26,12 +43,10 @@ export default function StopWatch({ navigation }) {
     return [formattedMin.toString(),formattedSec.toString(),formattedMsec.toString()];
   }
 
-
-  
   const handleControl = () => {
       if (playButton == "ios-play-outline") { 
+        fadeOut();
         setPlayButton("ios-pause-outline");
-        setIsRunning(true)
         var startTime_ = Date.now() - elapsedTime;
         setTimeInterval(setInterval(() => {
           setElapsedTime(Date.now() - startTime_);
@@ -47,21 +62,25 @@ export default function StopWatch({ navigation }) {
   }
 
   const handleStop = () => {
+    fadeIn();
     setPlayButton("ios-play-outline");
     setElapsedTime(0);
-    setIsRunning(false)
     clearInterval(timeInterval);
-    setTime(["00","00","00"])
+    setTime(["00","00","00"]);
   }
 
   return (
     <View style={styles.container}>
-      {!isRunning ? (
-      <NavBar 
-        title={[["StopWatch", "Timer"],["StopWatch", "Timer"]]}
-        active={[0, constants.darkYellow]}
-        pageNavigationHandler={navigation.navigate} />
-        ): null}
+      <StatusBar 
+        style="light" 
+        backgroundColor="#3B4457"/>
+      <Animated.View style={{opacity: fadeAnim}} pointerEvents={enableInput}>
+        <NavBar 
+          title={[["StopWatch", "Timer"],["StopWatch", "Timer"]]}
+          active={[0, constants.darkYellow]}
+          pageNavigationHandler={navigation.navigate} />
+      </Animated.View>
+      
       <View style={styles.stopwatchContainer}>
         <View style={styles.stopwatchElementsContainer}>
             <View style={styles.stopWatchRow}>
@@ -98,13 +117,13 @@ export default function StopWatch({ navigation }) {
             onPress={() => handleStop()} />
         </View>
       </View>
-      {!isRunning ? (
-      <NavBar 
-        icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
-        active={[1, "#EAAB3E"]}
-        pageNavigationHandler={navigation.navigate}
-        timeManagement={["StopWatch", elapsedTime]} />
-        ): null}
+      <Animated.View style={{opacity: fadeAnim}} pointerEvents={enableInput}>
+        <NavBar 
+          icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
+          active={[1, "#EAAB3E"]}
+          pageNavigationHandler={navigation.navigate}
+          timeManagement={["StopWatch", elapsedTime]} />
+      </Animated.View>
     </View>
   )
 } 
