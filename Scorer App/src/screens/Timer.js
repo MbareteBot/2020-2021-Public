@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, View, TextInput, Keyboard, Animated, StatusBar } from "react-native";
+import { StyleSheet, View, TextInput, Keyboard, Animated, StatusBar, Alert } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import CText from "../components/CustomText";
 import NavBar from "../components/NavBar";
@@ -30,7 +30,8 @@ export default function Timer({ navigation }) {
   const [time, setTime] = useState([0,0,0]);
   const elapsedTime = useRef(null);
   const timeInterval = useRef(null);
-  const [enableInput, setEnableInput] = useState("auto")
+  const [enableInput, setEnableInput] = useState("auto");
+  const [isEditable, setIsEditable] = useState(true);
 
   const formateMsec = initialMsec => {
     let sec = Math.floor((initialMsec / 1000) % 60);
@@ -43,28 +44,39 @@ export default function Timer({ navigation }) {
     return [formattedHour.toString(),formattedMin.toString(),formattedSec.toString()];
   }
 
+  const validateInput = inputToValidate => {
+    for (let i = 0; i < inputToValidate.length; i++) {
+      if (/\D/.test(inputToValidate[i])) return false
+    }
+    return true
+  }
+
   const handleControl = () => {
     if (timeInterval.current == null) {
-      elapsedTime.current = ((time[0] * 3600000) + (time[1] * 60000) + (time[2] * 1000));
-      if (elapsedTime.current >= 1) {
-        Keyboard.dismiss()
-        fadeOut();
-        setTime(formateMsec(elapsedTime.current))
-        setPlayButton("ios-pause-outline");
-        timeInterval.current = setInterval(() => {
-          elapsedTime.current -= 1000
-          setTime(formateMsec(elapsedTime.current))
-          if (elapsedTime.current <= 100) handleStop();
-        }, 1000)} 
-    } else {
-      clearInterval(timeInterval.current);
-      timeInterval.current = null;
-      setPlayButton("ios-play-outline"); 
-    }
+        elapsedTime.current = ((time[0] * 3600000) + (time[1] * 60000) + (time[2] * 1000));
+        if (elapsedTime.current >= 1) {
+          setIsEditable(false);
+          Keyboard.dismiss();
+          fadeOut();
+          setTime(formateMsec(elapsedTime.current));
+          setPlayButton("ios-pause-outline");
+          timeInterval.current = setInterval(() => {
+            elapsedTime.current -= 1000
+            setTime(formateMsec(elapsedTime.current))
+            if (elapsedTime.current <= 100) handleStop();
+          }, 1000)
+        }  
+      }
+      else {
+        clearInterval(timeInterval.current);
+        timeInterval.current = null;
+        setPlayButton("ios-play-outline"); 
+      }  
+    
   }
        
   const handleStop = () => {
-    setIsRunning(false);
+    setIsEditable(true);
     clearInterval(timeInterval.current);
     timeInterval.current = null
     setTime([0,0,0]);
@@ -90,11 +102,15 @@ export default function Timer({ navigation }) {
               <TextInput
                 keyboardType="numeric" 
                 value={time[0]}
-                onChangeText={value => setTime([value,time[1],time[2]])}
+                onChangeText={value => {
+                  if (!validateInput(value)) setTime([time[0].toString().replace(value,""),time[1],time[2]])
+                  else setTime([value,time[1],time[2]])
+                }}
                 style={styles.timerInput}
                 placeholder={"00"}
                 placeholderTextColor="white"
-                maxLength={2} />
+                maxLength={2}
+                editable={isEditable} />
             </View>
               <CText style={styles.timerInputDividor}>:</CText>
             <View style={styles.timerRow}>
@@ -102,11 +118,16 @@ export default function Timer({ navigation }) {
               <TextInput
                 keyboardType="numeric" 
                 value={time[1]}
-                onChangeText={value => setTime([time[0],value,time[2]])}
+                onChangeText={value => {
+                  if (!validateInput(value)) setTime([time[0],time[1].toString().replace(value,""),time[2]])
+                  else if (value > 59) setTime([time[0],0,time[2]])
+                  else setTime([time[0],value,time[2]])
+                }}
                 style={styles.timerInput}
                 placeholder={"00"}
                 placeholderTextColor="white"
-                maxLength={2} />
+                maxLength={2}
+                editable={isEditable} />
             </View>
               <CText style={styles.timerInputDividor}>:</CText>
             <View style={styles.timerRow}>
@@ -114,11 +135,16 @@ export default function Timer({ navigation }) {
               <TextInput
                 keyboardType="numeric" 
                 value={time[2]}
-                onChangeText={value => setTime([time[0],time[1],value])}
+                onChangeText={value => {
+                  if (!validateInput(value)) setTime([time[0],time[1],time[2].toString().replace(value,"")])
+                  else if (value > 59) setTime([time[0],time[1],0])
+                  else setTime([time[0],time[1],value])
+                }}
                 style={styles.timerInput}
                 placeholder={"00"}
                 placeholderTextColor="white"
-                maxLength={2} />
+                maxLength={2}
+                editable={isEditable} />
             </View>
           </View>
           <View style={styles.timerControls}>

@@ -1,0 +1,344 @@
+{
+  "en": {
+    "scorer": {
+      "title": "Scorer",
+      "missionPointLabel": "Points",
+      "m00": {
+        "name": "M00 | Equipment Inspection Bonus",
+        "description": "If all your equipment fits in the small inspection space.",
+        "case1": "",
+        "case2": "",
+        "case3": ""
+      },
+      "m01": {
+        "name": "M01 | Innovation Project",
+        "description": "The robot moves your Innovation Project onto the RePLAY logo or the gray area around the bench (M04).",
+        "case1": "",
+        "case2": "",
+        "case3": ""
+      },
+      "m02": {
+        "name": "M02 | Step Counter",
+        "description": "The robot slides the step counter slow and steady. The farther the “walk,” the better.",
+        "case1": {
+          "name": "Select where the bottom of the pointer is",
+          "option1": "Magenta",
+          "option2": "Yellow",
+          "option3": "Blue"
+        },
+        "case2": "",
+        "case3": ""
+      },
+      "m03": {
+        "name": "M03 | Slide",
+        "description": "The robot slides the people (called “slide figures”) down the slide and moves them to other areas.",
+        "case1": {
+          "name": "Select how many figures are down the slide",
+          "option1": "1",
+          "option2": "2"
+        },
+        "case2": "If a slide figure is completely in home",
+        "case3": "If a slide figure is held completely off the mat by the heavy tire and is touching nothing else"
+      },
+      "m04": {
+        "name": "M04 | Bench",
+        "description": "The robot removes the backrest, flattens the bench, and gets cubes into the hopscotch spaces.",
+        "case1": {
+          "name": "Select how many cubes are into the hopscotch spaces",
+          "option1": "0",
+          "option2": "1",
+          "option3": "2",
+          "option4": "3"
+        },
+        "case2": "If the backrest is completely out of both of its holes",
+        "case3": ""
+      },
+      "m05": {
+        "name": "M05 | Basketball",
+        "description": "The robot raises the crate up the post and gets a cube into it.",
+        "case1": {
+          "name": "Select where crate rests",
+          "option1": "Middle height’s white stopper",
+          "option2": "Top height’s white stopper"
+        },
+        "case2": "",
+        "case3": ""
+      },
+      "m06": {
+        "name": "M06 | Pull-Up Bar",
+        "description": "The robot passes completely under the bar any time. Separately, it is held off the mat by the bar at the end of the match.",
+        "case1": "If the robot passes completely through the pull-up bar’s upright frame at any time",
+        "case2": "If the pull-up bar holds 100% of the robot up off the mat at the end of the match",
+        "case3": ""
+      },
+      "m07": {
+        "name": "M07 | Robot Dance",
+        "description": "The robot is dancing on the dance floor at the end of the match.",
+        "case1": "",
+        "case2": "",
+        "case3": ""
+      },
+      "m08": {
+        "name": "M08 | Boccia",
+        "description": "If both share models have sent only one cube anywhere onto the opposing field and those cubes color-match each other.",
+        "case1": "Select how many cubes are completely frame or target",
+        "case2": "If there are cubes completely in your frame or target",
+        "case3": "If there is at least one yellow cube completely in your target"
+      },
+      "m09": {
+        "name": "M09 | Tire Flip",
+        "description": "The robot flips tires so their white centers face up and moves them into their large target circle.",
+        "case1": {
+          "name": "Select the amount of tires completely in the large target circle",
+          "option1": "0",
+          "option2": "1",
+          "option3": "2"
+        },
+        "case2": "If the light (blue tread) tire is white center up",
+        "case3": "If the heavy (black tread) tire is white center up"
+      },
+      "m10": {
+        "name": "M10 | Cell Phone",
+        "description": "The robot flips the cell phone white side up (resting on only the mat).",
+        "case1": "",
+        "case2": "",
+        "case3": ""
+      },
+      "m11": {
+        "name": "M11 | Treadmill",
+        "description": "The robot spins the rollers to move the pointer as far clockwise as possible.",
+        "case1": {
+          "name": "Select the color that the pointer points to",
+          "option1": "Gray",
+          "option2": "Red",
+          "option3": "Orange",
+          "option4": "Yellow",
+          "option5": "Light green",
+          "option6": "Dark green"
+},
+        "case2": "",
+        "case3": ""
+      },
+      "m12": {
+        "name": "M12 | Row Machine",
+        "description": "The robot moves the free wheel out of the large circle and into the small target circle. Select where the free wheel is.",
+        "case1": "Completely outside the large circle",
+        "case2": "Completely in the small circle",
+        "case3": ""
+      },
+      "m13": {
+        "name": "M13 | Weight Machine",
+        "description": "During the match, the robot moves the lever until the little yellow stopper falls.",
+        "case1": {
+          "name": "Select the lever setting",
+          "option1": "Blue",
+          "option2": "Magenta",
+          "option3": "Yellow"
+        },
+        "case2": "",
+        "case3": ""
+      },
+      "m14": {
+        "name": "M14 | Health Units",
+        "description": "The robot collects health units from around the field and moves them to target areas.",
+        "case1": {
+          "name": "Select thow many are touching either the RePLAY logo or the gray area around the bench",
+          "option1": "1",
+          "option2": "2",
+          "option3": "3",
+          "option4": "4",
+          "option5": "5",
+          "option6": "6"
+        },
+        "case2": "",
+        "case3": ""
+      },
+      "m15": {
+        "name": "M15 | Precision",
+        "description": "The less often you interrupt the robot outside home, the more points you keep.",
+        "case1": {
+          "name": "Select how many tokens are left on the field",
+          "option1": "1",
+          "option2": "2",
+          "option3": "3",
+          "option4": "4",
+          "option5": "5",
+          "option6": "6"
+        },
+        "case2": "",
+        "case3": ""
+      }
+    }
+  },
+  "es": {
+    "scorer": {
+      "title": "Marcador",
+      "missionPointLabel": "Puntos",
+      "m00": {
+        "name": "M00 | Bonificación por Inspección del Equipamiento",
+        "description": "Todo vuestro equipamiento cabe en el espacio de inspección menor",
+        "case1": "",
+        "case2": "",
+        "case3": ""
+      },
+      "m01": {
+        "name": "M01 | Proyecto de Innovación",
+        "description": "El robot mueve vuestro Proyecto de Innovación sobre el logo RePLAY o el área gris alrededor del banco (M04).",
+        "case1": "",
+        "case2": "",
+        "case3": ""
+      },
+      "m02": {
+        "name": "M02 | Contador de Pasos",
+        "description": "El robot desliza el contador de pasos lenta y constantemente. Cuanto más lejos llegue el “paseo”, mejor.",
+        "case1": {
+          "name": "Seleccione donde esta la parte baja del puntero",
+          "option1": "Magenta",
+          "option2": "Amarillo",
+          "option3": "Azul"
+        },
+        "case2": "",
+        "case3": ""
+      },
+      "m03": {
+        "name": "M03 | Tobogán",
+        "description": "El robot desliza a las personas (llamadas “figuras del tobogán”) a lo largo del tobogán y las mueve a otras áreas.",
+        "case1": {
+          "name": "Seleccione cuantas figuras estan fuera del tobogán",
+          "option1": "1",
+          "option2": "2"
+        },
+        "case2": "Una figura del tobogán está completamente en casa",
+        "case3": "Una figura del tobogán está aguantada completamente por la rueda pesada sin tocar el tapete y no está tocando nada más"
+      },
+      "m04": {
+        "name": "M04 | Banco",
+        "description": "El robot retira el respaldo, baja el banco y pone cubos en los espacios de la rayuela.",
+        "case1": {
+          "name": "Seleccione cuantas espacios de rayuela tienen dentro un cubo",
+          "option1": "0",
+          "option2": "1",
+          "option3": "2",
+          "option4": "3"
+        },
+        "case2": "El respaldo del banco está completamente fuera de ambos orificios",
+        "case3": ""
+      },
+      "m05": {
+        "name": "M05 | Baloncesto",
+        "description": "El robot eleva el cajón en el poste y pone un cubo dentro de él.",
+        "case1": {
+          "name": "Seleccione donde reposa el cajon",
+          "option1": "Sobre el tope blanco a media altura del poste",
+          "option2": "Sobre el tope blanco a maxima altura del poste"
+        },
+        "case2": "",
+        "case3": ""
+      },
+      "m06": {
+        "name": "M06 | Larguero",
+        "description": "El robot pasa completamente por debajo del larguero en cualquier momento. Independientemente, es aguantado por el larguero sin tocar el tapete al final de la partida.",
+        "case1": "El robot pasa completamente a través del larguero en cualquier momento",
+        "case2": "El larguero aguanta el 100% del robot alzado sin tocar el tapete al final de la partida",
+        "case3": ""
+      },
+      "m07": {
+        "name": "M07 | Danza del Robot",
+        "description": "El robot está danzando en la pista de baile al final de la partida",
+        "case1": "",
+        "case2": "",
+        "case3": ""
+      },
+      "m08": {
+        "name": "M08 | Boccia",
+        "description": "La Boccia es una misión interactiva con el equipo que juega en la mesa opuesta.",
+        "case1": "Ambos compartidores de bochas han enviado solo un cubo a cualquier parte del terreno opuesto y ambos cubos son del mismo color (25 cada equipo)",
+        "case2": "Hay cubos completamente dentro de vuestro campo o diana",
+        "case3": "Hay al menos un cubo amarillo completamente dentro de vuestra diana"
+      },
+      "m09": {
+        "name": "M09 | Voltear Neumáticos",
+        "description": "El robot da la vuelta a los neumáticos de modo que sus centros blancos queden boca arriba y los mueve dentro de su círculo grande.",
+        "case1": {
+          "name": "Seleccione la cantidad de neumáticos con el centro blanco boca arriba completamente dentro del círculo grande",
+          "option1": "0",
+          "option2": "1",
+          "option3": "2"
+        },
+        "case2": "El neumático ligero (con banda de rodadura azul) está con el centro blanco boca arriba",
+        "case3": "El neumático pesado (con banda de rodadura negra) está con el centro blanco boca arriba"
+      },
+      "m10": {
+        "name": "M10 | Teléfono Móvil",
+        "description": "El robot da la vuelta al teléfono móvil dejando su cara blanca boca arriba.",
+        "case1": "",
+        "case2": "",
+        "case3": ""
+      },
+      "m11": {
+        "name": "M11 | Cinta de Correr",
+        "description": "El robot hace girar los rodillos para mover el puntero, en sentido horario, lo más lejos posible.",
+        "case1": {
+          "name": "Seleccione el color donde apunta el puntero",
+          "option1": "Gris",
+          "option2": "Rojo",
+          "option3": "Naranja",
+          "option4": "Amarillo",
+          "option5": "Verde claro",
+          "option6": "Verde oscuro"
+},
+        "case2": "",
+        "case3": ""
+      },
+      "m12": {
+        "name": "M12 | Máquina de Remo",
+        "description": "El robot mueve la rueda libre fuera del círculo grande y la pone dentro del círculo pequeño. ",
+        "case1": "La rueda esta completamente fuera del círculo grande",
+        "case2": "La rueda esta completamente dentro del círculo pequeño",
+        "case3": ""
+      },
+      "m13": {
+        "name": "M13 | Máquina de Pesas",
+        "description": ". Durante la partida, el robot mueve la palanca hasta que el pequeño tope amarillo caiga.",
+        "case1": {
+          "name": "Seleccione la posicion de la palanca",
+          "option1": "Azil",
+          "option2": "Magenta",
+          "option3": "Amarillo"
+        },
+        "case2": "",
+        "case3": ""
+      },
+      "m14": {
+        "name": "M14 | Porciones de Salud",
+        "description": "El robot recoge porciones de salud repartidas por todo el terreno de juego y las mueve a zonas de puntuación.",
+        "case1": {
+          "name": "Seleccione cuantas estan tocando el logo RePLAY o bien el área gris que hay alrededor del banco",
+          "option1": "1",
+          "option2": "2",
+          "option3": "3",
+          "option4": "4",
+          "option5": "5",
+          "option6": "6"
+        },
+        "case2": "",
+        "case3": ""
+      },
+      "m15": {
+        "name": "M15 | Testigos de Precisión",
+        "description": "Cuanto menos interrumpáis el robot fuera de casa, más puntos mantendréis.",
+        "case1": {
+          "name": "Seleccione el número de testigos de precisión que quedan en el terreno de juego",
+          "option1": "1",
+          "option2": "2",
+          "option3": "3",
+          "option4": "4",
+          "option5": "5",
+          "option6": "6"
+        },
+        "case2": "",
+        "case3": ""
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { StyleSheet, View, Switch, Image } from "react-native";
 import { Picker } from '@react-native-picker/picker';
 import CText from "./CustomText"
 
-const constants = require("../constants.json")
+const CONSTANTS = require("../constants.json");
 
 export default function Mission(props) {
 
@@ -11,6 +11,8 @@ export default function Mission(props) {
     Default args: {imgSource, name, description, counterHandler, points}
     options args: {[["name1", "name2", "etc"], [pointname1, pointname2, etc]]} 
   */
+
+  const missionPointsLabel = require("../translations.json").es.scorer.missionPointLabel;
   const [pointsAddedByOptions, setPointsAddedByOptions] = useState(0);
   const [isMissionEnabled, setIsMissionEnabled] = useState(false);
   const [isEnabled, setIsEnabled] = useState([]);
@@ -147,7 +149,7 @@ export default function Mission(props) {
 
         { isMissionEnabled ? (
           <View style={styles.missionPoints}>
-            <CText>Points: {props.points + pointsAddedByOptions + pointsAddedByPicker}</CText>
+            <CText>{missionPointsLabel}: {props.points + pointsAddedByOptions + pointsAddedByPicker}</CText>
           </View>
         ) : null}      
 
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
     paddingBottom: "4%",
     margin: 10,
     marginVertical: 4,
-    backgroundColor: constants.secondaryColor,
+    backgroundColor: CONSTANTS.secondaryColor,
   },
   missionInfo: {
     flexDirection: "row",
