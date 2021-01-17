@@ -10,7 +10,7 @@ export default function NavBar(props) {
     args: [[icons(name)], [iconPage], [activeIcon]] 
   */
   const route = useRoute();
-  const [color, setColor] = useState(constants.primaryColor)
+
   return (
       <View style={[styles.container, props.style]}>
       { props.icons ? (
@@ -31,8 +31,8 @@ export default function NavBar(props) {
                       key={index} 
                       name={iconName} 
                       size={30} 
-                      color={color} 
-                      onPress={() => props.pageNavigationHandler(props.icons[1][index], { screenName: route.name, lastScreenTimeManagement: [props.timeManagement] ? props.timeManagement : "null" })}/>      
+                      color={constants.primaryColor} 
+                      onPress={() => props.pageNavigationHandler(props.icons[1][index], { screenName: route.name, LABELS: props.timeManagementLabels })}/>      
         
           })
         }
@@ -51,7 +51,7 @@ export default function NavBar(props) {
                 }
                 return <TouchableOpacity 
                         key={index}
-                        onPress={() => props.pageNavigationHandler(props.title[1][index], {screenName: route.name})}>
+                        onPress={() => props.pageNavigationHandler(props.title[1][index], {screenName: route.name, LABELS: props.timeManagementLabels})}>
                         <CText 
                           style={styles.title}>{title}</CText>
                         </TouchableOpacity>

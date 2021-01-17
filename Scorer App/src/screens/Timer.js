@@ -4,9 +4,9 @@ import Icon from "react-native-vector-icons/Ionicons";
 import CText from "../components/CustomText";
 import NavBar from "../components/NavBar";
 
-const constants = require("../constants.json");
+const CONSTANTS = require("../constants.json");
 
-export default function Timer({ navigation }) {
+export default function Timer({ navigation, route }) {
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
@@ -91,9 +91,10 @@ export default function Timer({ navigation }) {
         backgroundColor="#3B4457"/>
           <Animated.View style={{opacity: fadeAnim}} pointerEvents={enableInput}>
             <NavBar 
-              title={[["StopWatch", "Timer"],["StopWatch", "Timer"]]}
-              active={[1, constants.darkYellow]}
-              pageNavigationHandler={navigation.navigate} />
+              title={[[route.params.LABELS.stopwatch, route.params.LABELS.timer],["StopWatch", "Timer"]]}
+              active={[1, CONSTANTS.darkYellow]}
+              pageNavigationHandler={navigation.navigate}
+              timeManagementLabels={route.params.LABELS} />
           </Animated.View>
         <View style={styles.timerContainer}>
           <View style={styles.timerInputContainer}>
@@ -151,21 +152,21 @@ export default function Timer({ navigation }) {
             <Icon 
               name={playButton} 
               size={50} 
-              color={constants.primaryBgColor} 
+              color={CONSTANTS.primaryBgColor} 
               onPress={() => handleControl()} />
             <Icon 
               name="ios-stop" 
               size={50} 
-              color={constants.primaryBgColor} 
+              color={CONSTANTS.primaryBgColor} 
               onPress={() => handleStop()} />
           </View>
         </View>
         <Animated.View style={{opacity: fadeAnim}} pointerEvents={enableInput}>
           <NavBar 
             icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
-            active={[1, constants.darkYellow]}
+            active={[1, CONSTANTS.darkYellow]}
             pageNavigationHandler={navigation.navigate}
-            timeManagement={["Timer", elapsedTime.current]} />
+            timeManagementLabels={route.params.LABELS} />
         </Animated.View>
     </View>
   );
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
   },
   timerInput: {
     marginHorizontal: 5,
-    backgroundColor: constants.secondaryColor,
+    backgroundColor: CONSTANTS.secondaryColor,
     width: 80,
     alignItems: "center",
     justifyContent: "center",
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   timerInputDividor: {
-    color: constants.primaryBgColor,
+    color: CONSTANTS.primaryBgColor,
     fontSize: 40,
     marginTop: 15
   },
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
     width: "50%"
   },
   timerLabel: {
-    color: constants.secondaryColor
+    color: CONSTANTS.secondaryColor
   },
   timerRow: {
     alignItems: "center",

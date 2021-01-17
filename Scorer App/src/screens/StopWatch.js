@@ -4,12 +4,11 @@ import Icon from "react-native-vector-icons/Ionicons";
 import CText from "../components/CustomText";
 import NavBar from "../components/NavBar";
 
-const constants = require("../constants.json")
+const CONSTANTS = require("../constants.json")
 
-export default function StopWatch({ navigation }) {
+export default function StopWatch({ navigation, route }) {
 
-  const fadeAnim = useRef(new Animated.Value(1)).current
-
+  const fadeAnim = useRef(new Animated.Value(1)).current;
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -76,9 +75,10 @@ export default function StopWatch({ navigation }) {
         backgroundColor="#3B4457"/>
       <Animated.View style={{opacity: fadeAnim}} pointerEvents={enableInput}>
         <NavBar 
-          title={[["StopWatch", "Timer"],["StopWatch", "Timer"]]}
-          active={[0, constants.darkYellow]}
-          pageNavigationHandler={navigation.navigate} />
+          title={[[route.params.LABELS.stopwatch, route.params.LABELS.timer],["StopWatch", "Timer"]]}
+          active={[0, CONSTANTS.darkYellow]}
+          pageNavigationHandler={navigation.navigate}
+          timeManagementLabels={route.params.LABELS} />
       </Animated.View>
       
       <View style={styles.stopwatchContainer}>
@@ -108,12 +108,12 @@ export default function StopWatch({ navigation }) {
           <Icon 
             name={playButton} 
             size={50} 
-            color={constants.primaryBgColor} 
+            color={CONSTANTS.primaryBgColor} 
             onPress={() => handleControl()} />
           <Icon 
             name="ios-stop" 
             size={50} 
-            color={constants.primaryBgColor} 
+            color={CONSTANTS.primaryBgColor} 
             onPress={() => handleStop()} />
         </View>
       </View>
@@ -122,7 +122,7 @@ export default function StopWatch({ navigation }) {
           icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
           active={[1, "#EAAB3E"]}
           pageNavigationHandler={navigation.navigate}
-          timeManagement={["StopWatch", elapsedTime]} />
+          timeManagementLabels={route.params.LABELS} />
       </Animated.View>
     </View>
   )
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   stopwatchElementContainer: {
     marginHorizontal: 5,
-    backgroundColor: constants.secondaryColor,
+    backgroundColor: CONSTANTS.secondaryColor,
     width: 80,
     alignItems: "center",
     justifyContent: "center",
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   stopwatchElementDividor: {
-    color: constants.primaryBgColor,
+    color: CONSTANTS.primaryBgColor,
     fontSize: 40,
     marginTop: 15
   },
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     width: "50%"
   },
   stopWatchLabel: {
-    color: constants.secondaryColor
+    color: CONSTANTS.secondaryColor
   },
   stopWatchRow: {
     alignItems: "center",

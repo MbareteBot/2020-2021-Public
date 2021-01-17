@@ -168,8 +168,11 @@
         "case2": "",
         "case3": ""
       }
-    }
+    },
+    "stopwatch": "StopWatch",
+    "timer": "Timer"
   },
+
   "es": {
     "scorer": {
       "title": "Marcador",
@@ -339,6 +342,8 @@
         "case2": "",
         "case3": ""
       }
-    }
+    },
+    "stopwatch": "Cronometro",
+    "timer": "Temporizador"
   }
 }

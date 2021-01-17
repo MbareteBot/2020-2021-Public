@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
 import CText from '../components/CustomText';
 import Mission from '../components/Mission';
@@ -223,7 +223,8 @@ export default function Scorer({ navigation, route }) {
           icons={[["md-calculator-outline", "stopwatch-outline"],
                   ["Scorer",  lastScreen == "Timer" ? "Timer" : "StopWatch"]]}
           active={[0, CONSTANTS.darkYellow]}
-          pageNavigationHandler={navigation.navigate} />
+          pageNavigationHandler={navigation.navigate}
+          timeManagementLabels={CONTENT} />
       </View>
     </View>
   );
