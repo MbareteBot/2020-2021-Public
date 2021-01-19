@@ -162,11 +162,12 @@ export default function Timer({ navigation, route }) {
           </View>
         </View>
         <Animated.View style={{opacity: fadeAnim}} pointerEvents={enableInput}>
-          <NavBar 
-            icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
-            active={[1, CONSTANTS.darkYellow]}
-            pageNavigationHandler={navigation.navigate}
-            timeManagementLabels={route.params.LABELS} />
+        <NavBar 
+          icons={[["md-calculator-outline", "stopwatch-outline", "book-outline"],
+                  ["Scorer", "Timer", "Docs"]]}
+          active={[1, CONSTANTS.darkYellow]}
+          pageNavigationHandler={ navigation.navigate }
+          contentLabels={route.params.LABELS} />
         </Animated.View>
     </View>
   );

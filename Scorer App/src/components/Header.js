@@ -5,7 +5,7 @@ const constants = require("../constants.json")
 
 export default function Header(props) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, props.style]}>
       { props.children }
     </View>
   )

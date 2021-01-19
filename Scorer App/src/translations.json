@@ -170,7 +170,38 @@
       }
     },
     "stopwatch": "StopWatch",
-    "timer": "Timer"
+    "timer": "Timer",
+    "documentation": {
+      "title": "Documentation",
+      "modelOverview": {
+        "name":"Model Overview",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/non-verbal-building-instructions/45813_model_overview_Web_NonVerbal.pdf"
+      },
+      "robotGameRulebook": {
+        "name":"Robot Game Rulebook",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/FLL-Challenge-RGR-Final.pdf"
+      },
+      "rubrics": {
+        "name":"Rubrics",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/Rubrics.pdf"
+      },
+      "robotGameScoresheet": {
+        "name":"Robot Game Scoresheet",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/RePLAY-Scoresheet-for-scoring-software-without-scores-1-page.pdf"
+      },
+      "awards": {
+        "name":"Replay Awards",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/Awards.pdf"
+      },
+      "judgingSessionForTeams": {
+        "name":"Judging Session For Teams",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/Judging-Session-for-Teams.pdf"
+      },
+      "updates": {
+        "name":"Replay Challenge Updates",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/replay-challenge-updates.pdf"
+      }
+    }
   },
 
   "es": {
@@ -302,10 +333,10 @@
       },
       "m13": {
         "name": "M13 | Máquina de Pesas",
-        "description": ". Durante la partida, el robot mueve la palanca hasta que el pequeño tope amarillo caiga.",
+        "description": "Durante la partida, el robot mueve la palanca hasta que el pequeño tope amarillo caiga.",
         "case1": {
           "name": "Seleccione la posicion de la palanca",
-          "option1": "Azil",
+          "option1": "Azul",
           "option2": "Magenta",
           "option3": "Amarillo"
         },
@@ -343,7 +374,38 @@
         "case3": ""
       }
     },
-    "stopwatch": "Cronometro",
-    "timer": "Temporizador"
+    "stopwatch": "Cronómetro",
+    "timer": "Temporizador",
+    "documentation": {
+      "title": "Documentación",
+      "modelOverview": {
+        "name":"Vista General de las Misiones",
+        "link": "https://152dda53-8e99-48d4-90b5-0e8db22abba8.filesusr.com/ugd/f90138_cdfb9aa33ac841c5977767fdc7794ba5.pdf"
+      },
+      "robotGameRulebook": {
+        "name":"Juego del Robot",
+        "link": "https://152dda53-8e99-48d4-90b5-0e8db22abba8.filesusr.com/ugd/f90138_3d9730ed544d44039d107ca5cb130d8c.pdf"
+      },
+      "rubrics": {
+        "name":"Rubricas (inglés)",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/Rubrics.pdf"
+      },
+      "robotGameScoresheet": {
+        "name":"Hoja de puntuaciones del Robot (inglés)",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/RePLAY-Scoresheet-for-scoring-software-without-scores-1-page.pdf"
+      },
+      "awards": {
+        "name":"Premios Replay (inglés)",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/Awards.pdf"
+      },
+      "judgingSessionForTeams": {
+        "name":"Presentación en salas de juzgamiento (inglés)",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/Judging-Session-for-Teams.pdf"
+      },
+      "updates": {
+        "name":"Actualizaciones Replay (inglés)",
+        "link": "https://firstinspiresst01.blob.core.windows.net/first-game-changers/fll-challenge/replay-challenge-updates.pdf"
+      }
+    }
   }
 }

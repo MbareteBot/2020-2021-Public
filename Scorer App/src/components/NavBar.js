@@ -32,7 +32,7 @@ export default function NavBar(props) {
                       name={iconName} 
                       size={30} 
                       color={constants.primaryColor} 
-                      onPress={() => props.pageNavigationHandler(props.icons[1][index], { screenName: route.name, LABELS: props.timeManagementLabels })}/>      
+                      onPress={() => props.pageNavigationHandler(props.icons[1][index], { screenName: route.name, LABELS: props.contentLabels })}/>      
         
           })
         }
@@ -51,7 +51,7 @@ export default function NavBar(props) {
                 }
                 return <TouchableOpacity 
                         key={index}
-                        onPress={() => props.pageNavigationHandler(props.title[1][index], {screenName: route.name, LABELS: props.timeManagementLabels})}>
+                        onPress={() => props.pageNavigationHandler(props.title[1][index], {screenName: route.name, LABELS: props.contentLabels})}>
                         <CText 
                           style={styles.title}>{title}</CText>
                         </TouchableOpacity>

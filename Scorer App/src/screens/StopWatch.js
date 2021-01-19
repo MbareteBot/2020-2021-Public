@@ -4,7 +4,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import CText from "../components/CustomText";
 import NavBar from "../components/NavBar";
 
-const CONSTANTS = require("../constants.json")
+const CONSTANTS = require("../constants.json");
 
 export default function StopWatch({ navigation, route }) {
 
@@ -29,7 +29,7 @@ export default function StopWatch({ navigation, route }) {
   const [time, setTime] = useState(["00","00","00"]);
   const [timeInterval, setTimeInterval] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [enableInput, setEnableInput] = useState("auto")
+  const [enableInput, setEnableInput] = useState("auto");
 
   const msecToString = initialMsec => {
     let msec = Math.floor((initialMsec % 1000) / 10);
@@ -78,7 +78,7 @@ export default function StopWatch({ navigation, route }) {
           title={[[route.params.LABELS.stopwatch, route.params.LABELS.timer],["StopWatch", "Timer"]]}
           active={[0, CONSTANTS.darkYellow]}
           pageNavigationHandler={navigation.navigate}
-          timeManagementLabels={route.params.LABELS} />
+          contentLabels={route.params.LABELS} />
       </Animated.View>
       
       <View style={styles.stopwatchContainer}>
@@ -118,11 +118,12 @@ export default function StopWatch({ navigation, route }) {
         </View>
       </View>
       <Animated.View style={{opacity: fadeAnim}} pointerEvents={enableInput}>
-        <NavBar 
-          icons={[["md-calculator-outline", "stopwatch-outline"],["Scorer", "Timer"]]}
-          active={[1, "#EAAB3E"]}
-          pageNavigationHandler={navigation.navigate}
-          timeManagementLabels={route.params.LABELS} />
+      <NavBar 
+          icons={[["md-calculator-outline", "stopwatch-outline", "book-outline"],
+                  ["Scorer", "Timer", "Docs"]]}
+          active={[1, CONSTANTS.darkYellow]}
+          pageNavigationHandler={ navigation.navigate }
+          contentLabels={route.params.LABELS} />
       </Animated.View>
     </View>
   )

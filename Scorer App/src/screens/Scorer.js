@@ -5,7 +5,7 @@ import Mission from '../components/Mission';
 import NavBar from '../components/NavBar';
 import Header from '../components/Header';
 
-
+const CONSTANTS = require("../constants.json");
 
 export default function Scorer({ navigation, route }) {
 
@@ -19,7 +19,6 @@ export default function Scorer({ navigation, route }) {
   const [currentScore, setCurrentScore] = useState(0);
   const [enagleAllMissions, setEnableAllMissions] = useState(true);
   const mainRoot = "../assets/missions/";
-  const CONSTANTS = require("../constants.json");
   const FULLCONTENT = require("../translations.json");
   const [CONTENT, setContent] = useState(FULLCONTENT.es)
 
@@ -220,11 +219,11 @@ export default function Scorer({ navigation, route }) {
       </ScrollView>
       <View>
         <NavBar 
-          icons={[["md-calculator-outline", "stopwatch-outline"],
-                  ["Scorer",  lastScreen == "Timer" ? "Timer" : "StopWatch"]]}
+          icons={[["md-calculator-outline", "stopwatch-outline", "book-outline"],
+                  ["Scorer",  lastScreen == "Timer" ? "Timer" : "StopWatch", "Docs"]]}
           active={[0, CONSTANTS.darkYellow]}
           pageNavigationHandler={navigation.navigate}
-          timeManagementLabels={CONTENT} />
+          contentLabels={CONTENT} />
       </View>
     </View>
   );
@@ -233,7 +232,7 @@ export default function Scorer({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#3B4457",
+    backgroundColor: CONSTANTS.primaryBgColor,
     position: "relative"
   },
   header: {
