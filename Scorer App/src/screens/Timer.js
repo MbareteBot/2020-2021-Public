@@ -27,7 +27,7 @@ export default function Timer({ navigation, route }) {
   };
 
   const [playButton, setPlayButton] = useState("ios-play-outline");
-  const [time, setTime] = useState([0,0,0]);
+  const [time, setTime] = useState([0,2,30]);
   const elapsedTime = useRef(null);
   const timeInterval = useRef(null);
   const [enableInput, setEnableInput] = useState("auto");
@@ -79,7 +79,7 @@ export default function Timer({ navigation, route }) {
     setIsEditable(true);
     clearInterval(timeInterval.current);
     timeInterval.current = null
-    setTime([0,0,0]);
+    setTime([0,2,30]);
     setPlayButton("ios-play-outline");
     fadeIn();
   }
@@ -94,7 +94,7 @@ export default function Timer({ navigation, route }) {
               title={[[route.params.LABELS.stopwatch, route.params.LABELS.timer],["StopWatch", "Timer"]]}
               active={[1, CONSTANTS.darkYellow]}
               pageNavigationHandler={navigation.navigate}
-              timeManagementLabels={route.params.LABELS} />
+              contentLabels={route.params.LABELS} />
           </Animated.View>
         <View style={styles.timerContainer}>
           <View style={styles.timerInputContainer}>
@@ -126,6 +126,7 @@ export default function Timer({ navigation, route }) {
                 }}
                 style={styles.timerInput}
                 placeholder={"00"}
+                defaultValue={"02"}
                 placeholderTextColor="white"
                 maxLength={2}
                 editable={isEditable} />
@@ -143,6 +144,7 @@ export default function Timer({ navigation, route }) {
                 }}
                 style={styles.timerInput}
                 placeholder={"00"}
+                defaultValue={"30"}
                 placeholderTextColor="white"
                 maxLength={2}
                 editable={isEditable} />

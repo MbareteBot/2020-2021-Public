@@ -35,32 +35,32 @@ export default function Docs({ navigation, route }) {
     },
     robotGameRulebook: {
       name: CONTENT.robotGameRulebook.name,
-      icon: "eye",
+      icon: "ios-construct",
       link: CONTENT.robotGameRulebook.link
     },
     rubrics: {
       name: CONTENT.rubrics.name,
-      icon: "eye",
+      icon: "checkmark-done-outline",
       link: CONTENT.rubrics.link
     },
     robotGameScoresheet: {
       name: CONTENT.robotGameScoresheet.name,
-      icon: "eye",
+      icon: "md-shield-checkmark",
       link: CONTENT.robotGameScoresheet.link
     },
     awards: {
       name: CONTENT.awards.name,
-      icon: "eye",
+      icon: "trophy-outline",
       link: CONTENT.awards.link
     },
     judgingSessionForTeams: {
       name: CONTENT.judgingSessionForTeams.name,
-      icon: "eye",
+      icon: "list",
       link: CONTENT.judgingSessionForTeams.link
     },
     updates: {
       name: CONTENT.updates.name,
-      icon: "eye",
+      icon: "md-reload-circle-outline",
       link: CONTENT.updates.link
     }
   }
@@ -85,7 +85,7 @@ export default function Docs({ navigation, route }) {
       <View style={ styles.docsContainer }>
         {
           docLinksNames.map(name => (
-            <TouchableOpacity style={ styles.docContainer } onPress={() => handleLink(docLinks[name].link)}>
+            <TouchableOpacity style={ styles.docContainer } onPress={() => handleLink(docLinks[name].link)} key={docLinks[name].link}>
               <Icon name={docLinks[name].icon} size={30} color={"white"} />
               <CText style={styles.docLink}>{docLinks[name].name}</CText>
           </TouchableOpacity> 

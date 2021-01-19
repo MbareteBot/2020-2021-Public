@@ -25,9 +25,6 @@ export default function Scorer({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar 
-        style="light" 
-        backgroundColor="#3B4457"/>
         <Header>
             <View style={{flexDirection: "row"}}>
               <CText style={{fontSize: 23}}>{CONTENT.scorer.title}: </CText>

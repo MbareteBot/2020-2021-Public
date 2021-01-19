@@ -5,7 +5,11 @@ const constants = require("../constants.json")
 
 export default function Header(props) {
   return (
+    
     <View style={[styles.container, props.style]}>
+      <StatusBar 
+        style="light" 
+        backgroundColor="#3B4457"/>
       { props.children }
     </View>
   )
