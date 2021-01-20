@@ -87,10 +87,8 @@ export default function Docs({ navigation, route }) {
             style={styles.onlineDoc} 
             scalesPageToFit={false}
             containerStyle={{ position: "absolute", top: 0, width: "100%", height: "100%", zIndex: 1 }}
-            onLoadStart={ActivityIndicatorElement}
-            source={{ uri: `http://docs.google.com/gview?embedded=true&url=${viewLink}` }} />
+            source={{ html: `<iframe src="${viewLink}" width="100%" height="100%" frameborder="0" scrolling="no"></iframe>` }} />
         ): null}
-
       <ScrollView>
       <View style={ styles.docsContainer }>
         {
@@ -148,3 +146,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 })
+
+
+//"https://www.yumpu.com/fr/embed/view/s1XAziYxtMSK9IRb" frameborder="0" allowfullscreen="true"  allowtransparency="true"></iframe><br><a href="https://www.yumpu.com/fr/document/view/65231870/participation-rules" 
