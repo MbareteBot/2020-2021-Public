@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { StyleSheet, TouchableOpacity, View, ActivityIndicator, ScrollView, Alert } from "react-native";
 import WebView from "react-native-webview";
 import CText from "../components/CustomText";
 import Header from "../components/Header";
@@ -64,14 +64,22 @@ export default function Docs({ navigation, route }) {
       link: CONTENT.updates.link
     }
   }
-  const docLinksNames = ["modelOverview", "robotGameRulebook", "rubrics", "robotGameScoresheet", "awards", "judgingSessionForTeams", "updates"]
+  const docLinksNames = ["modelOverview", 
+                          "robotGameRulebook", 
+                          "rubrics", 
+                          "robotGameScoresheet", 
+                          "awards", 
+                          "judgingSessionForTeams", 
+                          "updates"]
   return (
     <View style={ styles.container }>
-      <Header style={{ backgroundColor: "#fff", flexDirection: "row" }}>
-        <View style={{ position: "absolute", left: 20 }}>
-          <Icon name="arrow-back" size={30} color={CONSTANTS.secondaryColor} onPress={goBack} />
-        </View>
-        <CText style={{ fontSize: 23, color: CONSTANTS.secondaryColor }}>{ CONTENT.title }</CText>
+      <Header style={{ backgroundColor: CONSTANTS.primaryBgColor, flexDirection: "row" }}>
+        { viewLink != "" ? (
+          <View style={{ position: "absolute", left: 20 }}>
+            <Icon name="arrow-back" size={30} color={CONSTANTS.primaryColor} onPress={goBack} />
+          </View>
+        ):null}
+        <CText style={{ fontSize: 23, color: CONSTANTS.primaryColor }}>{ CONTENT.title }</CText>
       </Header>
       <View style={{flex: 1}}>
       { viewLink ? (
@@ -79,20 +87,23 @@ export default function Docs({ navigation, route }) {
             style={styles.onlineDoc} 
             scalesPageToFit={false}
             containerStyle={{ position: "absolute", top: 0, width: "100%", height: "100%", zIndex: 1 }}
-            renderLoading={ActivityIndicatorElement}
+            onLoadStart={ActivityIndicatorElement}
             source={{ uri: `http://docs.google.com/gview?embedded=true&url=${viewLink}` }} />
         ): null}
+
+      <ScrollView>
       <View style={ styles.docsContainer }>
         {
           docLinksNames.map(name => (
             <TouchableOpacity style={ styles.docContainer } onPress={() => handleLink(docLinks[name].link)} key={docLinks[name].link}>
-              <Icon name={docLinks[name].icon} size={30} color={"white"} />
+              <Icon name={docLinks[name].icon} size={30} color={CONSTANTS.darkYellow} />
               <CText style={styles.docLink}>{docLinks[name].name}</CText>
           </TouchableOpacity> 
           ))
         }
 
       </View>
+      </ScrollView>
       </View>
       <NavBar 
           icons={[["md-calculator-outline", "stopwatch-outline", "book-outline"],
@@ -107,19 +118,21 @@ export default function Docs({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CONSTANTS.primaryBgColor,
+    backgroundColor: CONSTANTS.primaryColor,
   },
   docContainer: {
     padding: 20,
-    backgroundColor: CONSTANTS.secondaryColor,
-    borderBottomLeftRadius: 10,
-    borderBottomColor: "white",
+    backgroundColor: "#fff",
+    borderBottomLeftRadius: 2,
+    borderBottomColor: CONSTANTS.primaryBgColor,
     borderBottomWidth: 1,
+
     flexDirection: "row",
     alignItems: "center",
   },
   docLink: {
-    marginLeft: 10
+    marginLeft: 10,
+    color: CONSTANTS.primaryBgColor,
   },  
   activityIndicatorStyle: {
     flex: 1,

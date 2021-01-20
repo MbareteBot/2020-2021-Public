@@ -53,10 +53,10 @@ export default function Scorer({ navigation, route }) {
           description={CONTENT.scorer.m02.description}
           counterHandler={setCurrentScore}
           points={10}
-          picker={[CONTENT.scorer.m02.case1.name,
-                  [CONTENT.scorer.m02.case1.option1, CONTENT.scorer.m02.case1.option2, CONTENT.scorer.m02.case1.option3],
-                  [0,5,10],
-                  [CONSTANTS.magenta, CONSTANTS.yellow, CONSTANTS.black]]} />
+          picker={[{ title: CONTENT.scorer.m02.case1.name,
+                    options: [CONTENT.scorer.m02.case1.option1, CONTENT.scorer.m02.case1.option2, CONTENT.scorer.m02.case1.option3],
+                    points:[0,5,10],
+                    labelsColors: [CONSTANTS.magenta, CONSTANTS.yellow, CONSTANTS.black] }]} />
         <Mission
           enable={enagleAllMissions} 
           imgSource={require(mainRoot + "m3-min.png")}
@@ -64,10 +64,10 @@ export default function Scorer({ navigation, route }) {
           description={CONTENT.scorer.m03.description}
           counterHandler={setCurrentScore}
           points={5}
-          picker={[CONTENT.scorer.m03.case1.name,
-                  [CONTENT.scorer.m03.case1.option1, CONTENT.scorer.m03.case1.option2],
-                  [0,15],
-                  [CONSTANTS.black, CONSTANTS.black]]} 
+          picker={[{ title: CONTENT.scorer.m03.case1.name,
+                    options: [CONTENT.scorer.m03.case1.option1, CONTENT.scorer.m03.case1.option2],
+                    points: [0,15],
+                    labelsColors: [CONSTANTS.black, CONSTANTS.black] }]}         
           options={[[CONTENT.scorer.m03.case2,CONTENT.scorer.m03.case3],
                   [10,20]]} />
         <Mission
@@ -77,10 +77,10 @@ export default function Scorer({ navigation, route }) {
           description={CONTENT.scorer.m04.description}
           counterHandler={setCurrentScore}
           points={10}
-          picker={[CONTENT.scorer.m04.case1.name,
-                  [CONTENT.scorer.m04.case1.option1,CONTENT.scorer.m04.case1.option2,CONTENT.scorer.m04.case1.option3, CONTENT.scorer.m04.case1.option4],
-                  [0,10,20,30],
-                  [CONSTANTS.black, CONSTANTS.black, CONSTANTS.black]]} 
+          picker={[{ title: CONTENT.scorer.m04.case1.name,
+                    options: [CONTENT.scorer.m04.case1.option1,CONTENT.scorer.m04.case1.option2,CONTENT.scorer.m04.case1.option3, CONTENT.scorer.m04.case1.option4],
+                    points: [0,10,20,30],
+                    labelsColors: [CONSTANTS.black, CONSTANTS.black, CONSTANTS.black] }]}   
           options={[[CONTENT.scorer.m04.case2],
                   [15]]} />
         <Mission
@@ -90,9 +90,10 @@ export default function Scorer({ navigation, route }) {
           description={CONTENT.scorer.m05.description}
           counterHandler={setCurrentScore}
           points={10}
-          picker={[CONTENT.scorer.m05.case1.name,[CONTENT.scorer.m05.case1.option1,CONTENT.scorer.m05.case1.option2],
-                  [15,20],
-                  [CONSTANTS.black, CONSTANTS.black]]} />
+          picker={[{ title: CONTENT.scorer.m05.case1.name,
+                    options: [CONTENT.scorer.m05.case1.option1,CONTENT.scorer.m05.case1.option2],
+                    points: [15,20],
+                    labelsColors:[CONSTANTS.black, CONSTANTS.black] }]} />
         <Mission
           enable={enagleAllMissions} 
           imgSource={require(mainRoot + "m6-min.png")}
@@ -116,10 +117,10 @@ export default function Scorer({ navigation, route }) {
           description={CONTENT.scorer.m08.description}
           counterHandler={setCurrentScore}
           points={25}
-          picker={[CONTENT.scorer.m08.case1,
-                  [...Array(18)].map((a,b) => ((b-1) + 1).toString()),
-                  [...Array(18)].map((a,b) => (((b-1) + 1) * 5)),
-                  [...Array(18)].fill(CONSTANTS.black)]}
+          picker={[{ title: CONTENT.scorer.m08.case1,
+                    options: [...Array(18)].map((a,b) => ((b-1) + 1).toString()),
+                    points: [...Array(18)].map((a,b) => (((b-1) + 1) * 5)),
+                    labelsColors: [...Array(18)].fill(CONSTANTS.black) }]} 
           options={[[CONTENT.scorer.m08.case2,CONTENT.scorer.m08.case3], 
                     [5,10]]} />
         <Mission
@@ -129,10 +130,10 @@ export default function Scorer({ navigation, route }) {
           description={CONTENT.scorer.m09.description}
           counterHandler={setCurrentScore}
           points={0}
-          picker={[CONTENT.scorer.m09.case1.name,
-                  [CONTENT.scorer.m09.case1.option1,CONTENT.scorer.m09.case1.option2,CONTENT.scorer.m09.case1.option3],
-                  [0,5,10],
-                  [CONSTANTS.black, CONSTANTS.black, CONSTANTS.black]]}
+          picker={[{ title: CONTENT.scorer.m09.case1.name,
+                    options: [CONTENT.scorer.m09.case1.option1,CONTENT.scorer.m09.case1.option2,CONTENT.scorer.m09.case1.option3],
+                    points: [0,5,10],
+                    labelsColors: [CONSTANTS.black, CONSTANTS.black, CONSTANTS.black] }]}      
           options={[[CONTENT.scorer.m09.case2,CONTENT.scorer.m09.case3],
                     [10,15]]} />
         <Mission
@@ -149,10 +150,10 @@ export default function Scorer({ navigation, route }) {
           description={CONTENT.scorer.m11.description}
           counterHandler={setCurrentScore}
           points={5}
-          picker={[CONTENT.scorer.m11.case1.name,
-                  [CONTENT.scorer.m11.case1.option1, CONTENT.scorer.m11.case1.option2, CONTENT.scorer.m11.case1.option3, CONTENT.scorer.m11.case1.option4, CONTENT.scorer.m11.case1.option5, CONTENT.scorer.m11.case1.option6],
-                  [0,5,10,15,20,25],
-                  ["gray", "red", "orange", "rgb(2304,234,0)", "lightgreen", "darkgreen"]]} />    
+          picker={[{ title: CONTENT.scorer.m11.case1.name,
+                    options: [CONTENT.scorer.m11.case1.option1, CONTENT.scorer.m11.case1.option2, CONTENT.scorer.m11.case1.option3, CONTENT.scorer.m11.case1.option4, CONTENT.scorer.m11.case1.option5, CONTENT.scorer.m11.case1.option6],
+                    points: [0,5,10,15,20,25],
+                    labelsColors: ["gray", "red", "orange", CONSTANTS.yellow, "lightgreen", "darkgreen"] }]} />   
         <Mission 
           enable={enagleAllMissions} 
           imgSource={require(mainRoot + "m12-min.png")}
@@ -169,10 +170,10 @@ export default function Scorer({ navigation, route }) {
           description={CONTENT.scorer.m13.description}
           counterHandler={setCurrentScore}
           points={10}
-          picker={[CONTENT.scorer.m13.case1.name,
-                  [CONTENT.scorer.m13.case1.option1,CONTENT.scorer.m13.case1.option2,CONTENT.scorer.m13.case1.option3],
-                  [0,5,10],
-                  ["blue", CONSTANTS.magenta, "rgb(2304,234,0)"]]} />
+          picker={[{ title: CONTENT.scorer.m13.case1.name,
+                    options: [CONTENT.scorer.m13.case1.option1,CONTENT.scorer.m13.case1.option2,CONTENT.scorer.m13.case1.option3],
+                    points: [0,5,10],
+                    labelsColors: ["blue", CONSTANTS.magenta, CONSTANTS.yellow] }]} />   
         <Mission 
           enable={enagleAllMissions} 
           imgSource={require(mainRoot + "m14-min.png")}
@@ -180,10 +181,14 @@ export default function Scorer({ navigation, route }) {
           description={CONTENT.scorer.m14.description}
           counterHandler={setCurrentScore}
           points={5}
-          picker={[CONTENT.scorer.m14.case1.name,
-                  [CONTENT.scorer.m14.case1.option1,CONTENT.scorer.m14.case1.option2,CONTENT.scorer.m14.case1.option3,CONTENT.scorer.m14.case1.option4,CONTENT.scorer.m14.case1.option5,CONTENT.scorer.m14.case1.option6],
-                  [0,5,10,15,20,25],
-                  [CONSTANTS.black, CONSTANTS.black,CONSTANTS.black, CONSTANTS.black,CONSTANTS.black, CONSTANTS.black]]} />
+          picker={[{ title: CONTENT.scorer.m14.case1,
+                      options: [...Array(9)].map((a,b) => ((b-1) + 1).toString()),
+                      points: [...Array(9)].map((a,b) => (( (b + 1)*5 ))),
+                      labelsColors: [CONSTANTS.black] },
+                  { title: CONTENT.scorer.m14.case2,
+                    options: [...Array(5)].map((a,b) => ((b-1) + 1).toString()),
+                    points: [...Array(5)].map((a,b) => (( (b + 1)*5 ))),
+                    labelsColors: [CONSTANTS.black] }]} />  
         <Mission 
           enable={enagleAllMissions} 
           imgSource={require(mainRoot + "m15-min.png")}
@@ -191,10 +196,10 @@ export default function Scorer({ navigation, route }) {
           description={CONTENT.scorer.m15.description}
           counterHandler={setCurrentScore}
           points={5}
-          picker={[CONTENT.scorer.m15.case1.name,
-                  [CONTENT.scorer.m15.case1.option1,CONTENT.scorer.m15.case1.option2,CONTENT.scorer.m15.case1.option3,CONTENT.scorer.m15.case1.option4,CONTENT.scorer.m15.case1.option5,CONTENT.scorer.m15.case1.option6],
-                  [0,5,15,25,40,55],
-                  [CONSTANTS.black, CONSTANTS.black,CONSTANTS.black,CONSTANTS.black,CONSTANTS.black]]} />
+          picker={[{ title: CONTENT.scorer.m15.case1.name,
+                    options: [CONTENT.scorer.m15.case1.option1,CONTENT.scorer.m15.case1.option2,CONTENT.scorer.m15.case1.option3,CONTENT.scorer.m15.case1.option4,CONTENT.scorer.m15.case1.option5,CONTENT.scorer.m15.case1.option6],
+                    points: [0,5,15,25,40,55],
+                    labelsColors: [CONSTANTS.black, CONSTANTS.black,CONSTANTS.black,CONSTANTS.black,CONSTANTS.black] }]} />  
         <View style={styles.footer}>
           <TouchableOpacity
             onPressIn={() => setEnableAllMissions(false)}
@@ -209,7 +214,7 @@ export default function Scorer({ navigation, route }) {
               else setContent(FULLCONTENT.es)
             }} >
             <View style={styles.button}>
-              <CText>Cambia Idioma(solo prueba)</CText>
+              <CText>Cambia Idioma (prueba)</CText>
             </View>
           </TouchableOpacity>
         </View>

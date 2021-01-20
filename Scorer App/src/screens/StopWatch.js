@@ -73,7 +73,7 @@ export default function StopWatch({ navigation, route }) {
       <StatusBar 
         style="light" 
         backgroundColor="#3B4457"/>
-      <Animated.View style={{opacity: fadeAnim}} pointerEvents={enableInput}>
+      <Animated.View style={{ opacity: fadeAnim }} pointerEvents={enableInput}>
         <NavBar 
           title={[[route.params.LABELS.stopwatch, route.params.LABELS.timer],["StopWatch", "Timer"]]}
           active={[0, CONSTANTS.darkYellow]}

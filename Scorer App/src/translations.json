@@ -141,16 +141,8 @@
       "m14": {
         "name": "M14 | Health Units",
         "description": "The robot collects health units from around the field and moves them to target areas.",
-        "case1": {
-          "name": "Select thow many are touching either the RePLAY logo or the gray area around the bench",
-          "option1": "1",
-          "option2": "2",
-          "option3": "3",
-          "option4": "4",
-          "option5": "5",
-          "option6": "6"
-        },
-        "case2": "",
+        "case1": "Select thow many are touching either the RePLAY logo or the gray area around the bench",
+        "case2": "Select thow many looped over a pull-up bar post as shown – maximum of four – and touching no equipment",
         "case3": ""
       },
       "m15": {
@@ -320,7 +312,7 @@
           "option4": "Amarillo",
           "option5": "Verde claro",
           "option6": "Verde oscuro"
-},
+      },
         "case2": "",
         "case3": ""
       },
@@ -346,16 +338,8 @@
       "m14": {
         "name": "M14 | Porciones de Salud",
         "description": "El robot recoge porciones de salud repartidas por todo el terreno de juego y las mueve a zonas de puntuación.",
-        "case1": {
-          "name": "Seleccione cuantas estan tocando el logo RePLAY o bien el área gris que hay alrededor del banco",
-          "option1": "1",
-          "option2": "2",
-          "option3": "3",
-          "option4": "4",
-          "option5": "5",
-          "option6": "6"
-        },
-        "case2": "",
+        "case1": "Seleccione cuantas estan tocando el logo RePLAY o bien el area gris que hay alrededor del banco",
+        "case2": "Seleccione cuantas estan colgadas sobre un poste del larguero - max 4 - y sin contacto con equipamento",
         "case3": ""
       },
       "m15": {

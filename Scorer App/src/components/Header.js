@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, StatusBar } from "react-native";
 
-const constants = require("../constants.json")
+const CONSTANTS = require("../constants.json")
 
 export default function Header(props) {
   return (
@@ -9,7 +9,7 @@ export default function Header(props) {
     <View style={[styles.container, props.style]}>
       <StatusBar 
         style="light" 
-        backgroundColor="#3B4457"/>
+        backgroundColor={CONSTANTS.primaryBgColor} />
       { props.children }
     </View>
   )
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    backgroundColor: constants.primaryBgColor,
+    backgroundColor: CONSTANTS.primaryBgColor,
     width: "100%",
   }
 })
