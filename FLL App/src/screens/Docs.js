@@ -11,7 +11,7 @@ const CONSTANTS = require("../constants.json");
 const ActivityIndicatorElement = () => {
   return (
     <ActivityIndicator
-      color="#009688"
+      color={CONSTANTS.darkYellow}
       size="large"
       style={styles.activityIndicatorStyle} />
   );
@@ -21,10 +21,11 @@ export default function Docs({ navigation, route }) {
 
   const CONTENT = route.params.LABELS.documentation;
   const [viewLink, setViewLink] = useState("");
+  const [isLoadingVisible, setIsLoadingVisible] = useState(false);
   const handleLink = (link) => {
     setViewLink(link);
   }
-  const goBack = () => {
+  const handleGoBack = () => {
     setViewLink("");
   }
   const docLinks = {
@@ -76,7 +77,7 @@ export default function Docs({ navigation, route }) {
       <Header style={{ backgroundColor: CONSTANTS.primaryBgColor, flexDirection: "row" }}>
         { viewLink != "" ? (
           <View style={{ position: "absolute", left: 20 }}>
-            <Icon name="arrow-back" size={30} color={CONSTANTS.primaryColor} onPress={goBack} />
+            <Icon name="arrow-back" size={30} color={CONSTANTS.primaryColor} onPress={handleGoBack} />
           </View>
         ):null}
         <CText style={{ fontSize: 23, color: CONSTANTS.primaryColor }}>{ CONTENT.title }</CText>
@@ -87,6 +88,8 @@ export default function Docs({ navigation, route }) {
             style={styles.onlineDoc} 
             scalesPageToFit={false}
             containerStyle={{ position: "absolute", top: 0, width: "100%", height: "100%", zIndex: 1 }}
+            renderLoading={ActivityIndicatorElement}
+            startInLoadingState={true}
             source={{ html: `<iframe src="${viewLink}" width="100%" height="100%" frameborder="0" scrolling="no"></iframe>` }} />
         ): null}
       <ScrollView>
@@ -135,17 +138,11 @@ const styles = StyleSheet.create({
   activityIndicatorStyle: {
     flex: 1,
     position: 'absolute',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 'auto',
-    marginBottom: 'auto',
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
-    justifyContent: 'center',
+    alignSelf: "center",
+    zIndex: 2
   },
 })
-
-
-//"https://www.yumpu.com/fr/embed/view/s1XAziYxtMSK9IRb" frameborder="0" allowfullscreen="true"  allowtransparency="true"></iframe><br><a href="https://www.yumpu.com/fr/document/view/65231870/participation-rules" 

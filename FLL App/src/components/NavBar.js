@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons"
 import CText from "./CustomText";
@@ -6,9 +6,7 @@ import { useRoute } from '@react-navigation/native';
 const constants = require("../constants.json")
 
 export default function NavBar(props) {
-  /*
-    args: [[icons(name)], [iconPage], [activeIcon]] 
-  */
+
   const route = useRoute();
 
   return (

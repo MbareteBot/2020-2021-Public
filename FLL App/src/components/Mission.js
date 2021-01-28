@@ -10,7 +10,7 @@ export default function Mission(props){
   const missionPointsLabel = require("../translations.json").es.scorer.missionPointLabel;
   const [pointsAddedByOptions, setPointsAddedByOptions] = useState(0);
   const [isMissionEnabled, setIsMissionEnabled] = useState(false);
-  const [isEnabled, setIsEnabled] = useState([]);
+  const [isEnabled, setIsEnabled] = useState(props.options ? [...Array(props.options.length)].fill(0) : 0);
 
   const handleCounter = (state, counterHandler, points) => {
     if (state) counterHandler(prevPoints => (prevPoints + points + pointsAddedByPicker));
@@ -19,31 +19,41 @@ export default function Mission(props){
     }
   }
   
-  const toggleMissionSwitch = () => { 
-    setIsMissionEnabled(prevState => {
-    if (props.state != undefined) props.state(!prevState);
+  const toggleMissionSwitch = () => setIsMissionEnabled(prevState => {
     if (prevState) {
       setPointsAddedByOptions(0);
       setPointsAddedByPicker(0);
       setIsEnabled([]);
-      if (props.picker) {
-        setPickerValue(prevState => props.picker[0]["points"][0]);
-        setPickerLastValue(0);
+      for (var index in props.picker) {
+        pickerHandler(index, props.picker[index]["points"][0]);
+        handlePickerLastValue(index, 0);
       }
+    } else {
+      console.log("Picker: " + pickerValue[0]);
     }
     return !prevState 
-  })
-  };
+  });
 
-  const toggleSwitch = (index) => setIsEnabled(prevStates => {
-    if (prevStates.length == 0) for (let i = 0; i < props.options[0].length; i++) prevStates.push(false)
+  const toggleSwitch = (index, value) => setIsEnabled(prevStates => {
+    handleMultipleElements(prevStates, index, value);
+  });
+
+  const pickerHandler = (index, value) => setPickerValue(prevStates => {
+    handleMultipleElements(prevStates, index, value);
+  });
+
+  const handlePickerLastValue = (index, value) => setPickerLastValue(prevStates => {
+    handleMultipleElements(prevStates, index, value);
+  });
+
+  const handleMultipleElements = (prevStates, index, value) => {
     var updatedStates = prevStates;
     var state = 0;
     for (state in updatedStates) {
-      if (state == index) updatedStates[index] = !updatedStates[index];
+      if (state == index) updatedStates[index] = value;
     }
-    return updatedStates;
-  });
+    return updatedStates;  
+  }
 
   const handleCounterOptions = (state, counterHandler, points) => {
     if (state) {
@@ -58,7 +68,7 @@ export default function Mission(props){
 
   const [pickerValue, setPickerValue] = useState(props.picker ? [...Array(props.picker.length)].fill(0) : 0);
   const [pointsAddedByPicker, setPointsAddedByPicker] = useState(0);
-  const [pickerLastValue, setPickerLastValue] = useState("NaN");
+  const [pickerLastValue, setPickerLastValue] = useState(props.picker ? [...Array(props.picker.length)].fill(undefined) : 0);
 
   if (!props.enable && isMissionEnabled) {
     toggleMissionSwitch();
@@ -108,20 +118,21 @@ export default function Mission(props){
                       selectedValue={pickerValue[pickerIndex]}
                       onValueChange={(value) => {
                         setPointsAddedByPicker(value);
-                        if (pickerLastValue != "NaN") {
+                        if (!pickerLastValue.every(val => val == "undefined")) {
+                          console.log("not the first time");
                           handleCounter(false, props.counterHandler, pickerLastValue);
                         }
                         handleCounter(true, props.counterHandler, value);
-                        setPickerValue(value);
-                        setPickerLastValue(value);
+                        pickerHandler(pickerIndex, value);
+                        hadlePickerLastValue(pickerIndex, value);
                         }} >
                       {
-                          picker["options"].map((val, index) => 
-                          <Picker.Item 
-                            label={val} 
-                            value={picker["points"][index]} 
-                            color={picker["labelsColors"][index]}
-                            key={val} /> )
+                        picker["options"].map((val, index) => 
+                        <Picker.Item 
+                          label={val} 
+                          value={picker["points"][index]} 
+                          color={picker["labelsColors"][index]}
+                          key={val} /> )
                       }
                   </Picker>
                   </View>
@@ -144,7 +155,7 @@ export default function Mission(props){
                   ios_backgroundColor={"#3e3e3e"}
                   value={isEnabled[index]}
                   onValueChange={(switchState) => {
-                    toggleSwitch(index);
+                    toggleSwitch(index, switchState);
                     handleCounterOptions(switchState, props.counterHandler, props.options[1][index]);
                   }} />
                 </View>

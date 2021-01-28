@@ -22,7 +22,6 @@ export default function Scorer({ navigation, route }) {
   const FULLCONTENT = require("../translations.json");
   const [CONTENT, setContent] = useState(FULLCONTENT.es)
 
-
   return (
     <View style={styles.container}>
         <Header>
@@ -55,7 +54,7 @@ export default function Scorer({ navigation, route }) {
           points={10}
           picker={[{ title: CONTENT.scorer.m02.case1.name,
                     options: [CONTENT.scorer.m02.case1.option1, CONTENT.scorer.m02.case1.option2, CONTENT.scorer.m02.case1.option3],
-                    points:[0,5,10],
+                    points: [0,5,10],
                     labelsColors: [CONSTANTS.magenta, CONSTANTS.yellow, CONSTANTS.black] }]} />
         <Mission
           enable={enagleAllMissions} 
