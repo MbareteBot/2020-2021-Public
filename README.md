@@ -12,6 +12,8 @@ We are Mbarete Bot a team from Paraguay and we are glad you are checking our cod
 	- Features: 
 		- An odometry system to keep track of the robot
 		- A PID system implementation
+		
+- FLL App: This is an App for every cassual FLL participant
 
 
 
