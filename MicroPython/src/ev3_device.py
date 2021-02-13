@@ -1,6 +1,4 @@
 #!/usr/bin/env pybricks-micropython
-
-
 from pybricks.hubs import EV3Brick
 from pybricks.iodevices import Ev3devSensor
 from pybricks.ev3devices import Motor
@@ -30,10 +28,10 @@ class MotorManager():
         self.SpeedControl = PIDSystem()
 
         # All available motors
-        self.left_steeringMotor = 0
-        self.right_steeringMotor = 0
-        self.left_actionMotor = 0
-        self.right_actionMotor = 0
+        self.left_steering_motor = 0
+        self.right_steering_motor = 0
+        self.left_action_motor = 0
+        self.right_action_motor = 0
 
         self.motor_direction = Direction.CLOCKWISE
 
@@ -42,19 +40,19 @@ class MotorManager():
         self.steering = 0
         self.action = 0
 
-    def set_steering_motors(self, left_motor_port, right_motor_port, set_inverse_direction=False):
+    def set_steering_motors(self, left_motor_port, right_motor_port, default_direction=True):
 
-        if set_inverse_direction:
+        if not default_direction:
             self.motor_direction = Direction.COUNTERCLOCKWISE
 
-        self.left_steeringMotor = Motor(left_motor_port, self.motor_direction)
-        self.right_steeringMotor = Motor(
+        self.left_steering_motor = Motor(left_motor_port, self.motor_direction)
+        self.right_steering_motor = Motor(
             right_motor_port, self.motor_direction)
 
     def set_action_motors(self, left_motor_port, right_motor_port):
 
-        self.left_actionMotor = Motor(left_motor_port)
-        self.right_actionMotor = Motor(right_motor_port)
+        self.left_action_motor = Motor(left_motor_port)
+        self.right_action_motor = Motor(right_motor_port)
 
     def run(self, motor, degrees, speed=100, duty_limit=20):
 
@@ -103,18 +101,18 @@ class MotorManager():
     def reset_angle(self, motors):
 
         if motors == self.steering:
-            self.left_steeringMotor.reset_angle(0)
-            self.right_steeringMotor.reset_angle(0)
+            self.left_steering_motor.reset_angle(0)
+            self.right_steering_motor.reset_angle(0)
 
         elif motors == self.action:
-            self.left_actionMotor.reset_angle(0)
-            self.right_actionMotor.reset_angle(0)
+            self.left_action_motor.reset_angle(0)
+            self.right_action_motor.reset_angle(0)
 
         elif motors == self.full:
-            self.left_steeringMotor.reset_angle(0)
-            self.right_steeringMotor.reset_angle(0)
-            self.left_actionMotor.reset_angle(0)
-            self.right_actionMotor.reset_angle(0)
+            self.left_steering_motor.reset_angle(0)
+            self.right_steering_motor.reset_angle(0)
+            self.left_action_motor.reset_angle(0)
+            self.right_action_motor.reset_angle(0)
 
         else:
             raise Exception("""Motors to reset should be named as following :
@@ -125,18 +123,18 @@ class MotorManager():
     def stop(self, motors):
 
         if motors == self.steering:
-            self.left_steeringMotor.hold()
-            self.right_steeringMotor.hold()
+            self.left_steering_motor.hold()
+            self.right_steering_motor.hold()
 
         elif motors == self.action:
-            self.left_actionMotor.hold()
-            self.right_actionMotor.hold()
+            self.left_action_motor.hold()
+            self.right_action_motor.hold()
 
         elif motors == self.full:
-            self.left_steeringMotor.hold()
-            self.right_steeringMotor.hold()
-            self.left_actionMotor.hold()
-            self.right_actionMotor.hold()
+            self.left_steering_motor.hold()
+            self.right_steering_motor.hold()
+            self.left_action_motor.hold()
+            self.right_action_motor.hold()
         else:
             raise Exception("""Motor to stop should be named as following :
                                         - self.Motors.steering

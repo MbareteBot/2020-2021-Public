@@ -1,7 +1,6 @@
 #!/usr/bin/env pybricks-micropython
-
-
 import time
+import threading
 from control import PIDSystem
 from robotic_tools import RoboticTools
 from ev3_device import (MotorManager, GyroSensorManager, ColorSensorManager)
@@ -39,8 +38,8 @@ class Robot():
 
             self.SpeedControl.execute(error_value, 0.5, 0.3, 0.1)
 
-            self.Motors.left_steeringMotor.dc(self.SpeedControl.output)
-            self.Motors.right_steeringMotor.dc(self.SpeedControl.output * -1)
+            self.Motors.left_steering_motor.dc(self.SpeedControl.output)
+            self.Motors.right_steering_motor.dc(self.SpeedControl.output * -1)
 
             if error_value > -0.1 and error_value < 0.1:
 
@@ -76,8 +75,8 @@ class Robot():
                 heading_kd = 0.1
 
             else:
-                heading_error = self.Motors.right_steeringMotor.speed(
-                ) - self.Motors.left_steeringMotor.speed()
+                heading_error = self.Motors.right_steering_motor.speed(
+                ) - self.Motors.left_steering_motor.speed()
                 heading_kp = 0.2
                 heading_ki = 0.001
                 heading_kd = 0.01
@@ -92,12 +91,12 @@ class Robot():
             # Speed control error logic when moving forward
             if target_distance > 0:
 
-                if self.Motors.right_steeringMotor.angle() < target_distance / 2:
+                if self.Motors.right_steering_motor.angle() < target_distance / 2:
                     speed_error = target_distance - \
-                        (target_distance - (self.Motors.right_steeringMotor.angle()))
+                        (target_distance - (self.Motors.right_steering_motor.angle()))
                 else:
                     moved_enough = True
-                    speed_error = target_distance - self.Motors.right_steeringMotor.angle()
+                    speed_error = target_distance - self.Motors.right_steering_motor.angle()
 
                 # Sets a minimun value for the speed control output in order to force the robot to move at that minimun speed
                 if self.SpeedControl.output < min_speed:
@@ -106,12 +105,12 @@ class Robot():
             # The exact same logic than the previous block but for moving backwards
             else:
 
-                if self.Motors.right_steeringMotor.angle() > target_distance / 2:
+                if self.Motors.right_steering_motor.angle() > target_distance / 2:
                     speed_error = target_distance - \
-                        (target_distance - (self.Motors.right_steeringMotor.angle()))
+                        (target_distance - (self.Motors.right_steering_motor.angle()))
                 else:
                     moved_enough = True
-                    speed_error = target_distance - self.Motors.right_steeringMotor.angle()
+                    speed_error = target_distance - self.Motors.right_steering_motor.angle()
 
                 if self.SpeedControl.output > -min_speed:
                     self.SpeedControl.output = -min_speed
@@ -123,14 +122,14 @@ class Robot():
                     self.Motors.stop(self.Motors.steering)
 
             if heading_error > 0:
-                self.Motors.left_steeringMotor.run(self.SpeedControl.output)
-                self.Motors.right_steeringMotor.run(
+                self.Motors.left_steering_motor.run(self.SpeedControl.output)
+                self.Motors.right_steering_motor.run(
                     self.SpeedControl.output + abs(self.HeadingControl.output))
 
             else:
-                self.Motors.left_steeringMotor.run(
+                self.Motors.left_steering_motor.run(
                     self.SpeedControl.output + abs(self.HeadingControl.output))
-                self.Motors.right_steeringMotor.run(self.SpeedControl.output)
+                self.Motors.right_steering_motor.run(self.SpeedControl.output)
             #print("speed", self.SpeedControl.output)
 
     def follow_line(self, target_value, distance, sensor):
@@ -150,14 +149,14 @@ class Robot():
 
             if error_value > 0:
 
-                self.Motors.left_steeringMotor.dc(Speed)
-                self.Motors.right_steeringMotor.dc(
+                self.Motors.left_steering_motor.dc(Speed)
+                self.Motors.right_steering_motor.dc(
                     Speed + self.HeadingControl.output)
 
             else:
-                self.Motors.left_steeringMotor.dc(
+                self.Motors.left_steering_motor.dc(
                     Speed + abs(self.HeadingControl.output))
-                self.Motors.right_steeringMotor.dc(Speed)
+                self.Motors.right_steering_motor.dc(Speed)
 
     def run_csv(self):
 
@@ -177,3 +176,7 @@ class Robot():
 
                 if element < len(robotPath) - 1:
                     self.Turn(robotPath[element])
+
+    def run_async(self, _target, _args=[]):
+        new_thread = threading.Thread(target=_target, args=_args)
+        new_thread.start()
