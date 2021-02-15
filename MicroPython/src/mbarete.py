@@ -3,8 +3,9 @@ import time
 import threading
 from control import PIDSystem
 from robotic_tools import RoboticTools
-from ev3_device import (MotorManager, GyroSensorManager, ColorSensorManager)
+from ev3_device import MotorManager, GyroSensorManager, ColorSensorManager, DeviceManager
 from pybricks.hubs import EV3Brick
+from pybricks.parameters import Port
 
 
 class Robot():
@@ -21,15 +22,14 @@ class Robot():
         # Ev3 control related classes
         self.Gyro = GyroSensorManager()
         self.Motors = MotorManager()
-        self.ColorSensor = ColorSensorManager()
+        self.ColorSensors = ColorSensorManager()
+        self.DeviceControl = DeviceManager()
         self.Ev3 = EV3Brick()
 
     def turn(self, target_angle):
 
         self.Motors.reset_angle(self.Motors.steering)
-
         self.SpeedControl.reset()
-
         Turning = True
 
         while Turning:
@@ -59,7 +59,6 @@ class Robot():
         # the less battery it has the higher the value
         speed_kp = round(target_distance /
                          (self.Ev3.battery.voltage() * 0.03), 3)
-        print('speed kp', speed_kp)
         speed_ki = 0.4
         speed_kd = 0.4
 
@@ -136,23 +135,17 @@ class Robot():
 
         self.HeadingControl.reset()
         self.Motors.reset_angle(self.Motors.steering)
-
         FollowingLine = True
-
         Speed = 40
 
         while FollowingLine:
 
             error_value = sensor() - target_value
-
             self.HeadingControl.execute(error_value, 0.2, 0.2, 2)
-
             if error_value > 0:
-
                 self.Motors.left_steering_motor.dc(Speed)
                 self.Motors.right_steering_motor.dc(
                     Speed + self.HeadingControl.output)
-
             else:
                 self.Motors.left_steering_motor.dc(
                     Speed + abs(self.HeadingControl.output))

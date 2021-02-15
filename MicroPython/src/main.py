@@ -1,14 +1,20 @@
 #!/usr/bin/env pybricks-micropython
-from pybricks.parameters import Port
-from mbarete import Robot
-from robotic_tools import RoboticTools
-from menu import Screen, Menu
+from mbarete import *
 
 Robot = Robot()
-Robot.Motors.set_steering_motors(Port.A, Port.D, True)
-Robot.run_async(Robot.Motors.left_steering_motor.run_time, [500, 5000])
-Robot.Motors.right_steering_motor.run_time(100, 2000)
-
+Robot.ColorSensors.set_left_sensor(Port.S2)
+print("Sensor", Robot.ColorSensors.left_sensor)
+print(Robot.ColorSensors.left_sensor.port)
+# print(Robot.Gyro.sensor)
+# Robot.Motors.set_steering_motors(Port.A, Port.C)
+# Robot.DeviceControl.load_devices()
+# Robot.DeviceControl.is_port_in_use(Port.B)
+# print(Robot.Motors.left_steering_motor.port)
+# while True:
+#     Robot.Motors.left_steering_motor.dc(50)
+#     print()
+# Robot.Motors.right_action_motor.run_time(800, 5000)
+# Robot.Motors.run(Robot.Motors.left_action_motor, 500)
 # menu = Menu(["home", "chao"])
 # menu.setup()
 
