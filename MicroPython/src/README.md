@@ -21,7 +21,7 @@ The code is divided into diferent classes, each one is reponsible for a differen
 - main.py: Main file that gets executed on the ev3 robot and its the combination of all 3 past files and classes.
 
 
-### Set Up intruccions:
+### Set Up instruccions:
 #### Visual Studio Code
 1. Clone this repository
 2. Install and activate the LEGO Education EV3 extension
