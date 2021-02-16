@@ -15,6 +15,12 @@ from control import PIDSystem
 # All the sensors are set as Ev3devSensors from pybricks.iodevices. The main reason for this is that
 # they can access to more features.
 
+def error_msg(self, device):
+    return ("A ", device, "is not connected to the specified port: \n * Check the cables to motor or sensor.\n * Check the port settings in your script.")
+
+
+devices_global = {}
+
 
 class MotorManager():
 
@@ -32,11 +38,6 @@ class MotorManager():
         self.left_action_motor = None
         self.right_action_motor = None
         self.motor_direction = Direction.CLOCKWISE
-
-        # Parameters
-        self.full = 0
-        self.steering = 0
-        self.action = 0
 
     def set_steering_motors(self, left_motor_port, right_motor_port, default_direction=True):
 
@@ -87,47 +88,43 @@ class MotorManager():
 
     def reset_angle(self, motors):
 
-        if motors == self.steering:
+        if motors == "steering":
             self.left_steering_motor.reset_angle(0)
             self.right_steering_motor.reset_angle(0)
 
-        elif motors == self.action:
+        elif motors == "action":
             self.left_action_motor.reset_angle(0)
             self.right_action_motor.reset_angle(0)
 
-        elif motors == self.full:
+        elif motors == "full":
             self.left_steering_motor.reset_angle(0)
             self.right_steering_motor.reset_angle(0)
             self.left_action_motor.reset_angle(0)
             self.right_action_motor.reset_angle(0)
 
         else:
-            raise Exception("""Motors to reset should be named as following :
-                                        - self.Motors.steering
-                                        - self.Motors.action
-                                        - self.Motors.full """)
+            raise Exception(
+                'Motor to RESET should be named as following:\n *"steering"\n *"action"\n *"full" ')
 
     def stop(self, motors):
 
-        if motors == self.steering:
+        if motors == "steering":
             self.left_steering_motor.hold()
             self.right_steering_motor.hold()
 
-        elif motors == self.action:
+        elif motors == "action":
             self.left_action_motor.hold()
             self.right_action_motor.hold()
 
-        elif motors == self.full:
+        elif motors == "full":
             self.left_steering_motor.hold()
             self.right_steering_motor.hold()
             self.left_action_motor.hold()
             self.right_action_motor.hold()
         else:
-            raise Exception("""
-Motor to stop should be named as following:
- - self.Motors.steering
- - self.Motors.action
- - self.Motors.full """)
+            raise Exception(
+                'Motor to STOP should be named as following:\n *"steering"\n *"action"\n *"full" ')
+
         wait(250)
 
 
@@ -145,17 +142,14 @@ class ColorSensorManager():
     # The following functions lets you either initialize a sensor to an ev3 port or get
     # the reflected value reading from that sensor.
 
-    def set_left_sensor(self, port):
-        self.left_sensor = ColorSensor(port)
-        self.left_sensor.port = port
+    def set_left_sensor(self, port=None):
+        self.left_sensor = Device(ColorSensor(port), port)
 
-    def set_right_sensor(self, port):
-        self.right_sensor = ColorSensor(port)
-        self.right_sensor.port = port
+    def set_right_sensor(self, port=None):
+        self.right_sensor = Device(ColorSensor(port), port)
 
-    def set_front_sensor(self, port):
-        self.front_sensor = ColorSensor(port)
-        self.front_sensor.port = port
+    def set_front_sensor(self, port=None):
+        self.front_sensor = Device(ColorSensor(port), port)
 
 
 class GyroSensorManager():
@@ -165,22 +159,20 @@ class GyroSensorManager():
     def __init__(self):
         self.sensor = None
         self.gyro_direction = 1
+        self.port = None
 
     # You can also set the gyro to return an opposite value
 
     def set_sensor(self, port, set_inverse_direction=False):
         if set_inverse_direction:
             self.gyro_direction = -1
-        self.sensor = Ev3devSensor(port)
         try:
-            self.sensor.read("GYRO-ANG")
+            Ev3devSensor(port).read("GYRO-ANG")
+            self.port = port
         except:
-            raise Exception(
-                """
-A Gyro sensor is not connected to the specified port:
- * Check the cables to sensor.
- * Check the port settings in your script.
-""")
+            raise Exception(error_msg("Gyro Sensor"))
+
+        self.sensor = Device(Ev3devSensor(port), port)
 
     def calibrate(self):
         while True:
@@ -192,7 +184,10 @@ A Gyro sensor is not connected to the specified port:
 
     # This function returns the current gyro angle multiplied by 1 or -1
     def get_angle(self):
-        return int(self.sensor.read("GYRO-ANG")[0]) * self.gyro_direction
+        try:
+            return int(self.sensor.device.read("GYRO-ANG")[0]) * self.gyro_direction
+        except:
+            raise Exception(error_msg("Gyro Sensor"))
 
 
 class DeviceManager():
@@ -221,8 +216,7 @@ class DeviceManager():
                 return True
         return False
 
-    def load_devices(self):
-        print("Loading devices info...")
+    def load_devices(self, print_output=False):
         # LOOK FOR MOTORS IN EVERY PORT
         for PORT in self.motors_ports:
             try:
@@ -240,20 +234,23 @@ class DeviceManager():
                     pass
 
         # Print output
-        print("\nDevices Found:")
-        print("Motors:")
-        if len(self.MOTORS["Motor"]) > 0:
-            for PORT in self.MOTORS["Port"]:
-                print("Motor in", PORT)
-        else:
-            print("No motor found")
+        if print_output:
+            print("Loading devices info...\n")
 
-        print("\nSensors:")
-        if len(self.SENSORS["Sensor"]) > 0:
-            for SENSOR, PORT in zip(self.SENSORS["Sensor"], self.SENSORS["Port"]):
-                print(SENSOR, "in", PORT)
-        else:
-            print("No sensor found")
+            print("\nDevices Found:")
+            print("Motors:")
+            if len(self.MOTORS["Motor"]) > 0:
+                for PORT in self.MOTORS["Port"]:
+                    print("Motor in", PORT)
+            else:
+                print("No motor found")
+
+            print("\nSensors:")
+            if len(self.SENSORS["Sensor"]) > 0:
+                for SENSOR, PORT in zip(self.SENSORS["Sensor"], self.SENSORS["Port"]):
+                    print(SENSOR, "in", PORT)
+            else:
+                print("No sensor found")
 
         # Load all devices
         self.devices = {"Motors": self.MOTORS, "Sensors": self.SENSORS}
@@ -268,4 +265,42 @@ class DeviceManager():
             except:
                 print("[ ERROR ] Motor is missing in", port)
         for sensor, port in zip(self.devices["Sensors"]):
-            eval(sensor)
+            try:
+                if eval(sensor) == ColorSensor:
+                    eval(sensor).reflected()
+                    break
+                elif eval(sensor) == GyroSensor:
+                    eval(sensor).get_angle()
+                    break
+            except:
+                pass
+
+
+class Device:
+    def __init__(self, device, port):
+        self.device = device
+        self._port = port
+        self.connected_devices = DeviceManager()
+        self.connected_devices.load_devices()
+
+    @property
+    def port(self):
+        if self.connected_devices.is_port_in_use(self._port):
+            return self._port
+        else:
+            print("[ WARNING ] A device on port", self._port, "is missing!")
+            return None
+
+    def reflection(self):
+        try:
+            return self.device.reflection()
+        except:
+            raise Exception(
+                ".reflection() a method for Color Sensors. No Color Sensor is connected to " + str(self._port))
+
+    def angle(self):
+        try:
+            return self.device.angle()
+        except:
+            raise Exception(
+                ".angle() is a method for Motors or Gyro Sensors. No Motor nor Gyro Sensor is connected to " + str(self._port))

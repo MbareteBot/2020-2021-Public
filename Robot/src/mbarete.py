@@ -6,6 +6,7 @@ from robotic_tools import RoboticTools
 from ev3_device import MotorManager, GyroSensorManager, ColorSensorManager, DeviceManager
 from pybricks.hubs import EV3Brick
 from pybricks.parameters import Port
+from pybricks.tools import wait
 
 
 class Robot():
