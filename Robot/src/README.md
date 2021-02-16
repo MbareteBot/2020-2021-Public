@@ -7,13 +7,15 @@ The code is divided into diferent classes, each one is reponsible for a differen
 ### Files and classes description:
 - control.py:
   - PIDSystem: Provides with functions to run a PID calculation.
-  - Odometry System: Allows the use of sensors to estimate change in position over time. 
-  - RoboticTools: Minimal mathematical "tools" that might be useful for robotics.
+  - OdometrySystem: Allows the use of sensors to estimate change in position over time. 
   
 - ev3_device.py:
   - MotorManager: Facilitates control of ev3 Motors.
   - ColorSensorManager: Facilitates control of ev3 color sensors.
-  - GyroSensorManager: Facilitates control of a ev3 gyro sensor.
+  - GyroSensorManager: Facilitates control of an ev3 gyro sensor.
+ 
+- robotic_tools:
+  - RoboticTools: Minimal mathematical "tools" that might be useful for robotics.
  
 - mbarete.py:
   - Robot: Allows general control of ev3 robot.
@@ -23,9 +25,9 @@ The code is divided into diferent classes, each one is reponsible for a differen
 
 ### Set Up intruccions:
 #### Visual Studio Code
-1. Clone this repository
-2. Install and activate the LEGO Education EV3 extension
-3. Connect the EV3 Brick to your computer and start coding!
+1. Clone this repository.
+2. Install and activate the LEGO Education EV3 extension or make your own ssh connection with the robot.
+3. Run the main.py file and start coding!.
 
 
 
