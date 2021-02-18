@@ -4,8 +4,8 @@ import threading
 from control import PIDSystem
 from robotic_tools import RoboticTools
 from ev3_device import MotorManager, GyroSensorManager, ColorSensorManager, DeviceManager
-from pybricks.hubs import EV3Brick
 from pybricks.parameters import Port
+from pybricks.hubs import EV3Brick
 from pybricks.tools import wait
 
 
@@ -27,15 +27,16 @@ class Robot():
         self.DeviceControl = DeviceManager()
         self.Ev3 = EV3Brick()
 
-    def turn(self, target_angle):
+    def turn(self, tarangle):
 
-        self.Motors.reset_angle(self.Motors.steering)
+        self.Motors.reset_angle("steering")
         self.SpeedControl.reset()
+        self.Gyro.calibrate()
         Turning = True
 
         while Turning:
 
-            error_value = target_angle - self.Gyro.get_angle()
+            error_value = tarangle - self.Gyro.angle()
 
             self.SpeedControl.execute(error_value, 0.5, 0.3, 0.1)
 
@@ -45,14 +46,14 @@ class Robot():
             if error_value > -0.1 and error_value < 0.1:
 
                 Turning = False
-                self.Motors.stop(self.Motors.steering)
+                self.Motors.stop("steering")
 
     def straight(self, target_distance, target_orientation=0, target_duty_limit=20, use_gyro=True):
 
         self.SpeedControl.reset()
         self.HeadingControl.reset()
-        self.Motors.reset_angle(self.Motors.steering)
-        self.Gyro.reset()
+        self.Motors.reset_angle("steering")
+        self.Gyro.calibrate()
         target_distance = self.Tools.cm_to_degrees(target_distance, 6.24)
 
         speed_error = 0
@@ -69,7 +70,7 @@ class Robot():
 
         while Running:
             if use_gyro:
-                heading_error = target_orientation - self.Gyro.get_angle()
+                heading_error = target_orientation - self.Gyro.angle()
                 heading_kp = 2
                 heading_ki = 0.1
                 heading_kd = 0.1
@@ -90,7 +91,7 @@ class Robot():
 
             # Speed control error logic when moving forward
             if target_distance > 0:
-
+                print("moving forward")
                 if self.Motors.right_steering_motor.angle() < target_distance / 2:
                     speed_error = target_distance - \
                         (target_distance - (self.Motors.right_steering_motor.angle()))
@@ -119,7 +120,7 @@ class Robot():
             if moved_enough:
                 if speed_error < 1 and speed_error > -1:
                     Running = False
-                    self.Motors.stop(self.Motors.steering)
+                    self.Motors.stop("steering")
 
             if heading_error > 0:
                 self.Motors.left_steering_motor.run(self.SpeedControl.output)
@@ -130,12 +131,12 @@ class Robot():
                 self.Motors.left_steering_motor.run(
                     self.SpeedControl.output + abs(self.HeadingControl.output))
                 self.Motors.right_steering_motor.run(self.SpeedControl.output)
-            #print("speed", self.SpeedControl.output)
+            print("speed", self.SpeedControl.output)
 
     def follow_line(self, target_value, distance, sensor):
 
         self.HeadingControl.reset()
-        self.Motors.reset_angle(self.Motors.steering)
+        self.Motors.reset_angle("steering")
         FollowingLine = True
         Speed = 40
 

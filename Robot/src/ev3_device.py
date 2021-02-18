@@ -1,10 +1,10 @@
 #!/usr/bin/env pybricks-micropython
 from pybricks.hubs import EV3Brick
 from pybricks.iodevices import Ev3devSensor
-from pybricks.ev3devices import Motor, ColorSensor, GyroSensor, TouchSensor
+from pybricks.ev3devices import Motor, ColorSensor, GyroSensor
 from pybricks.parameters import Stop, Port, Direction
+from pybricks.media.ev3dev import Font
 from pybricks.tools import wait
-
 from control import PIDSystem
 
 
@@ -15,11 +15,17 @@ from control import PIDSystem
 # All the sensors are set as Ev3devSensors from pybricks.iodevices. The main reason for this is that
 # they can access to more features.
 
-def error_msg(self, device):
-    return ("A ", device, "is not connected to the specified port: \n * Check the cables to motor or sensor.\n * Check the port settings in your script.")
+
+ev3 = EV3Brick()
+ev3.screen.set_font(Font(size=10))
 
 
-devices_global = {}
+def ev3_msg(device):
+    ev3.screen.print("[ OK ]", device)
+
+
+def error_msg(device):
+    return "\nA " + str(device) + " is not connected to the specified port: \n * Check the cables to the motor or sensor.\n * Check the port settings in your script."
 
 
 class MotorManager():
@@ -41,19 +47,25 @@ class MotorManager():
 
     def set_steering_motors(self, left_motor_port, right_motor_port, default_direction=True):
 
-        if not default_direction:
+        if default_direction == False:
             self.motor_direction = Direction.COUNTERCLOCKWISE
+            print("direction", self.motor_direction)
 
-        self.left_steering_motor = Motor(left_motor_port, self.motor_direction)
+        self.left_steering_motor = Motor(left_motor_port,
+                                         self.motor_direction)
         self.left_steering_motor.port = left_motor_port
-        self.right_steering_motor = Motor(
-            right_motor_port, self.motor_direction)
+        self.right_steering_motor = Motor(right_motor_port,
+                                          self.motor_direction)
         self.right_steering_motor.port = right_motor_port
+        ev3_msg("Left Steering Motor")
+        ev3_msg("RIght Steering Motor")
 
     def set_action_motors(self, left_motor_port, right_motor_port):
 
         self.left_action_motor = Motor(left_motor_port)
         self.right_action_motor = Motor(right_motor_port)
+        ev3_msg("Left Action Motor")
+        ev3_msg("Right Action Motor")
 
     def run(self, motor, degrees, speed=100, duty_limit=20):
 
@@ -139,17 +151,17 @@ class ColorSensorManager():
         self.right_sensor = None
         self.front_sensor = None
 
-    # The following functions lets you either initialize a sensor to an ev3 port or get
-    # the reflected value reading from that sensor.
-
-    def set_left_sensor(self, port=None):
+    def set_left_sensor(self, port):
         self.left_sensor = Device(ColorSensor(port), port)
+        ev3_msg("Left Color Sensor")
 
-    def set_right_sensor(self, port=None):
+    def set_right_sensor(self, port):
         self.right_sensor = Device(ColorSensor(port), port)
+        ev3_msg("Right Color Sensor")
 
-    def set_front_sensor(self, port=None):
+    def set_front_sensor(self, port):
         self.front_sensor = Device(ColorSensor(port), port)
+        ev3_msg("Front Color Sensor")
 
 
 class GyroSensorManager():
@@ -163,29 +175,30 @@ class GyroSensorManager():
 
     # You can also set the gyro to return an opposite value
 
-    def set_sensor(self, port, set_inverse_direction=False):
-        if set_inverse_direction:
+    def set_sensor(self, port, default_direction=True):
+        if default_direction == False:
             self.gyro_direction = -1
         try:
             Ev3devSensor(port).read("GYRO-ANG")
-            self.port = port
         except:
             raise Exception(error_msg("Gyro Sensor"))
 
-        self.sensor = Device(Ev3devSensor(port), port)
+        self.sensor = Ev3devSensor(port)
+        self.port = port
+        ev3_msg("Gyro Sensor")
 
     def calibrate(self):
         while True:
-            self.gyro.read("GYRO-CAL")
+            self.sensor.read("GYRO-CAL")
             wait(200)
-            if self.get_angle() == 0:
+            if self.angle() == 0:
                 break
         wait(100)
 
     # This function returns the current gyro angle multiplied by 1 or -1
-    def get_angle(self):
+    def angle(self):
         try:
-            return int(self.sensor.device.read("GYRO-ANG")[0]) * self.gyro_direction
+            return int(self.sensor.read("GYRO-ANG")[0]) * self.gyro_direction
         except:
             raise Exception(error_msg("Gyro Sensor"))
 
@@ -195,7 +208,7 @@ class DeviceManager():
     def __init__(self):
         self.motors_ports = [Port.A, Port.B, Port.C, Port.D]
         self.sensors_ports = [Port.S1, Port.S2, Port.S3, Port.S4]
-        self.available_sensors = [ColorSensor, GyroSensor, TouchSensor]
+        self.available_sensors = [ColorSensor, GyroSensor]
         self.MOTORS = {
             "Motor": [],
             "Port": []
@@ -258,7 +271,7 @@ class DeviceManager():
         return self.devices
 
     # This is based on devices that were recorded with self.load_devices()
-    def analyse_ports(self):
+    def analyse_port(self):
         for port in self.devices["Motors"]["Port"]:
             try:
                 eval(devices["Motors"][0])(Port)
@@ -303,4 +316,4 @@ class Device:
             return self.device.angle()
         except:
             raise Exception(
-                ".angle() is a method for Motors or Gyro Sensors. No Motor nor Gyro Sensor is connected to " + str(self._port))
+                ".angle() is a method for Motors. No Motor is connected to " + str(self._port))
