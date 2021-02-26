@@ -2,11 +2,11 @@
 from pybricks.hubs import EV3Brick
 from pybricks.iodevices import Ev3devSensor
 from pybricks.ev3devices import Motor, ColorSensor, GyroSensor
-from pybricks.parameters import Stop, Port, Direction, Color
+from pybricks.parameters import Stop, Port, Direction, Color, Button
 from pybricks.media.ev3dev import Font
 from pybricks.tools import wait
 from control import PIDSystem
-
+import pickle
 
 # All this classes are used to control the ev3 devices (motors, gyro and color sensors).
 
@@ -158,6 +158,34 @@ class ColorSensorManager():
     def set_front_sensor(self, port):
         self.front_sensor = Device(ColorSensor(port), port)
         status_msg(True, "Front Color Sensor")
+
+    def calibrate(self):
+        ev3.screen.print("Ready for calibration!")
+        ev3.screen.print("Press center button to Start:")
+        print("calibration started")
+        ev3.screen.clear()
+        running = True
+        while running:
+            if Button.CENTER in ev3.buttons.pressed():
+                wait(1000)
+                white_value = self.left_sensor.reflection()
+                ev3.screen.print("\n->Value for white", white_value)
+                ev3.screen.print("Press center button to continue:")
+                while running:
+                    if Button.CENTER in ev3.buttons.pressed():
+                        wait(1000)
+                        black_value = self.left_sensor.reflection()
+                        ev3.screen.print("\n->Value for black", black_value)
+                        ev3.screen.print(
+                            "Press center button to Finish:")
+                        wait(1000)
+                        while running:
+                            if Button.CENTER in ev3.buttons.pressed():
+                                with open("calibration_r", "wb") as f:
+                                    pickle.dump([white_value, black_value], f)
+                                running = False
+                                ev3.screen.clear()
+        print("calibration finish")
 
 
 class GyroSensorManager():

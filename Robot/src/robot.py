@@ -23,9 +23,9 @@ def main():
     # Robot.Gyro.calibrate()
     # print("Gyro2:", Robot.Gyro.angle())
 
-    # Robot.ColorSensors.set_front_sensor(Port.S2)
-    # Robot.ColorSensors.set_left_sensor(Port.S3)
-    # Robot.ColorSensors.set_right_sensor(Port.S4)
+    Robot.ColorSensors.set_front_sensor(Port.S2)
+    Robot.ColorSensors.set_left_sensor(Port.S3)
+    Robot.ColorSensors.set_right_sensor(Port.S4)
 
     # Register all devices connected for future control
     # Robot.DeviceControl.load_devices()
@@ -35,10 +35,7 @@ def main():
     while True:
         if Button.CENTER in Robot.Ev3.buttons.pressed():
             # Move the robot
-            Robot.turn(90)
-            Robot.straight(20)
-            Robot.turn(90)
-            Robot.straight(20)
+            Robot.ColorSensors.calibrate()
             break
 
 

@@ -163,6 +163,9 @@ class Robot():
                     Speed + abs(self.HeadingControl.output))
                 self.Motors.right_steering_motor.dc(Speed)
 
+    def square_line(self):
+        pass
+
     def run_csv(self):
 
         import csv
@@ -177,10 +180,10 @@ class Robot():
             # PERFORM EACH ACTION FROM THE CSV FILE (TURN AND DRIVE STRAIGHT)
             for element in range(len(robotPath)):
 
-                self.Straight(robotPath[element])
+                self.straight(robotPath[element])
 
                 if element < len(robotPath) - 1:
-                    self.Turn(robotPath[element])
+                    self.turn(robotPath[element])
 
     def run_async(self, _target, _args=[]):
         new_thread = threading.Thread(target=_target, args=_args)
