@@ -3,7 +3,7 @@ from pybricks.hubs import EV3Brick
 from pybricks.media.ev3dev import Font
 from pybricks.parameters import Color, Button
 from time import sleep
-from mbarete import *
+from mbarete import Robot, Port
 import threading
 import robot
 
@@ -12,9 +12,6 @@ class Menu():
     def __init__(self, labels):
         self.ev3 = EV3Brick()
         self.ev3.screen.clear()
-        self.devices = Robot().Motors
-        self.devices.set_steering_motors(Port.A, Port.D, False)
-        self.devices.set_action_motors(Port.B, Port.C)
         self.screen_width = self.ev3.screen.width - 1
         self.screen_height = self.ev3.screen.height - 1
         self.labels = labels
@@ -95,7 +92,7 @@ class Menu():
             if Button.LEFT in pressed_buttons:
                 self.devices.right_action_motor.dc(50)
             elif Button.RIGHT in pressed_buttons:
-                self.devices.left_action_motor.dc(50)
+                self.devices.right_action_motor.dc(-50)
             elif Button.DOWN in pressed_buttons:
                 self.devices.left_steering_motor.dc(50)
             elif Button.UP in pressed_buttons:
@@ -110,13 +107,14 @@ class Menu():
 
     def main(self):
         self.draw_menu()
+        print("---Ev3---")
         while True:
             pressed_buttons = self.ev3.buttons.pressed()
-            if Button.RIGHT in pressed_buttons:
+            if Button.RIGHT in pressed_buttons or Button.DOWN in pressed_buttons:
                 if self.active_label < len(self.labels) - 1:
                     self.active_label += 1
                 self.draw_menu()
-            elif Button.LEFT in pressed_buttons:
+            elif Button.LEFT in pressed_buttons or Button.UP in pressed_buttons:
                 if self.active_label > 0:
                     self.active_label -= 1
                 self.draw_menu()
@@ -125,8 +123,12 @@ class Menu():
                     robot.main()
 
                 elif self.active_label == 1:
+                    self.devices = Robot().Motors
+                    self.devices.set_steering_motors(Port.A, Port.D, False)
+                    self.devices.set_action_motors(Port.B, Port.C)
+                    self.ev3.screen.clear()
                     self.draw_motor_control()
 
                 self.draw_menu()
 
-            sleep(0.1)
+            sleep(0.3)
