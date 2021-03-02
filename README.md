@@ -11,16 +11,11 @@ We are MbareteBot a team from Paraguay and we are glad you are checking our code
 - Robot: Includes all the code our team uses for the robot in the current FLL Replay 2020-2021 Season
 	- Features: 
 		- An odometry system to keep track of the robot
-		- A PID system implementation
+		- A PID system
+		- Custom visual interface on the ev3 brick
 		
 - FLL App: This is an App for every cassual FLL participant
 
 
 
-Please, help us improve our code by sending us some feedback and possible suggestions.
-
-Our email: mbaretebot@gmail.com :)
-
-
-
-
+Please, help us improve our code by sending us some feedback and possible suggestions at mbaretebot@gmail.com :)
