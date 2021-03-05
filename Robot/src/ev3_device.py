@@ -8,12 +8,9 @@ from pybricks.tools import wait
 from control import PIDSystem
 import pickle
 
-# All this classes are used to control the ev3 devices (motors, gyro and color sensors).
-
+# All this classes are used to control ev3 devices (motors, gyro and color sensors).
 # With this classes you can only have: 4 Motors, 1 Gyro and 3 Color Sensors
 
-# All the sensors are set as Ev3devSensors from pybricks.iodevices. The main reason for this is that
-# they can access to more features.
 
 
 ev3 = EV3Brick()
@@ -52,12 +49,10 @@ class MotorManager():
         if default_direction == False:
             self.motor_direction = Direction.COUNTERCLOCKWISE
 
-        self.left_steering_motor = Motor(left_motor_port,
-                                         self.motor_direction)
-        # self.left_steering_motor.port = left_motor_port
-        self.right_steering_motor = Motor(right_motor_port,
-                                          self.motor_direction)
-        # self.right_steering_motor.port = right_motor_port
+        self.left_steering_motor = Motor(left_motor_port, self.motor_direction)
+        self.left_steering_motor.port = left_motor_port
+        self.right_steering_motor = Motor(right_motor_port, self.motor_direction)
+        self.right_steering_motor.port = right_motor_port
         status_msg(True, "Left Steering Motor")
         status_msg(True, "Right Steering Motor")
 
@@ -67,37 +62,6 @@ class MotorManager():
         self.right_action_motor = Motor(right_motor_port)
         status_msg(True, "Left Action Motor")
         status_msg(True, "Right Action Motor")
-
-    def run(self, motor, degrees, speed=100, duty_limit=20):
-
-        degrees = degrees
-        motor.reset_angle(0)
-        Running = True
-        moved_enough = False
-
-        while Running:
-
-            error_value = degrees - motor.angle()
-
-            if abs(error_value) > abs(degrees) * 0.25 and moved_enough == False:
-                moved_enough = True
-
-            if moved_enough:
-
-                # if motor.speed() < duty_limit:
-                #     Running = False
-                #     motor.hold()
-                #     wait(100)
-
-                if error_value < 0.1 and error_value > -0.1:
-                    print("finish")
-                    Running = False
-                    motor.hold()
-                    wait(100)
-
-            motor.dc(speed)
-
-        print("done angle:", motor.angle())
 
     def reset_angle(self, motors):
         try:
@@ -114,7 +78,7 @@ class MotorManager():
                 self.right_steering_motor.reset_angle(0)
                 self.left_action_motor.reset_angle(0)
                 self.right_action_motor.reset_angle(0)
-        except:
+        except Exception:
             status_msg(False, ".reset_angle()", "Motor", "some port")
 
     def stop(self, motors):
@@ -132,7 +96,7 @@ class MotorManager():
                 self.right_steering_motor.brake()
                 self.left_action_motor.brake()
                 self.right_action_motor.brake()
-        except:
+        except Exception:
             status_msg(False, ".stop()", "Motor", "some port")
 
 
@@ -162,22 +126,26 @@ class ColorSensorManager():
     def calibrate(self):
         ev3.screen.print("Ready for calibration!")
         ev3.screen.print("Press center button to Start:")
-        print("calibration started")
+        print("\n-------ColorSensors-------")
+        print("Sensor calibration started!")
         ev3.screen.clear()
         running = True
         while running:
             if Button.CENTER in ev3.buttons.pressed():
                 wait(1000)
                 white_value = self.left_sensor.reflection()
+                print("-> Value for white:", white_value)
+                print("Waiting for input...")
                 ev3.screen.print("\n->Value for white", white_value)
                 ev3.screen.print("Press center button to continue:")
                 while running:
                     if Button.CENTER in ev3.buttons.pressed():
                         wait(1000)
                         black_value = self.left_sensor.reflection()
+                        print("-> Value for black:", black_value)
+                        print("Waiting for input...")
                         ev3.screen.print("\n->Value for black", black_value)
-                        ev3.screen.print(
-                            "Press center button to Finish:")
+                        ev3.screen.print("Press center button to Finish:")
                         wait(1000)
                         while running:
                             if Button.CENTER in ev3.buttons.pressed():
@@ -185,7 +153,8 @@ class ColorSensorManager():
                                     pickle.dump([white_value, black_value], f)
                                 running = False
                                 ev3.screen.clear()
-        print("calibration finish")
+        print("Sensor calibration finished!")
+        print("-------ColorSensors-------\n")
 
 
 class GyroSensorManager():
@@ -207,7 +176,7 @@ class GyroSensorManager():
     def set_sensor(self, port, default_direction=True):
         try:
             Ev3devSensor(port).read("GYRO-ANG")
-        except:
+        except Exception:
             status_msg(False, "No Gyro sensor is connected to", port)
 
         self.sensor = Ev3devSensor(port)
@@ -225,20 +194,20 @@ class GyroSensorManager():
                 if self.angle() == 0:
                     break
             wait(100)
-        except:
+        except Exception:
             status_msg(False, ".calibrate()", "Gyro Sensor", self._port)
 
     def angle(self):
         try:
             return (int(self.sensor.read("GYRO-ANG")[0]) * self.direction) - self.angle_counter
-        except:
+        except Exception:
             status_msg(False, ".angle()", "Gyro Sensor", self._port)
 
     def reset(self):
         try:
             self.angle_counter = int(self.sensor.read(
                 "GYRO-ANG")[0]) * self.direction
-        except:
+        except Exception:
             status_msg(False, ".reset()", "Gyro Sensor", self._port)
 
 
@@ -282,7 +251,7 @@ class DeviceManager():
             try:
                 self.MOTORS["Motor"].append(type(Motor(PORT)).__name__)
                 self.MOTORS["Port"].append(str(PORT))
-            except:
+            except Exception:
                 pass
         # LOOK FOR EVERY SINGLE SENSOR TYPE IN EVERY PORT
         for SENSOR in self.available_sensors:
@@ -290,7 +259,7 @@ class DeviceManager():
                 try:
                     self.SENSORS["Sensor"].append(type(SENSOR(PORT)).__name__)
                     self.SENSORS["Port"].append(str(PORT))
-                except:
+                except Exception:
                     pass
 
         # Print output
@@ -324,7 +293,7 @@ class DeviceManager():
         for port in self.devices["Motors"]["Port"]:
             try:
                 Motor(eval(port))
-            except:
+            except Exception:
                 errors += 1
                 print("[ ERROR ] Motor is missing in", port)
                 status_msg(False, port)
@@ -337,7 +306,7 @@ class DeviceManager():
                 else:
                     # Test for gyro sensor
                     Ev3devSensor(eval(port)).read("GYRO-ANG")
-            except:
+            except Exception:
                 print("[ ERROR ] Sensor is missing in", port)
                 errors += 1
                 status_msg(False, port)
@@ -353,7 +322,6 @@ class Device():
     def __init__(self, device, port, **kwargs):
         self.device = device
         self._port = port
-        self.gyro_corrector = 0
         self.connected_devices = DeviceManager()
         self.connected_devices.load_devices()
 
@@ -365,26 +333,9 @@ class Device():
             print("[ WARNING ] A device on port", self._port, "is missing!")
             return None
 
+    # color sensor
     def reflection(self):
         try:
             return self.device.reflection()
-        except:
-            status_msg(False, ".reflection()", "Motor", self._port)
-
-    def angle(self):
-        try:
-            return self.device.angle()
-        except:
-            status_msg(False, ".angle()", "Motor", self._port)
-
-    def reset(self):
-        try:
-            self.device.reset_angle(0)
-        except:
-            status_msg(False, ".reset()", "Motor", self._port)
-
-    def run_angle(self, speed, angle):
-        try:
-            self.device.run_angle(speed, angle)
-        except:
-            status_msg(False, ".run_angle()", "Motor", self._port)
+        except Exception:
+            status_msg(False, ".reflection()", "ColorSensor", self._port)

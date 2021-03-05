@@ -1,10 +1,11 @@
 #!/usr/bin/env pybricks-micropython
 import time
 import threading
+from time import sleep
 from control import PIDSystem
 from robotic_tools import RoboticTools
 from ev3_device import MotorManager, GyroSensorManager, ColorSensorManager, DeviceManager, status_msg
-from pybricks.parameters import Port
+from pybricks.parameters import Port, Button
 from pybricks.hubs import EV3Brick
 from pybricks.tools import wait
 
@@ -20,6 +21,8 @@ class Robot():
         self.SpeedControl = PIDSystem()
         self.Tools = RoboticTools()
 
+        self.active = True # This will be used like a global switch
+        
         # Ev3 control related classes
         self.Gyro = GyroSensorManager()
         self.Motors = MotorManager()
@@ -29,153 +32,180 @@ class Robot():
 
         print("-------Robot Initialized-------")
 
-    def turn(self, target_angle):
+        # Task handler
+        self.run_async(self.handle_task)
 
-        self.Motors.reset_angle("steering")
-        self.SpeedControl.reset()
-        self.Gyro.reset()
-        moving = True
-        min_speed = 50
 
-        while moving:
-            error_value = target_angle - self.Gyro.angle()
 
-            self.SpeedControl.execute(error_value, 5, 0, 0)
+    def handle_task(self):
+        # This is gonna run asynchronously, works like a master switch
+        while True:
+            if Button.CENTER in self.Ev3.buttons.pressed(): 
+                self.active = False
+            sleep(0.09)
 
-            if target_angle > 0:
-                if self.SpeedControl.output < min_speed:
-                    self.SpeedControl.output = min_speed
-            else:
-                if self.SpeedControl.output > -min_speed:
-                    self.SpeedControl.output = -min_speed
 
-            self.Motors.left_steering_motor.run(self.SpeedControl.output)
-            self.Motors.right_steering_motor.run(-self.SpeedControl.output)
+    def turn(self, angle):  
 
-            if error_value >= -1 and error_value <= 1:
-                moving = False
-                self.Motors.stop("steering")
+        if self.active:
+            self.Motors.reset_angle("steering")
+            self.SpeedControl.reset()
+            self.Gyro.reset()
+            moving = True
+            min_speed = 50
 
-    def straight(self, distance, orientation=0, duty_limit=20, use_gyro=True):
+            while moving:
+                error_value = angle - self.Gyro.angle()
 
-        self.SpeedControl.reset()
-        self.HeadingControl.reset()
-        self.Motors.reset_angle("steering")
-        self.Gyro.reset()
-        target_distance = self.Tools.cm_to_degrees(distance, 6.24)
-        speed_error = 0
-        speed_kp = 3.5
-        speed_ki = 0
-        speed_kd = 0
+                self.SpeedControl.execute(error_value, 5, 0, 0)
 
-        moving = True
-        moved_enough = False
-        min_speed = 90 * (-1 if distance < 0 else 1)
-        while moving:
-            if use_gyro:
-                heading_error = orientation - self.Gyro.angle()
-                heading_kp = 2
-                heading_ki = 0.1
-                heading_kd = 0.1
-            else:
-                heading_error = self.Motors.right_steering_motor.speed() - self.Motors.left_steering_motor.speed()
-                heading_kp = 0.2
-                heading_ki = 0.001
-                heading_kd = 0.01
+                if angle > 0:
+                    if self.SpeedControl.output < min_speed:
+                        self.SpeedControl.output = min_speed
+                else:
+                    if self.SpeedControl.output > -min_speed:
+                        self.SpeedControl.output = -min_speed
 
-            # Speed and heading control
-            self.HeadingControl.execute(heading_error, heading_kp, heading_ki, heading_kd)
-            self.SpeedControl.execute(speed_error, speed_kp, speed_ki, speed_kd)
+                self.Motors.left_steering_motor.run(self.SpeedControl.output)
+                self.Motors.right_steering_motor.run(-self.SpeedControl.output)
 
-            # Speed control error logic when moving forward
-            if abs(self.Motors.right_steering_motor.angle()) < abs(target_distance / 2):
-                speed_error = target_distance - (target_distance - self.Motors.right_steering_motor.angle())
-            else:
-                moved_enough = True
-                speed_error = target_distance - self.Motors.right_steering_motor.angle()
-
-            # Sets minimun speed for the motors
-            if abs(self.SpeedControl.output) < abs(min_speed):
-                self.SpeedControl.output = min_speed
-
-            self.Motors.left_steering_motor.run(self.SpeedControl.output)
-            self.Motors.right_steering_motor.run(self.SpeedControl.output + abs(self.HeadingControl.output))
-
-            # When the robot has moved at least halfway
-            if moved_enough:
-                # Stop if the robot had either reached the target distance or got stalled 
-                if (speed_error < 1 and speed_error > -1) or abs(self.Motors.left_steering_motor.speed()) < abs(min_speed):
+                if error_value >= -1 and error_value <= 1:
                     moving = False
                     self.Motors.stop("steering")
 
 
-    def follow_line(self, target_value, distance, sensor):
+    def straight(self, distance, orientation=0, use_gyro=True, exit_exec=lambda: False):
 
-        self.HeadingControl.reset()
-        self.Motors.reset_angle("steering")
-        speed = 400
+        if self.active:
 
-        while True:
+            self.SpeedControl.reset()
+            self.HeadingControl.reset()
+            self.Motors.reset_angle("steering")
+            self.Gyro.reset()
+            target_distance = self.Tools.cm_to_degrees(distance, 6.24)
+            speed_error = 0
+            speed_kp = 3.5
+            speed_ki = 0
+            speed_kd = 0
 
-            error_value = sensor() - target_value
-            self.HeadingControl.execute(error_value, 0.2, 0.2, 2)
-            if error_value > 0:
-                self.Motors.left_steering_motor.run(speed)
-                self.Motors.right_steering_motor.run(speed + self.HeadingControl.output)
-            else:
-                self.Motors.left_steering_motor.run(speed + abs(self.HeadingControl.output))
-                self.Motors.right_steering_motor.run(speed)
+            moving = True
+            moved_enough = False
+            min_speed = 90 * (-1 if distance < 0 else 1)
+            while moving:
+                if use_gyro:
+                    heading_error = orientation - self.Gyro.angle()
+                    heading_kp = 2
+                    heading_ki = 0.1
+                    heading_kd = 0.1
+                else:
+                    heading_error = self.Motors.right_steering_motor.speed() - self.Motors.left_steering_motor.speed()
+                    heading_kp = 0.2
+                    heading_ki = 0.001
+                    heading_kd = 0.01
 
-    def square_line(self):
-        speed = 150
-        white_value = eval(list(open("calibration_r"))[0])[0] - 10
-        try:
-            for repetition in range(2):
+                # Speed and heading control
+                self.HeadingControl.execute(heading_error, heading_kp, heading_ki, heading_kd)
+                self.SpeedControl.execute(speed_error, speed_kp, speed_ki, speed_kd)
+
+                # Speed control error logic 
+                if abs(self.Motors.right_steering_motor.angle()) < abs(target_distance / 2):
+                    speed_error = target_distance - (target_distance - self.Motors.right_steering_motor.angle())
+                else:
+                    moved_enough = True
+                    speed_error = target_distance - self.Motors.right_steering_motor.angle()
+
+                # Sets minimun speed for the motors
+                if abs(self.SpeedControl.output) < abs(min_speed):
+                    self.SpeedControl.output = min_speed
+
+                self.Motors.left_steering_motor.run(self.SpeedControl.output)
+                self.Motors.right_steering_motor.run(self.SpeedControl.output + abs(self.HeadingControl.output))
+                # When the robot has moved at least halfway
+                if moved_enough or exit_exec():
+                    # Stop if the robot had either reached the target distance or got stalled or the execution is being cancelled by exit_exec method 
+                    if (speed_error < 1 and speed_error > -1) or abs(self.Motors.left_steering_motor.speed()) < abs(min_speed) or exit_exec():
+                        moving = False
+                        self.Motors.stop("steering")
+
+
+        def follow_line(self, target_value, distance, sensor):
+
+            if self.active:
+                    
+                self.HeadingControl.reset()
+                self.Motors.reset_angle("steering")
+                speed = 400
+
                 while True:
-                    # Keep moving the left motor until it reaches a white line
-                    if self.ColorSensors.left_sensor.reflection() < white_value:
+
+                    error_value = sensor.reflection() - target_value
+                    self.HeadingControl.execute(error_value, 0.2, 0.2, 2)
+                    if error_value > 0:
                         self.Motors.left_steering_motor.run(speed)
+                        self.Motors.right_steering_motor.run(speed + self.HeadingControl.output)
                     else:
-                        print("left ok in", repetition)
-                        self.Motors.left_steering_motor.hold()
-
-                    # Keep moving the right motor until it reaches a white line
-                    if self.ColorSensors.right_sensor.reflection() < white_value:
+                        self.Motors.left_steering_motor.run(speed + abs(self.HeadingControl.output))
                         self.Motors.right_steering_motor.run(speed)
-                    else:
-                        print("right ok in", repetition)
-                        self.Motors.right_steering_motor.hold()
+        
+        
+        def square_line(self):
 
-                    # If both sensors are on the white line, go backwards and repeat the procces one more time
-                    if self.ColorSensors.right_sensor.reflection() > white_value and self.ColorSensors.left_sensor.reflection() > white_value:
-                        print("both ok in", repetition)
-                        if repetition == 0:
-                            self.Motors.left_steering_motor.run_angle(-speed, 60, wait=False)
-                            self.Motors.right_steering_motor.run_angle(-speed, 60)
-                        break
+            if self.active:
 
-                self.Motors.stop("steering")
-        except:
-            status_msg(False, ".square_line()", "ColorSensor", "any port")
+                speed = 150
+                try:
+                    white_value = eval(list(open("calibration_r"))[0])[0] - 10
+                except Exception:
+                    status_msg(False, ".square_line() needs calibration file made by self.ColorSensors.calibrate()")
+                
+                try:
+                    for repetition in range(2):
+                        while True:
+                            # Keep moving the left motor until it reaches a white line
+                            if self.ColorSensors.left_sensor.reflection() < white_value:
+                                self.Motors.left_steering_motor.run(speed)
+                            else:
+                                print("left ok in", repetition)
+                                self.Motors.left_steering_motor.hold()
 
-    def run_csv(self):
+                            # Keep moving the right motor until it reaches a white line
+                            if self.ColorSensors.right_sensor.reflection() < white_value:
+                                self.Motors.right_steering_motor.run(speed)
+                            else:
+                                print("right ok in", repetition)
+                                self.Motors.right_steering_motor.hold()
 
-        import csv
-        with open('mbdata.csv') as csv_file:
+                            # If both sensors are on the white line, go backwards and repeat the procces one more time
+                            if self.ColorSensors.right_sensor.reflection() > white_value and self.ColorSensors.left_sensor.reflection() > white_value:
+                                print("both ok in", repetition)
+                                if repetition == 0:
+                                    self.Motors.left_steering_motor.run_angle(-speed, 60, wait=False)
+                                    self.Motors.right_steering_motor.run_angle(-speed, 60)
+                                break
 
-            # ONLY USES THE THIRD ROW FROM THE CSV FILE
-            csv_reader = list(csv.reader(csv_file, delimiter=','))[2]
+                        self.Motors.stop("steering")
+                except Exception:
+                    status_msg(False, ".square_line()", "ColorSensor", "any port")
 
-            # THE ELEMENTS IN THE ARRAY ARE LOADED AS STRINGS, CHANGE THAT
-            robotPath = [eval(row) for row in csv_reader]
+    
+    def run_to_line(self, sensor, aprox_distance):
 
-            # PERFORM EACH ACTION FROM THE CSV FILE (TURN AND DRIVE STRAIGHT)
-            for element in range(len(robotPath)):
+        if self.active:
+            try:
+                white_value = eval(list(open("calibration_r"))[0])[0] - 10
+            except Exception:
+                status_msg(False, ".run_to_line() needs calibration file made by self.ColorSensors.calibrate()")
 
-                self.straight(robotPath[element])
+            # Check if the robot reached a white line
+            def reached_line():
+                if sensor.reflection() > white_value:
+                    return True
+                return False
+            
+            # The robot is gonna move a straight line and is gonna stop if it either reached
+            # the aprox_distance or reached a white line
+            self.straight(aprox_distance, exit_exec=reached_line)
 
-                if element < len(robotPath) - 1:
-                    self.turn(robotPath[element])
 
     def run_async(self, _target, _args=[]):
         new_thread = threading.Thread(target=_target, args=_args)

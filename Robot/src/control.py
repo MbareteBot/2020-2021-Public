@@ -50,8 +50,8 @@ class PIDSystem():
 class OdometrySystem:
 
     # ----This Class is still in development----
-    # ----We are still working on this class, so please, give us your feedback about this code---
-    # ----We didnt have much time to test it, so its basically mostly theoretical so far---
+    # ----We are still working on this class, so please, give us your feedback---
+    # ----We didnt have much time to test it, so its mostly theoretical so far---
 
     # This class is used to implement an odometry sistem for the robot.
 
