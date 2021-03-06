@@ -6,7 +6,7 @@ The code is divided into diferent classes, each one is reponsible for a differen
 
 ### Files and classes description:
 - control.py:
-  - PIDSystem: Provides with functions to run a PID calculation.
+  - PIDSystem: Provides functions to run a PID calculation.
   - OdometrySystem: Allows the use of sensors to estimate change in position over time. 
   
 - ev3_device.py:
