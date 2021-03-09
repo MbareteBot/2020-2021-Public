@@ -5,7 +5,7 @@ from time import sleep
 from control import PIDSystem
 from robotic_tools import RoboticTools
 from ev3_device import MotorManager, GyroSensorManager, ColorSensorManager, DeviceManager, status_msg
-from pybricks.parameters import Port, Button
+from pybricks.parameters import Port, Button, Color
 from pybricks.hubs import EV3Brick
 from pybricks.tools import wait
 
@@ -33,11 +33,11 @@ class Robot():
         print("-------Robot Initialized-------")
 
         # Task handler
-        self.run_async(self.handle_task)
+        self.run_async(self.task_handler)
 
 
 
-    def handle_task(self):
+    def task_handler(self):
         # This is gonna run asynchronously, works like a master switch
         while True:
             if Button.CENTER in self.Ev3.buttons.pressed(): 
@@ -195,18 +195,27 @@ class Robot():
                 white_value = eval(list(open("calibration_r"))[0])[0] - 10
             except Exception:
                 status_msg(False, ".run_to_line() needs calibration file made by self.ColorSensors.calibrate()")
+                self.pause()
 
             # Check if the robot reached a white line
-            def reached_line():
-                if sensor.reflection() > white_value:
+            def reached_line(sensor, white_value):
+                if sensor.reflection() > white_value:   
                     return True
                 return False
             
             # The robot is gonna move a straight line and is gonna stop if it either reached
             # the aprox_distance or reached a white line
-            self.straight(aprox_distance, exit_exec=reached_line)
+            self.straight(aprox_distance, exit_exec=lambda: reached_line(sensor, white_value))
 
 
     def run_async(self, _target, _args=[]):
         new_thread = threading.Thread(target=_target, args=_args)
         new_thread.start()
+
+
+    def pause(self):
+        self.Ev3.light.on(Color.RED)
+        while True:
+            if Button.CENTER in self.Ev3.buttons.pressed():
+                break
+        self.Ev3.light.on(Color.GREEN)

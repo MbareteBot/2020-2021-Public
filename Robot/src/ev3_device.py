@@ -1,9 +1,9 @@
 #!/usr/bin/env pybricks-micropython
-from pybricks.hubs import EV3Brick
-from pybricks.iodevices import Ev3devSensor
-from pybricks.ev3devices import Motor, ColorSensor, GyroSensor
 from pybricks.parameters import Stop, Port, Direction, Color, Button
+from pybricks.ev3devices import Motor, ColorSensor, GyroSensor
+from pybricks.iodevices import Ev3devSensor
 from pybricks.media.ev3dev import Font
+from pybricks.hubs import EV3Brick
 from pybricks.tools import wait
 from control import PIDSystem
 import pickle
@@ -23,8 +23,7 @@ def status_msg(succes, log, device="", port=""):
         print("[ OK ]", log)
     else:
         ev3.screen.print("[ ERROR ]", log, port)
-        print("[ ERROR ]", log, "is for a", device, ". No",
-              " is connected to" if device != "" else "", port)
+        print("[ ERROR ]", log, ("is for a " + str(device) + " .No " + str(device) + " is connected to " + str(port)) if device != "" else "")
 
 
 class MotorManager():
@@ -50,9 +49,7 @@ class MotorManager():
             self.motor_direction = Direction.COUNTERCLOCKWISE
 
         self.left_steering_motor = Motor(left_motor_port, self.motor_direction)
-        self.left_steering_motor.port = left_motor_port
         self.right_steering_motor = Motor(right_motor_port, self.motor_direction)
-        self.right_steering_motor.port = right_motor_port
         status_msg(True, "Left Steering Motor")
         status_msg(True, "Right Steering Motor")
 
@@ -102,8 +99,8 @@ class MotorManager():
 
 class ColorSensorManager():
 
-    # Class dedicated to control up to 3 color sensors (one in the left part of the robot,
-    # another one in the right part and a third one (probably to recognize attachments by a color code).
+    # Class dedicated to control up to 3 color sensors (one in the left side of the robot,
+    # another one in the right side and a third one (probably to recognize attachments by a color code).
 
     def __init__(self):
 
@@ -112,18 +109,18 @@ class ColorSensorManager():
         self.front_sensor = None
 
     def set_left_sensor(self, port):
-        self.left_sensor = Device(ColorSensor(port), port)
+        self.left_sensor = MbColorSensor(port)
         status_msg(True, "Left Color Sensor")
 
     def set_right_sensor(self, port):
-        self.right_sensor = Device(ColorSensor(port), port)
+        self.right_sensor = MbColorSensor(port)
         status_msg(True, "Right Color Sensor")
 
     def set_front_sensor(self, port):
-        self.front_sensor = Device(ColorSensor(port), port)
+        self.front_sensor = MbColorSensor(port)
         status_msg(True, "Front Color Sensor")
 
-    def calibrate(self):
+    def calibrate(self, sensor):
         ev3.screen.print("Ready for calibration!")
         ev3.screen.print("Press center button to Start:")
         print("\n-------ColorSensors-------")
@@ -133,7 +130,7 @@ class ColorSensorManager():
         while running:
             if Button.CENTER in ev3.buttons.pressed():
                 wait(1000)
-                white_value = self.left_sensor.reflection()
+                white_value = sensor.reflection()
                 print("-> Value for white:", white_value)
                 print("Waiting for input...")
                 ev3.screen.print("\n->Value for white", white_value)
@@ -141,7 +138,7 @@ class ColorSensorManager():
                 while running:
                     if Button.CENTER in ev3.buttons.pressed():
                         wait(1000)
-                        black_value = self.left_sensor.reflection()
+                        black_value = sensor.reflection()
                         print("-> Value for black:", black_value)
                         print("Waiting for input...")
                         ev3.screen.print("\n->Value for black", black_value)
@@ -159,56 +156,25 @@ class ColorSensorManager():
 
 class GyroSensorManager():
 
-    # This class is only meant to control 1 GyroSensor
-
-    def __init__(self):
-        self.sensor = None
-        self.angle_counter = 0
-        self.direction = 1
-        self._port = None
-
     @property
     def port(self):
-        return self.sensor.port
-
-    # You can also set the gyro to return an opposite value
+        self.sensor.port
 
     def set_sensor(self, port, default_direction=True):
-        try:
-            Ev3devSensor(port).read("GYRO-ANG")
-        except Exception:
-            status_msg(False, "No Gyro sensor is connected to", port)
-
-        self.sensor = Ev3devSensor(port)
-        self._port = port
-        if default_direction == False:
-            self.direction = -1
-        status_msg(True, "Gyro Sensor")
-
+        self.sensor = MbGyroSensor(port, default_direction)
+    
     def calibrate(self):
-        try:
-            while True:
-                self.sensor.read("GYRO-CAL")
-                wait(100)
-                print(self.angle())
-                if self.angle() == 0:
-                    break
-            wait(100)
-        except Exception:
-            status_msg(False, ".calibrate()", "Gyro Sensor", self._port)
+        self.sensor.calibrate()
 
     def angle(self):
-        try:
-            return (int(self.sensor.read("GYRO-ANG")[0]) * self.direction) - self.angle_counter
-        except Exception:
-            status_msg(False, ".angle()", "Gyro Sensor", self._port)
+        return self.sensor.angle()
 
     def reset(self):
-        try:
-            self.angle_counter = int(self.sensor.read(
-                "GYRO-ANG")[0]) * self.direction
-        except Exception:
-            status_msg(False, ".reset()", "Gyro Sensor", self._port)
+        self.sensor.reset()
+
+    def __str__(self):
+        return self.sensor.__str__()
+    
 
 
 class DeviceManager():
@@ -319,8 +285,7 @@ class DeviceManager():
 
 class Device():
 
-    def __init__(self, device, port, **kwargs):
-        self.device = device
+    def __init__(self, port):
         self._port = port
         self.connected_devices = DeviceManager()
         self.connected_devices.load_devices()
@@ -330,12 +295,50 @@ class Device():
         if self.connected_devices.is_port_in_use(self._port):
             return self._port
         else:
-            print("[ WARNING ] A device on port", self._port, "is missing!")
             return None
 
-    # color sensor
-    def reflection(self):
+
+class MbColorSensor(ColorSensor, Device):
+
+    def __init__(self, port):
         try:
-            return self.device.reflection()
+            ColorSensor(port)
+            Device.__init__(self, port)
         except Exception:
-            status_msg(False, ".reflection()", "ColorSensor", self._port)
+            status_msg(False, "Failed to initalize motor!")
+
+
+class MbGyroSensor(Device):
+
+    def __init__(self, port, positive_direction=True):
+        self.sensor = Ev3devSensor(port)  
+        self.init_port = port
+        self.direction = 1 if positive_direction else -1   
+        self.angle_counter = 0
+        Device.__init__(self, port)
+
+    def calibrate(self):
+        try:
+            for _ in range(3):
+                self.sensor.read("GYRO-CAL")
+                wait(100)
+                if self.angle() == 0:
+                    break
+            wait(100)
+        except Exception:
+            status_msg(False, ".calibrate()", "Gyro Sensor", self.init_port)
+
+    def angle(self):
+        try:
+            return (int(self.sensor.read("GYRO-ANG")[0]) * self.direction) - self.angle_counter
+        except Exception:
+            status_msg(False, ".angle()", "Gyro Sensor", self.init_port)
+
+    def reset(self):
+        try:
+            self.angle_counter = int(self.sensor.read("GYRO-ANG")[0]) * self.direction
+        except Exception:
+            status_msg(False, ".reset()", "Gyro Sensor", self.init_port)
+
+    def __str__(self):
+        return "Gyro Properties:\n-----------------\nPort: " + str(self.port) + "\nDefault Direction: " + str(self.direction)
