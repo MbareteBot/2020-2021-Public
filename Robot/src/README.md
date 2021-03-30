@@ -6,8 +6,8 @@ The code is divided into diferent classes, each one is reponsible for a differen
 
 ### Files and classes description:
 - control.py:
-  - PIDSystem: Provides functions to run a PID calculation.
-  - OdometrySystem: Allows the use of sensors to estimate change in position over time. 
+  - PidControl: Provides functions to run a PID calculation.
+  - Path: Generates a path that the robot can track based on coordenates
   
 - ev3_device.py:
   - MotorManager: Facilitates control of ev3 Motors.
@@ -34,9 +34,5 @@ The code is divided into diferent classes, each one is reponsible for a differen
 ### Set Up intruccions:
 #### Visual Studio Code
 1. Clone this repository.
-2. Install and activate the LEGO Education EV3 extension or make your own ssh connection with the robot.
+2. Install and activate the LEGO® MINDSTORMS® EV3 MicroPython extension or make your own ssh connection with the robot.
 3. Run the main.py file and start coding!.
-
-
-
-
