@@ -1,21 +1,13 @@
+# Hi there!
+## We are MbareteBot, a team from Paraguay and we are glad you are checking our code!
 
-# Hello!!
+Right now you will find the code we use for our robot in Robot/src
 
-We are MbareteBot a team from Paraguay and we are glad you are checking our code!. 
+Some cool features we use in our robot:
 
-
-## Repository folders description:
-
-- Visual Navigation: This is an interface that lets you code and plan a strategy for the robot in a much easier way.
-
-- Robot: Includes all the code our team uses for the robot in the current FLL Replay 2020-2021 Season
-	- Features: 
-		- An odometry system to keep track of the robot
-		- A PID system
-		- Custom visual interface on the ev3 brick
-		
-- FLL App: This is an App for every cassual FLL participant
-
+  * PID Control
+  * A path generator based on cartesian coordenates
+  * Multithreading based control for the robot in case of failure
 
 
 Please, help us improve our code by sending us some feedback and possible suggestions at mbaretebot@gmail.com :)
