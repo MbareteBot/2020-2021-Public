@@ -87,18 +87,36 @@ class Menu():
         self.handle_motor_control_input()
 
     def handle_motor_control_input(self):
+        speed = 80
         while True:
             pressed_buttons = self.ev3.buttons.pressed()
             if Button.LEFT in pressed_buttons:
-                self.devices.right_action_motor.dc(50)
+                self.devices.left_action_motor.dc(speed)
             elif Button.RIGHT in pressed_buttons:
-                self.devices.right_action_motor.dc(-50)
+                self.devices.right_action_motor.dc(speed)
             elif Button.DOWN in pressed_buttons:
-                self.devices.left_steering_motor.dc(50)
+                self.devices.left_steering_motor.dc(speed)
             elif Button.UP in pressed_buttons:
-                self.devices.right_steering_motor.dc(50)
+                self.devices.right_steering_motor.dc(speed)
+
             elif Button.CENTER in pressed_buttons:
-                break
+                while True:
+                    pressed_buttons = self.ev3.buttons.pressed()
+                    if Button.LEFT in pressed_buttons:
+                        self.devices.left_action_motor.dc(-speed)
+                    elif Button.RIGHT in pressed_buttons:
+                        self.devices.right_action_motor.dc(-speed)
+                    elif Button.DOWN in pressed_buttons:
+                        self.devices.left_steering_motor.dc(-speed)
+                    elif Button.UP in pressed_buttons:
+                        self.devices.right_steering_motor.dc(-speed)
+                    elif Button.CENTER in pressed_buttons:
+                        break
+                    else:
+                        self.devices.right_action_motor.brake()
+                        self.devices.left_action_motor.brake()
+                        self.devices.left_steering_motor.brake()
+                        self.devices.right_steering_motor.brake()
             else:
                 self.devices.right_action_motor.brake()
                 self.devices.left_action_motor.brake()

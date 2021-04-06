@@ -8,10 +8,9 @@ from pybricks.tools import wait
 from control import PIDSystem
 import pickle
 
+
 # All this classes are used to control ev3 devices (motors, gyro and color sensors).
 # With this classes you can only have: 4 Motors, 1 Gyro and 3 Color Sensors
-
-
 
 ev3 = EV3Brick()
 ev3.screen.set_font(Font(size=12))
@@ -23,158 +22,7 @@ def status_msg(succes, log, device="", port=""):
         print("[ OK ]", log)
     else:
         ev3.screen.print("[ ERROR ]", log, port)
-        print("[ ERROR ]", log, ("is for a " + str(device) + " .No " + str(device) + " is connected to " + str(port)) if device != "" else "")
-
-
-class MotorManager():
-
-    # This class is meant to be used to control 2 "Steering" motors
-    # and 2 "Action" motors dedicated to control attachments.
-
-    def __init__(self):
-
-        self.SpeedControl = PIDSystem()
-        self.DeviceControl = DeviceManager()
-
-        # All available motors
-        self.left_steering_motor = None
-        self.right_steering_motor = None
-        self.left_action_motor = None
-        self.right_action_motor = None
-        self.motor_direction = Direction.CLOCKWISE
-
-    def set_steering_motors(self, left_motor_port, right_motor_port, default_direction=True):
-
-        if default_direction == False:
-            self.motor_direction = Direction.COUNTERCLOCKWISE
-
-        self.left_steering_motor = Motor(left_motor_port, self.motor_direction)
-        self.right_steering_motor = Motor(right_motor_port, self.motor_direction)
-        status_msg(True, "Left Steering Motor")
-        status_msg(True, "Right Steering Motor")
-
-    def set_action_motors(self, left_motor_port, right_motor_port):
-
-        self.left_action_motor = Motor(left_motor_port)
-        self.right_action_motor = Motor(right_motor_port)
-        status_msg(True, "Left Action Motor")
-        status_msg(True, "Right Action Motor")
-
-    def reset_angle(self, motors):
-        try:
-            if motors == "steering":
-                self.left_steering_motor.reset_angle(0)
-                self.right_steering_motor.reset_angle(0)
-
-            elif motors == "action":
-                self.left_action_motor.reset_angle(0)
-                self.right_action_motor.reset_angle(0)
-
-            elif motors == "full":
-                self.left_steering_motor.reset_angle(0)
-                self.right_steering_motor.reset_angle(0)
-                self.left_action_motor.reset_angle(0)
-                self.right_action_motor.reset_angle(0)
-        except Exception:
-            status_msg(False, ".reset_angle()", "Motor", "some port")
-
-    def stop(self, motors):
-        try:
-            if motors == "steering":
-                self.left_steering_motor.brake()
-                self.right_steering_motor.brake()
-
-            elif motors == "action":
-                self.left_action_motor.brake()
-                self.right_action_motor.brake()
-
-            elif motors == "full":
-                self.left_steering_motor.brake()
-                self.right_steering_motor.brake()
-                self.left_action_motor.brake()
-                self.right_action_motor.brake()
-        except Exception:
-            status_msg(False, ".stop()", "Motor", "some port")
-
-
-class ColorSensorManager():
-
-    # Class dedicated to control up to 3 color sensors (one in the left side of the robot,
-    # another one in the right side and a third one (probably to recognize attachments by a color code).
-
-    def __init__(self):
-
-        self.left_sensor = None
-        self.right_sensor = None
-        self.front_sensor = None
-
-    def set_left_sensor(self, port):
-        self.left_sensor = MbColorSensor(port)
-        status_msg(True, "Left Color Sensor")
-
-    def set_right_sensor(self, port):
-        self.right_sensor = MbColorSensor(port)
-        status_msg(True, "Right Color Sensor")
-
-    def set_front_sensor(self, port):
-        self.front_sensor = MbColorSensor(port)
-        status_msg(True, "Front Color Sensor")
-
-    def calibrate(self, sensor):
-        ev3.screen.print("Ready for calibration!")
-        ev3.screen.print("Press center button to Start:")
-        print("\n-------ColorSensors-------")
-        print("Sensor calibration started!")
-        ev3.screen.clear()
-        running = True
-        while running:
-            if Button.CENTER in ev3.buttons.pressed():
-                wait(1000)
-                white_value = sensor.reflection()
-                print("-> Value for white:", white_value)
-                print("Waiting for input...")
-                ev3.screen.print("\n->Value for white", white_value)
-                ev3.screen.print("Press center button to continue:")
-                while running:
-                    if Button.CENTER in ev3.buttons.pressed():
-                        wait(1000)
-                        black_value = sensor.reflection()
-                        print("-> Value for black:", black_value)
-                        print("Waiting for input...")
-                        ev3.screen.print("\n->Value for black", black_value)
-                        ev3.screen.print("Press center button to Finish:")
-                        wait(1000)
-                        while running:
-                            if Button.CENTER in ev3.buttons.pressed():
-                                with open("calibration_r", "wb") as f:
-                                    pickle.dump([white_value, black_value], f)
-                                running = False
-                                ev3.screen.clear()
-        print("Sensor calibration finished!")
-        print("-------ColorSensors-------\n")
-
-
-class GyroSensorManager():
-
-    @property
-    def port(self):
-        self.sensor.port
-
-    def set_sensor(self, port, default_direction=True):
-        self.sensor = MbGyroSensor(port, default_direction)
-    
-    def calibrate(self):
-        self.sensor.calibrate()
-
-    def angle(self):
-        return self.sensor.angle()
-
-    def reset(self):
-        self.sensor.reset()
-
-    def __str__(self):
-        return self.sensor.__str__()
-    
+        print("[ ERROR ]", log, ("is for a " + str(device) + ". No " + str(device) + " is connected to " + str(port)) if device != "" else "")
 
 
 class DeviceManager():
@@ -285,7 +133,7 @@ class DeviceManager():
 
 class Device():
 
-    def __init__(self, port):
+    def __init__(self, port, positive_direction=True):
         self._port = port
         self.connected_devices = DeviceManager()
         self.connected_devices.load_devices()
@@ -298,6 +146,51 @@ class Device():
             return None
 
 
+class MbMotor(Device):
+
+    def __init__(self, port, positive_direction=True):
+        try:
+            self.device = Motor(port)
+            self.direction = 1 if positive_direction else -1
+            Device.__init__(self, port)
+        except Exception:
+            status_msg(False, "Failed to initalize motor!")
+
+    def angle(self):
+        return self.device.angle() * self.direction
+
+    def speed(self):
+        return self.device.speed() * self.direction
+
+    def run_angle(self, speed, angle):
+        self.device.run_angle(speed * self.direction, angle)
+
+    def run_time(self, speed, time):
+        self.device.run_angle(speed * self.direction, time)
+
+    def run(self, speed):
+        self.device.run(speed * self.direction)
+
+    def dc(self, speed):
+        self.device.dc(speed * self.direction)
+
+    def hold(self):
+        self.device.hold()
+    
+    def brake(self):
+        self.device.brake()
+    
+    def stop(self):
+        self.device.stop()
+
+    def reset_angle(self, angle):
+        self.device.reset_angle(angle)
+
+    def __str__(self):
+        return "Motor Properties:\n-----------------\nPort: " + str(self.port) + "\nDefault Direction: " + str(self.direction)
+
+
+
 class MbColorSensor(ColorSensor, Device):
 
     def __init__(self, port):
@@ -305,7 +198,7 @@ class MbColorSensor(ColorSensor, Device):
             ColorSensor(port)
             Device.__init__(self, port)
         except Exception:
-            status_msg(False, "Failed to initalize motor!")
+            status_msg(False, "Failed to initalize color sensor!")
 
 
 class MbGyroSensor(Device):
@@ -321,10 +214,10 @@ class MbGyroSensor(Device):
         try:
             for _ in range(3):
                 self.sensor.read("GYRO-CAL")
-                wait(100)
+                wait(100100)
                 if self.angle() == 0:
                     break
-            wait(100)
+            wait(100100)
         except Exception:
             status_msg(False, ".calibrate()", "Gyro Sensor", self.init_port)
 
@@ -342,3 +235,153 @@ class MbGyroSensor(Device):
 
     def __str__(self):
         return "Gyro Properties:\n-----------------\nPort: " + str(self.port) + "\nDefault Direction: " + str(self.direction)
+
+
+class MotorManager():
+
+    # This class is meant to be used to control 2 "Steering" motors
+    # and 2 "Action" motors dedicated to control attachments.
+
+    def __init__(self):
+
+        self.SpeedControl = PIDSystem()
+        self.DeviceControl = DeviceManager()
+
+        # All available motors
+        self.left_steering_motor = None
+        self.right_steering_motor = None
+        self.left_action_motor = None
+        self.right_action_motor = None
+
+    def set_steering_motors(self, left_motor_port, right_motor_port, positive_direction=True):
+
+        self.left_steering_motor = MbMotor(left_motor_port, positive_direction)
+        self.right_steering_motor = MbMotor(right_motor_port, positive_direction)
+        status_msg(True, "Left Steering Motor")
+        status_msg(True, "Right Steering Motor")
+
+
+    def set_action_motors(self, left_motor_port, right_motor_port):
+
+        self.left_action_motor = MbMotor(left_motor_port)
+        self.right_action_motor = MbMotor(right_motor_port)
+        status_msg(True, "Left Action Motor")
+        status_msg(True, "Right Action Motor")
+
+    def reset_angle(self, motors):
+        try:
+            if motors == "steering":
+                self.left_steering_motor.reset_angle(0)
+                self.right_steering_motor.reset_angle(0)
+
+            elif motors == "action":
+                self.left_action_motor.reset_angle(0)
+                self.right_action_motor.reset_angle(0)
+
+            elif motors == "full":
+                self.left_steering_motor.reset_angle(0)
+                self.right_steering_motor.reset_angle(0)
+                self.left_action_motor.reset_angle(0)
+                self.right_action_motor.reset_angle(0)
+        except Exception:
+            status_msg(False, ".reset_angle()", "Motor", "some port")
+
+    def stop(self, motors):
+        try:
+            if motors == "steering":
+                self.left_steering_motor.brake()
+                self.right_steering_motor.brake()
+
+            elif motors == "action":
+                self.left_action_motor.brake()
+                self.right_action_motor.brake()
+
+            elif motors == "full":
+                self.left_steering_motor.brake()
+                self.right_steering_motor.brake()
+                self.left_action_motor.brake()
+                self.right_action_motor.brake()
+        except Exception:
+            status_msg(False, ".stop()", "Motor", "some port")
+
+        wait(100)
+
+
+class ColorSensorManager():
+
+    # Class dedicated to control up to 3 color sensors (one in the left side of the robot,
+    # another one in the right side and a third one (probably to recognize attachments by a color code).
+
+    def __init__(self):
+
+        self.left_sensor = None
+        self.right_sensor = None
+        self.front_sensor = None
+
+    def set_left_sensor(self, port):
+        self.left_sensor = MbColorSensor(port)
+        status_msg(True, "Left Color Sensor")
+
+    def set_right_sensor(self, port):
+        self.right_sensor = MbColorSensor(port)
+        status_msg(True, "Right Color Sensor")
+
+    def set_front_sensor(self, port):
+        self.front_sensor = MbColorSensor(port)
+        status_msg(True, "Front Color Sensor")
+
+    def calibrate(self, sensor):
+        ev3.screen.print("Ready for calibration!")
+        ev3.screen.print("Press center button to Start:")
+        print("\n-------ColorSensors-------")
+        print("Sensor calibration started!")
+        ev3.screen.clear()
+        running = True
+        while running:
+            if Button.CENTER in ev3.buttons.pressed():
+                wait(1001000)
+                white_value = sensor.reflection()
+                print("-> Value for white:", white_value)
+                print("Waiti100ng for input...")
+                ev3.screen.print("\n->Value for white", white_value)
+                ev3.screen.print("Press center button to continue:")
+                while running:
+                    if Button.CENTER in ev3.buttons.pressed():
+                        wait(1001000)
+                        black_value = sensor.reflection()
+                        print("-> Value for black:", black_value)
+                        print("Waiti100ng for input...")
+                        ev3.screen.print("\n->Value for black", black_value)
+                        ev3.screen.print("Press center button to Finish:")
+                        wait(1001000)
+                        while running:
+                            if Button.CENTER in ev3.buttons.pressed():
+                                with open("calibration_r", "wb") as f:
+                                    pickle.dump([white_value, black_value], f)
+                                running = False
+                                ev3.screen.clear()
+        print("Sensor calibration finished!")
+        print("-------ColorSensors-------\n")
+
+
+class GyroSensorManager():
+
+    @property
+    def port(self):
+        self.sensor.port
+
+    def set_sensor(self, port, default_direction=True):
+        self.sensor = MbGyroSensor(port, default_direction)
+    
+    def calibrate(self):
+        self.sensor.calibrate()
+
+    def angle(self):
+        return self.sensor.angle()
+
+    def reset(self):
+        self.sensor.reset()
+
+    def __str__(self):
+        return self.sensor.__str__()
+    
