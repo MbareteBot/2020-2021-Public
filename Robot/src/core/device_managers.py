@@ -5,7 +5,7 @@ This files includes "managers" for devices, the main purpose for this is to crea
 easily control an FLL robot.
 
 All this classes use our "custom made" device controllers: MbMotor, MbColorSensor and MbGyroSensor
-Mb stands for MbareteBot 
+Mb stands for MbareteBot :p
 """
 
 from pybricks.ev3devices import Motor, ColorSensor, GyroSensor
@@ -125,7 +125,7 @@ class DeviceManager():
 
     def analyse_ports(self):
         """
-        Detect if any device was disconnected. This eeads the devices that were registered with self.load_devices() and
+        Detect if any device was disconnected. This reads the devices that were registered with self.load_devices() and
         detect if they are still in the same position        
         """
 
@@ -161,7 +161,7 @@ class DeviceManager():
 class MotorManager():
     """
     Great tool to control motors. It offers an interface to use motors for steering and attachments,
-    and it reffers to the motors that are going to be use for steering as "steering" motors and
+    It reffers to the motors that are going to be use for steering as "steering" motors and
     "action" motors to the motors that are going to be use for attachments.
     So far its kind of empty but will get better, i guess :)
 
@@ -208,18 +208,17 @@ class MotorManager():
 class ColorSensorManager():
 
     """
-    Class to control up to 3 color sensors the idea is that there is one color sensor in the left side of the robot, 
-    another one in the right side and a third one (probably to recognize attachments by a color code).
+    Class to control up to 3 color sensors. The idea is that there is one color sensor in the left side of the robot, 
+    another one in the right side and a third one (probably to recognize attachments by a color code)
     """
     def __init__(self):
         self.left_sensor = None
         self.right_sensor = None
         self.front_sensor = None
 
-
-    def set_sensors(self, left_sensor_port=None, right_sensor_port=None, front_sensor_port=None)
+    def set_sensors(self, left_sensor_port=None, right_sensor_port=None, front_sensor_port=None):
         """
-        Sets the 3 sensors to control
+        Sets sensors to control
 
         Args:
             left_sensor_port (Port): Port where the left sensor is connected to
@@ -232,9 +231,9 @@ class ColorSensorManager():
 
     def calibrate(self, sensor):
         """
-        Runs a program to "calibrate" sensors (Human interection is needed). Creates a file that stores the values for
+        Runs a program to "calibrate" the color sensors (human interection is needed). Creates a file that stores the values for
         a white and a black line, this will not affect the readings of the sensors, that means to use the "calibrated" sensors
-        you would need to use that file 
+        you would need to read that file 
         """
         ev3.screen.clear()
         ev3.screen.print("Ready for calibration!")
@@ -279,7 +278,7 @@ class ColorSensorManager():
 
 class GyroSensorManager():
     """
-    Great tool to control a gyro sensor
+    Provides featurures to read angles, reset and calibrate a gyro sensor
     """
     def __init__(self):
         self.core = None
@@ -290,13 +289,13 @@ class GyroSensorManager():
 
     def set_sensor(self, port, clockwise_direction=True):
         """
-        Initializes the sensor
+        Set sensor
 
         Args:
             port (Port): Port to the which the sensor is connected to
             clockwise_direction (bool): Defines the default sign of the angle readings, clockwise or counterclockwise
         """
-        self.core = MbGyroSensor(port, default_direction)
+        self.core = MbGyroSensor(port, clockwise_direction)
 
     def angle(self):
         """
@@ -318,3 +317,4 @@ class GyroSensorManager():
 
     def __repr__(self):
         return self.core.__repr__()
+

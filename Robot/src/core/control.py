@@ -124,7 +124,7 @@ class PidController():
         return "PID Controller:\nProportional: {}\nIntegral: {}\nDerivative: {}\nKp: {}\nKi: {}\nKd: {}\nMax Integral: {}\nMax Output: {}\nMin Output: {}".format(self.proportional, self.integral, self.derivative, self.kp, self.ki, self.kd, self.max_integral, self.max_output, self.min_output)
 
 
-class Path():
+class Path:
     """
     This class is used to create a path that the robot can perform based on Cartesian coordinates.
     The input is a series of coordenates you want the robot the follow and it outputs 
@@ -133,7 +133,7 @@ class Path():
 
     Example:
         >>> Path([0.0, 4.5, 6.2, 7.8]) # the coordenates to follow 
-        [6.4, 108, 3.6, -137, 6.1] # the actual path the robot is gonna use
+        >>> [6.4, 108, 3.6, -137, 6.1] # the actual path the robot is gonna use
 
         The robot would follow the path like this:
             MOVE_STRAIGHT 6.4cm

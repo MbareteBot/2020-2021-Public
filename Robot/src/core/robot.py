@@ -6,7 +6,7 @@ from pybricks.tools import wait
 
 import threading
 from .control import PidController
-from .robotic_tools import RoboticTools
+from .tools import RoboticTools
 from .device_managers import MotorManager, GyroSensorManager, ColorSensorManager, DeviceManager, status_msg
 
 
@@ -60,7 +60,7 @@ class MbRobot():
         """
         # This is gonna run asynchronously, works like a master switch
         while True:
-            if Button.CENTER in self.Ev3.buttons.pressed(): 
+            if Button.LEFT in self.Ev3.buttons.pressed(): 
                 self.active = False
             wait(10)
 
@@ -145,9 +145,9 @@ class MbRobot():
             heading_kd (int, float): Derivative gain for the speed control
             exit_exec (Function): Function that returns True or False, the robots stops if returns True
         """
-        
+        print("RUNN")
         if self.active:
-
+            print("ACTIVE")
             self.Gyro.reset()
             self.Motors.left_steering_motor.reset_angle()
             self.Motors.right_steering_motor.reset_angle()

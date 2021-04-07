@@ -204,11 +204,10 @@ class MbGyroSensor():
     """
 
     def __init__(self, port, clockwise_direction=True):
+        self.port = port 
         self.core = Ev3devSensor(port)  
-        self.init_port = port
         self.direction = 1 if clockwise_direction else -1   
         self.angle_counter = 0
-        self.port = port 
 
     def calibrate(self):
         """
@@ -223,7 +222,7 @@ class MbGyroSensor():
             wait(100)
             self.reset()
         except Exception:
-            status_msg(False, ".calibrate()", "Gyro Sensor", self.init_port)
+            status_msg(False, ".calibrate()", "Gyro Sensor", self.port)
 
     def angle(self):
         """
