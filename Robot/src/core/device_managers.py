@@ -1,7 +1,7 @@
 #!/usr/bin/env pybricks-micropython
 
 """
-This files includes "managers" for devices, the main purpose for this is to create an "enviroment" to 
+This file includes "managers" for devices, the main purpose for this is to create an "enviroment" to 
 easily control an FLL robot.
 
 All this classes use our "custom made" device controllers: MbMotor, MbColorSensor and MbGyroSensor
@@ -25,7 +25,7 @@ task_handler = LogSystem().task_handler
 
 class DeviceManager():
     """
-    A great tool to control the devices connected to the ev3. It can detect what devices are connected to the ev3 and tell if any was
+    Control the devices connected to the ev3. Detect what devices are connected to the ev3 and tell if any was
     accidentally disconnected.
 
     The devices it can detect are from pybricks.ev3devices: ColorSensor, GyroSensor and Motor
@@ -35,11 +35,11 @@ class DeviceManager():
         self.motors_ports = [Port.A, Port.B, Port.C, Port.D]
         self.sensors_ports = [Port.S1, Port.S2, Port.S3, Port.S4]
         self.available_sensors = [ColorSensor, GyroSensor]
-        self.MOTORS = {
+        self.motors = {
             "Motor": [],
             "Port": []
         }
-        self.SENSORS = {
+        self.sensors = {
             "Sensor": [],
             "Port": []
         }
@@ -71,49 +71,49 @@ class DeviceManager():
             devices (dict): A dictionary with the sensors and motors that were found
         """
 
-        self.MOTORS = {
+        self.motors = {
             "Motor": [],
             "Port": []
         }
-        self.SENSORS = {
+        self.sensors = {
             "Sensor": [],
             "Port": []
         }
 
         # Look for motor in every port
-        for PORT in self.motors_ports:
+        for port in self.motors_ports:
             try:
-                self.MOTORS["Motor"].append(type(Motor(PORT)).__name__)
-                self.MOTORS["Port"].append(str(PORT))
+                self.motors["Motor"].append(type(Motor(port)).__name__)
+                self.motors["Port"].append(str(port))
             except Exception:
                 pass
 
         # look for sensors in every port
-        for SENSOR in self.available_sensors:
-            for PORT in self.sensors_ports:
+        for sensor in self.available_sensors:
+            for port in self.sensors_ports:
                 try:
-                    self.SENSORS["Sensor"].append(type(SENSOR(PORT)).__name__)
-                    self.SENSORS["Port"].append(str(PORT))
+                    self.sensors["Sensor"].append(type(sensor(port)).__name__)
+                    self.sensors["Port"].append(str(port))
                 except Exception:
                     pass
 
         if print_output:
             print("\nDevices Found:")
             print("Motors:")
-            if len(self.MOTORS["Motor"]) > 0:
-                for PORT in self.MOTORS["Port"]:
-                    print("Motor in", PORT)
+            if len(self.motors["Motor"]) > 0:
+                for port in self.motors["Port"]:
+                    print("Motor in", port)
             else:
                 print("No motor found")
 
             print("\nSensors:")
-            if len(self.SENSORS["Sensor"]) > 0:
-                for SENSOR, PORT in zip(self.SENSORS["Sensor"], self.SENSORS["Port"]):
-                    print(SENSOR, "in", PORT)
+            if len(self.sensors["Sensor"]) > 0:
+                for sensor, port in zip(self.sensors["Sensor"], self.sensors["Port"]):
+                    print(sensor, "in", port)
             else:
                 print("No sensor found")
 
-        return {"Motors": self.MOTORS, "Sensors": self.SENSORS}
+        return {"Motors": self.motors, "Sensors": self.sensors}
 
     def load_devices(self):
         """
@@ -127,7 +127,7 @@ class DeviceManager():
     def analyse_ports(self):
         """
         Detect if any device was disconnected. This reads the devices that were registered with self.load_devices() and
-        detect if they are still in the same position        
+        detect if they are still in the same port        
         """
 
         # Test motors
@@ -138,7 +138,6 @@ class DeviceManager():
             except Exception:
                 errors += 1
                 print("[ ERROR ] Motor is missing in", port)
-                status_msg(False, port)
 
         for sensor, port in zip(self.devices["Sensors"]["Sensor"], self.devices["Sensors"]["Port"]):
             try:
@@ -151,7 +150,6 @@ class DeviceManager():
             except Exception:
                 print("[ ERROR ] Sensor is missing in", port)
                 errors += 1
-                status_msg(False, port)
 
         if errors > 0:
             ev3.light.on(Color.RED)
@@ -161,13 +159,11 @@ class DeviceManager():
 
 class MotorManager():
     """
-    Great tool to control motors. It offers an interface to use motors for steering and attachments,
-    It reffers to the motors that are going to be use for steering as "steering" motors and
-    "action" motors to the motors that are going to be use for attachments.
-    So far its kind of empty but will get better, i guess :)
+    Control motors for steering and attachments. "steering" motors for steering motors and
+    "action" for motors that are going to be use for attachments.
 
     Args:
-        exit_exec (Function): Function that returns True or False, motors will stop if returns True
+        exit_exec (Function): Returns True or False, motors will stop if returns True
     """
 
     def __init__(self, exit_exec=lambda: False):
@@ -206,10 +202,10 @@ class MotorManager():
 
     @task_handler
     def stop(self, motors):
-        if motors == "steering":
+        if motors.upper() == "steering":
             self.left_steering_motor.hold()
             self.right_steering_motor.hold()
-        elif motors == "action":
+        elif motors.upper() == "action":
             self.left_action_motor.hold()
             self.right_action_motor.hold()
         else:
@@ -223,7 +219,7 @@ class MotorManager():
 class ColorSensorManager():
 
     """
-    Class to control up to 3 color sensors. The idea is that there is one color sensor in the left side of the robot, 
+    Control up to 3 color sensors. The idea is that there is one color sensor in the left side of the robot, 
     another one in the right side and a third one (probably to recognize attachments by a color code)
     """
     def __init__(self):
@@ -297,16 +293,17 @@ class ColorSensorManager():
         Returns:
             calibration_log (int, float, str, bool): Calibration file values
         """
-        
+        with open(self.calibration_file_path) as log:
+            return log[0] # will have values for a white and a black line
 
     @task_handler
     def __repr__(self):
-        return "ColorSensors Properties:\n-Left {}\n-Right {}\n-Front {}".format(self.left_sensor, self.right_sensor, self.front_sensor)
+        return "ColorSensors Properties:\nLeft {}\nRight {}\nFront {}".format(self.left_sensor, self.right_sensor, self.front_sensor)
 
 
 class GyroSensorManager():
     """
-    Provides featurures to read, reset and calibrate a gyro sensor
+    Read, reset and calibrate a gyro sensor
     """
     def __init__(self):
         self.core = None
@@ -351,6 +348,4 @@ class GyroSensorManager():
     @task_handler
     def __repr__(self):
         return self.core.__repr__()
-
-
 

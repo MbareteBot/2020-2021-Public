@@ -18,7 +18,7 @@ class LogSystem:
         Prompt a message to the ev3, you can either pass a message to display or match the parameters to complete a specific format
 
         Args:
-            content (str): Error to prompt
+            content (str): Message to prompt
             positive (bool): If message is True append [ OK ] to the msg else append [ ERROR ]
             host (bool): Prompt to the host computer?
             ev3 (bool): Prompt to the ev3?
@@ -36,6 +36,11 @@ class LogSystem:
         self._ev3.screen.clear()
 
     def task_handler(_, task):
+        """
+        Decorator that wont raise exceptions but will prompt a message to the user.
+        The idea behind this is that the user will never need to exit the current file to try again, and will get notified
+        what the error was on the ev3 screen
+        """
         def perform(*args, **kwargs):
             try:
                 return task(*args, **kwargs) 
@@ -45,7 +50,7 @@ class LogSystem:
         
     def record(self, filename, target, state):
         """
-        Record the target and state of a system to control errors
+        Log data to control error, if the filename wasnt used before a new file will be created
 
         Args:
             filename (str): Filename of the log file
@@ -81,7 +86,6 @@ class RoboticTools():
         Returns:
             cm (int, float): Distance in cm
         """
-
         # making this "modular"
         wheel_diameter = self.wheel_diameter if wheel_diameter == "default" else wheel_diameter
         return (degrees * (wheel_diameter * 3.141)) / 360
@@ -97,7 +101,6 @@ class RoboticTools():
         Returns:
             degrees (int, flaot): Distance in degrees
         """
-
         # making this "modular"
         wheel_diameter = self.wheel_diameter if wheel_diameter == "default" else wheel_diameter
         return (cm / (wheel_diameter * 3.141)) * 360

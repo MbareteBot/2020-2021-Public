@@ -3,7 +3,9 @@
 from pybricks.parameters import Color, Button
 
 from src.core.init import fll_robot
-from src.paths.init import paths
+from src.paths import a, b, c 
+
+paths = [a, b, c]
 
 
 def wait_for_attachment(Robot):

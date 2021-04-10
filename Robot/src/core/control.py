@@ -31,7 +31,7 @@ class PidController():
 
     def execute(self, error):
         """
-        Executes the PID control calculation. It doesnt returns anything as the ideal is to use self.output to use the calculation result
+        Executes the PID control calculation
 
         Args:
             error (int, float): The error value in the system
@@ -59,7 +59,7 @@ class PidController():
                 kd=None, 
                 max_integral=None):
         """
-        Allows to set certaing parameters of the PID Controller
+        Set certaing parameters of the PID Controller
 
         Args:
             kp (int, float): Proportional gain
@@ -77,7 +77,6 @@ class PidController():
         """
         Resets Proportional, Integral and Derivate terms to zero
         """
-
         self.proportional = 0
         self.integral = 0
         self.derivative = 0
@@ -91,10 +90,14 @@ class PidController():
 
 class Path:
     """
-    This class is used to create a path that the robot can perform based on Cartesian coordinates.
+    Create a path that the robot can perform based on Cartesian coordinates.
     The input is a series of coordenates you want the robot the follow and it outputs 
     the path you made with coordenates as a path that would make the robot to 
     move straight and turn to follow that path.
+
+    Args:
+        coordenates (List): The path the robot is going to follow
+
 
     Example:
         >>> Path([0.0, 4.5, 6.2, 7.8]) # the coordenates to follow 
@@ -112,11 +115,6 @@ class Path:
     """
 
     def __init__(self, coordenates):
-        """
-        
-        Args:
-            coordenates (List): The path the robot is going to follow
-        """
         self.coordenates = coordenates
         self.set_path(coordenates)
 
@@ -131,7 +129,6 @@ class Path:
         Returns:
             distance (int): The distance between the two points
         """
-        
         return round(math.sqrt((xy1[0] - xy2[0])**2 + (xy1[1] - xy2[1])**2), 1)    
 
     def get_angle(self, xy1, xy2, xy3):

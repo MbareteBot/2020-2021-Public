@@ -47,7 +47,7 @@ class MbRobot():
 
     def task_handler(self):
         """
-        Stops any movement the robot is performing by pressing the CENTER button of the ev3 brick
+        Stops any movement the robot is performing by pressing the LEFT button of the ev3 brick
         """
         # This is gonna run asynchronously, works like a master switch
         while True:
@@ -64,7 +64,7 @@ class MbRobot():
             max_speed=None,
             exit_exec=lambda: False):  
         """
-        Allows the robot to turn using a gyro sensor
+        Allows the robot to rotate using a gyro sensor
 
         Args:
             angle (int): Angle in degrees to the which the robot is gonna turn to
@@ -84,14 +84,13 @@ class MbRobot():
             moving = True
             while moving and self.active and not exit_exec():
                 error = angle - self.Gyro.angle()
-                print("error", error)
+
                 self.TurnSpeedControl.execute(error)
                 self.Motors.left_steering_motor.run(self.TurnSpeedControl.output)
                 self.Motors.right_steering_motor.run(-self.TurnSpeedControl.output)
 
-                if abs(self.Gyro.angle()) >= abs(angle)/2:
-                    if -2 < error < 2:
-                        moving = False
+                if -2 < error < 2:
+                    moving = False
 
             self.Motors.left_steering_motor.hold()
             self.Motors.right_steering_motor.hold()
@@ -112,8 +111,8 @@ class MbRobot():
             exit_exec=lambda: False):
 
         """
-        Lets the robot accelerate and decelerate as it gets towards its objetive while detecting if it got stalled
-
+        Accelerate and decelerate as it gets towards its objetive while detecting if it got stalled
+        
         Args:
             distance (int, float): Distance to move
             orientation (int, float, Function): The orientation the robot is going to follow, it can also be a function that returns a number
@@ -205,10 +204,10 @@ class MbRobot():
                     exit_exec=lambda: False):
 
         """
-        Allows the robot to follow a line
+        Follow a line
 
         Args:
-            sensor (ColorSensor, MbColorSensor): The sensor to follow the line with
+            sensor (ColorSensor, MbColorSensor): The sensor that will follow the line
             distance (int, float): Distance to move
             target_value (int): Value to follow with the sensor, will use the calibration file if stays as "default"
             min_speed (int, float): Minimun speed the robot is going to achieve
@@ -224,10 +223,7 @@ class MbRobot():
 
         if self.active:
             # value between the white and the black line
-            try:
                 target_value = self.colorsensor_calibration_file[0]/2 if target_value == None else target_value
-            except Exception:
-                status_msg(False, "missing calibration_r file")
                 
             self.LineFollowerSpeedControl.reset()
             self.LineFollowerSpeedControl.settings(self.LineFollowerSpeedControl.kp if speed_kp == None else speed_kp,
@@ -269,7 +265,7 @@ class MbRobot():
                     exit_exec=lambda: False):
 
         """
-        Move the robot over a distance but will stop before if founds a line
+        Move the robot over a distance but will stop before if finds a line
 
         Args:
             sensor (ColorSensor, MbColorSensor): The sensor to use to detect the line
@@ -289,10 +285,7 @@ class MbRobot():
 
         if self.active:
             sensor = self.ColorSensors.left_sensor if sensor == None else sensor
-            try:
-                colors = self.colorsensor_calibration_file
-            except Exception:
-                status_msg(False, "missing calibration_r file")
+            colors = self.ColorSensors.calibration_log()
 
             if color.upper() == "WHITE":
                 exit_exec = lambda: sensor.reflection() > colors[0] - 10 # white value from calib file
@@ -333,11 +326,8 @@ class MbRobot():
 
         if self.active:
             speed = abs(speed) * (1 if forward else -1)
-            try:
-                colors = eval(list(open("calibration_r"))[0])
-            except Exception:
-                status_msg(False, "missing calibration_r file")
 
+            colors = self.ColorSensors.calibration_log()
             white_value = colors[0] - 10
             black_value = colors[1] + 5
 
@@ -362,7 +352,7 @@ class MbRobot():
                     if right_steering_motor_exit_exec():
                         self.Motors.right_steering_motor.hold()
 
-                    # If both sensors are on the line, go backwards and repeat the procces one more time
+                    # If both sensors are on the line, go backwards and repeat the process one more time
                     if left_steering_motor_exit_exec() and right_steering_motor_exit_exec():
                         if repetition == 0:
                             self.run(-5 if speed > 0 else 5, speed_kp=1)
@@ -377,8 +367,8 @@ class MbRobot():
 
     def run_path(self, path): 
         """
-        Allows the robot to move using a path with the following format: [MOVE_STRAIGHT, TURN, MOVE_STRAIGHT, TURN, ...]
-        This is the same format that a Path object returns
+        Move using a path with the following format: [MOVE_STRAIGHT, TURN, MOVE_STRAIGHT, TURN, ...]
+        This is the same format that a Path object returns (refer to control.py)
 
         Args:
             path (Path): The path to follow
@@ -390,7 +380,7 @@ class MbRobot():
 
     def run_async(self, target, args=[]):
         """
-        Creates a thread and runs a function in that thread, this method uses the same format that threading.Thread uses for the parameters
+        Create a thread and runs a function in that thread
 
         Args:
             target (Function): Function to perform on the thread
