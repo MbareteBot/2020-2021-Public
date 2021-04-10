@@ -17,10 +17,11 @@ from pybricks.tools import wait
 import pickle
 
 from .devices import MbMotor, MbColorSensor, MbGyroSensor
-from .tools import RoboticTools
+from .tools import RoboticTools, LogSystem
 
 ev3 = EV3Brick()
-status_msg = RoboticTools.status_msg
+
+task_handler = LogSystem().task_handler
 
 class DeviceManager():
     """
@@ -178,6 +179,7 @@ class MotorManager():
 
         self.exit_exec = exit_exec
 
+    @task_handler
     def set_steering_motors(self, left_motor_port, right_motor_port, clockwise_direction=True):
         """
         Sets the steering motors on the robot
@@ -190,17 +192,30 @@ class MotorManager():
         self.left_steering_motor = MbMotor(left_motor_port, clockwise_direction, exit_exec=self.exit_exec)
         self.right_steering_motor = MbMotor(right_motor_port, clockwise_direction, exit_exec=self.exit_exec)
 
+    @task_handler
     def set_action_motors(self, left_motor_port, right_motor_port):
         """
         Sets the motors that would probably be used for attachments
 
         Args:
-            left_motor_port (Port): Port on the which the left action motor is connected
-            right_motor_port (Port): Port on the which the right action motor is connected
+            left_motor_port (Port): Port on which the left action motor is connected
+            right_motor_port (Port): Port on which the right action motor is connected
         """
         self.left_action_motor = MbMotor(left_motor_port, exit_exec=self.exit_exec)
         self.right_action_motor = MbMotor(right_motor_port, exit_exec=self.exit_exec)
 
+    @task_handler
+    def stop(self, motors):
+        if motors == "steering":
+            self.left_steering_motor.hold()
+            self.right_steering_motor.hold()
+        elif motors == "action":
+            self.left_action_motor.hold()
+            self.right_action_motor.hold()
+        else:
+            print("Invalid input for MotorManager.stop()")
+    
+    @task_handler
     def __repr__(self):
         return "Motor Manager Properties:\n-Left-Steering-{}\n-Right-Steering-{}\n-Left-Action-{}\n-Right-Action-{}".format(self.left_steering_motor, self.right_steering_motor, self.left_action_motor, self.right_action_motor)
 
@@ -215,7 +230,9 @@ class ColorSensorManager():
         self.left_sensor = None
         self.right_sensor = None
         self.front_sensor = None
+        self.calibration_file_path = "./colorsensor_calib"
 
+    @task_handler
     def set_sensors(self, left_sensor_port=None, right_sensor_port=None, front_sensor_port=None):
         """
         Sets sensors to control
@@ -225,10 +242,12 @@ class ColorSensorManager():
             right_sensor_port (Port): Port where the right sensor is connected to
             front_sensor_port (Port): Port where the front sensor is connected to
         """
+
         self.left_sensor = MbColorSensor(left_sensor_port) if left_sensor_port != None else None
         self.right_sensor = MbColorSensor(right_sensor_port) if right_sensor_port != None else None
         self.front_sensor = MbColorSensor(front_sensor_port) if front_sensor_port != None else None
 
+    @task_handler
     def calibrate(self, sensor):
         """
         Runs a program to "calibrate" the color sensors (human interection is needed). Creates a file that stores the values for
@@ -264,7 +283,7 @@ class ColorSensorManager():
                             pass
                         while running:
                             if Button.CENTER in ev3.buttons.pressed():
-                                with open("calibration_r", "wb") as f:
+                                with open(self.calibration_file_path, "wb") as f:
                                     pickle.dump([white_value, black_value], f)
                                 running = False
                                 ev3.screen.clear()
@@ -272,21 +291,32 @@ class ColorSensorManager():
         print("Sensor calibration finished!")
         print("-------ColorSensors-------\n")
 
+    @task_handler
+    def calibration_log(self):
+        """
+        Returns:
+            calibration_log (int, float, str, bool): Calibration file values
+        """
+        
+
+    @task_handler
     def __repr__(self):
         return "ColorSensors Properties:\n-Left {}\n-Right {}\n-Front {}".format(self.left_sensor, self.right_sensor, self.front_sensor)
 
 
 class GyroSensorManager():
     """
-    Provides featurures to read angles, reset and calibrate a gyro sensor
+    Provides featurures to read, reset and calibrate a gyro sensor
     """
     def __init__(self):
         self.core = None
-
+    
+    @task_handler
     @property
     def port(self):
         return self.core.port
 
+    @task_handler
     def set_sensor(self, port, clockwise_direction=True):
         """
         Set sensor
@@ -297,24 +327,30 @@ class GyroSensorManager():
         """
         self.core = MbGyroSensor(port, clockwise_direction)
 
+    @task_handler
     def angle(self):
         """
         Gets the accumulated angle of the sensor
         """
         return self.core.angle()
 
+    @task_handler
     def calibrate(self):
         """
         Calibrate the sensor. The robot should be perfectly still while doing this process
         """
         self.core.calibrate()
 
+    @task_handler
     def reset(self):
         """
         Resets the accumulated angle of the sensor
         """
         self.core.reset()
-
+    
+    @task_handler
     def __repr__(self):
         return self.core.__repr__()
+
+
 

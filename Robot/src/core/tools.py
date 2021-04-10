@@ -2,9 +2,62 @@
 
 from pybricks.media.ev3dev import Font
 from pybricks.hubs import EV3Brick
+from pybricks.tools import DataLog
 
-ev3 = EV3Brick()
-ev3.screen.set_font(Font(size=12))
+    
+class LogSystem:
+    def __init__(self):
+        self._ev3 = EV3Brick()
+        self._ev3.screen.set_font(Font(size=12))
+        self.last_log = ""
+        self.log_files = []
+        self.log_files_names = []
+
+    def log(self, content, host=True, ev3=False, positivelog=None):
+        """
+        Prompt a message to the ev3, you can either pass a message to display or match the parameters to complete a specific format
+
+        Args:
+            content (str): Error to prompt
+            positive (bool): If message is True append [ OK ] to the msg else append [ ERROR ]
+            host (bool): Prompt to the host computer?
+            ev3 (bool): Prompt to the ev3?
+        """
+        msg = (("[ OK ] " if positivelog else "[ ERROR ] ") if positivelog != None else "") + str(content)
+        if host: 
+            print(msg)
+        if ev3:
+            self._ev3.screen.print(msg)
+
+    def clear_log(self):
+        """
+        Clear ev3 screen
+        """
+        self._ev3.screen.clear()
+
+    def task_handler(_, task):
+        def perform(*args, **kwargs):
+            try:
+                return task(*args, **kwargs) 
+            except:
+                LogSystem().log(task.__name__, host=True, ev3=True, positivelog=False)
+        return perform
+        
+    def record(self, filename, target, state):
+        """
+        Record the target and state of a system to control errors
+
+        Args:
+            filename (str): Filename of the log file
+            target (int, float, str, bool): Anything that is considered the target value of a system
+            state (int, float, str, bool): Anything that is considered the current state value of a system
+        """
+        if filename not in self.log_files_names:
+            self.log_files_names.append(filename)
+            self.log_files.append(DataLog("Target", "State", "Error", name=filename))
+        
+        self.log_files_names.index(filename).log(target, state, target - state)
+
 
 class RoboticTools():
     """
@@ -48,21 +101,3 @@ class RoboticTools():
         # making this "modular"
         wheel_diameter = self.wheel_diameter if wheel_diameter == "default" else wheel_diameter
         return (cm / (wheel_diameter * 3.141)) * 360
-
-    @staticmethod
-    def status_msg(succes, log, device="", port=""):
-        """
-        Prompt a message to the ev3, you can either pass a message to display or match the parameters to complete a specific format
-
-        Args:
-            log (str): Main message to prompt
-            device (str): Name of the device that failed
-            port (str): Port of the device that failed
-        """
-        
-        if succes:
-            print("[ OK ]", log)
-        else:
-            ev3.screen.print("[ ERROR ]", log, port)
-            print("[ ERROR ]", log, ("is for a " + str(device) + ". No " + str(device) + " is connected to " + str(port)) if device != "" else "")
-

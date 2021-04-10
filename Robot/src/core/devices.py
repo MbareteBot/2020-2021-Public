@@ -7,7 +7,7 @@ This is so that we can add extra functionality to motors and sensors.
 """
 
 from pybricks.parameters import Port, Direction, Color
-from pybricks.ev3devices import Motor, ColorSensor
+from pybricks.ev3devices import Motor, ColorSensor, GyroSensor
 from pybricks.iodevices import Ev3devSensor
 from pybricks.tools import wait
 
@@ -17,8 +17,6 @@ import pickle
 
 from .tools import RoboticTools
 
-
-status_msg = RoboticTools.status_msg
 
 class MbMotor():
     """
@@ -34,13 +32,13 @@ class MbMotor():
         exit_exec (Function) = Function that returns True or False, the motor will stop if returns True
     """
     def __init__(self, port, clockwise_direction=True, exit_exec=lambda: False):
-        try:
-            self.core = Motor(port)
-            self.port = port
-            self.direction = 1 if clockwise_direction else -1
-            self.exit_exec = exit_exec
-        except Exception:
-            status_msg(False, "Failed to initalize motor!")
+        # try:
+        self.core = Motor(port)
+        self.port = port
+        self.direction = 1 if clockwise_direction else -1
+        self.exit_exec = exit_exec
+        # except Exception:
+            # status_msg(False, "Failed to initalize motor!")
     
     def angle(self):
         """
@@ -156,7 +154,7 @@ class MbMotor():
         """
         self.core.reset_angle(angle)
 
-    def is_stalled(self, min_speed):
+    def is_stalled(self, min_speed=0):
         """
         Check if the motor got stalled
 
@@ -165,7 +163,7 @@ class MbMotor():
         Args:
             min_speed (int): The minim speed the motor should be moving at
         """
-        if abs(self.speed()) < abs(min_speed):
+        if abs(self.speed()) <= abs(min_speed):
             return True 
         return False
 
@@ -182,10 +180,10 @@ class MbColorSensor(ColorSensor):
         port (Port): Port the sensor is connected to
     """
     def __init__(self, port):
-        try:
-            ColorSensor(port)
-        except Exception:
-            status_msg(False, "Failed to initalize color sensor!")
+        # try:
+        ColorSensor(port)
+        # except Exception:
+            # status_msg(False, "Failed to initalize color sensor!")
 
         self.port = port
 
@@ -206,6 +204,10 @@ class MbGyroSensor():
     def __init__(self, port, clockwise_direction=True):
         self.port = port 
         self.core = Ev3devSensor(port)  
+        # try:
+        GyroSensor(port)
+        # except Exception:
+            # status_msg(False, "Failed to initialize Gyro Sensor!")
         self.direction = 1 if clockwise_direction else -1   
         self.angle_counter = 0
 
@@ -213,16 +215,16 @@ class MbGyroSensor():
         """
         Calibrate the gyro sensor. During this process the robot should be perfectly still
         """
-        try:
-            for _ in range(3):
-                self.core.read("GYRO-CAL")
-                wait(100)
-                if self.angle() == 0:
-                    break
+        # try:
+        for _ in range(3):
+            self.core.read("GYRO-CAL")
             wait(100)
-            self.reset()
-        except Exception:
-            status_msg(False, ".calibrate()", "Gyro Sensor", self.port)
+            if self.angle() == 0:
+                break
+        wait(100)
+        self.reset()
+        # except Exception:
+            # status_msg(False, ".calibrate()", "Gyro Sensor", self.port)
 
     def angle(self):
         """
@@ -231,20 +233,20 @@ class MbGyroSensor():
         Returns:
             angle (int): The current angle of the gyro sensor
         """
-        try:
-            return (int(self.core.read("GYRO-ANG")[0]) * self.direction) - self.angle_counter
-        except Exception:
-            status_msg(False, ".angle()", "Gyro Sensor", self.init_port)
+        # try:
+        return (int(self.core.read("GYRO-ANG")[0]) * self.direction) - self.angle_counter
+        # except Exception:
+            # status_msg(False, ".angle()", "Gyro Sensor", self.init_port)
 
     def reset(self):
         """
         Resets the accumulated angle of the sensor, this does not affect the actual sensor angle but instead it make it looks like the sensor angle was reseated
         as it shows an appropiate value for the angle by using self.angle()
         """
-        try:
-            self.angle_counter = int(self.core.read("GYRO-ANG")[0]) * self.direction
-        except Exception:
-            status_msg(False, ".reset()", "Gyro Sensor", self.init_port)
+        # try:
+        self.angle_counter = int(self.core.read("GYRO-ANG")[0]) * self.direction
+        # except Exception:
+            # status_msg(False, ".reset()", "Gyro Sensor", self.init_port)
 
     def __repr__(self):
         return "Gyro Properties:\nPort: {}\nDirection: {}".format(self.port, self.direction)

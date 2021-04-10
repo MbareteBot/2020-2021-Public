@@ -1,8 +1,8 @@
 #!/usr/bin/env pybricks-micropython
 
-from pybricks.parameters import Button
+from pybricks.parameters import Button, Port
 from src.core.init import fll_robot
-
+from src.test import test
 
 def motor_control(Robot):
     print("====Motor Control====")
@@ -34,36 +34,33 @@ def motor_control(Robot):
     except KeyboardInterrupt:
         print()
 
-def main():
-    print("======Repl======")
-    print('Type "exit" plus Return to exit')
-    print('Type "motor" plus Return to start Motor control')
-    print("MbRobot is initalized as Robot")
 
-    Robot = fll_robot()
+print("======Repl======")
+print('Type "exit" plus Return to exit')
+print('Type "motor" plus Return to start Motor control')
+print("MbRobot is initalized as Robot")
 
-    while True:
-            command = input(">>> ")
-            if command != "exit":
-                if command == "motor":
-                    motor_control(Robot)
-                else:
-                    try:
-                        eval(command)
-                    except KeyboardInterrupt as e:
-                        print(repr(e))
-                        Robot.Motors.left_steering_motor.hold()
-                        Robot.Motors.right_steering_motor.hold()
-                        Robot.Motors.left_action_motor.hold()
-                        Robot.Motors.right_action_motor.hold()
-                    except Exception as e:
-                        if hasattr(e, "message"):
-                            print(e.message)
-                        else:
-                            print(e)
-        else:
+Robot = fll_robot()
+
+while True:
+        command = input(">>> ")
+        if command == "exit":
             break
-
-
-if __name__ == "__main__":
-    main()
+        elif command == "motor":
+            motor_control(Robot)
+        elif command == "test":
+            test()
+        else:
+            try:
+                eval(command)
+            except Exception as e:
+                if hasattr(e, "message"):
+                    print(e.message)
+                else:
+                    print(e)
+            except KeyboardInterrupt as e:
+                print(repr(e))
+                Robot.Motors.left_steering_motor.hold()
+                Robot.Motors.right_steering_motor.hold()
+                Robot.Motors.left_action_motor.hold()
+                Robot.Motors.right_action_motor.hold()

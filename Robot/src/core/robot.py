@@ -1,13 +1,15 @@
-#!/usr/bin/env pybricks-micropython
-
-from pybricks.parameters import Port, Button, Color
-from pybricks.hubs import EV3Brick
-from pybricks.tools import wait
+0#!/usr/bin/env pybricks-micropython
 
 import threading
+
+from pybricks.hubs import EV3Brick
+from pybricks.parameters import Button, Color, Port
+from pybricks.tools import wait
+
 from .control import PidController
+from .device_managers import (ColorSensorManager, DeviceManager,
+                              GyroSensorManager, MotorManager)
 from .tools import RoboticTools
-from .device_managers import MotorManager, GyroSensorManager, ColorSensorManager, DeviceManager, status_msg
 
 
 class MbRobot():
@@ -23,36 +25,25 @@ class MbRobot():
 
         self.Ev3 = EV3Brick()
         self.Gyro = GyroSensorManager()
-        self.Motors = MotorManager(exit_exec=lambda: Button.CENTER in self.Ev3.buttons.pressed())
+        self.Motors = MotorManager(exit_exec=lambda: Button.LEFT in self.Ev3.buttons.pressed())
         self.ColorSensors = ColorSensorManager()
+        
         self.DeviceControl = DeviceManager()
-
-        try:
-            self.color_sensor_calibration_file = eval(list(open("calibration_r"))[0])
-        except IndexError:
-            print("[ ERROR ] Calibration was not created correctly, delete exising file and try again")
-        except OSError:
-            print("[ WARNING ] ColorSensors calibration file is missing!")
             
         self.active = True # This will be used like a global switch
 
         # Task handler
         self.run_async(self.task_handler)
 
-        print("---MbRobot---")
-
-    def setup_control(self, 
-                    turn_control=False, 
-                    run_control=False, 
-                    line_follower_control=False):
+    def setup_control(self, turn_control=False, run_control=False, line_follower_control=False):
         if turn_control:
-            self.TurnSpeedControl = PidController(5, 0.07, 0.4, min_output=50)
+            self.TurnSpeedControl = PidController(6, 0.15)
         if run_control:
-            self.RunSpeedControl = PidController(3, 0.17, 0, min_output=90)
-            self.RunHeadingControl = PidController(6, 0.1, 0)
+            self.RunSpeedControl = PidController(3, 0.17, 0)
+            self.RunHeadingControl = PidController(15, 0.1, 0)
         if line_follower_control:
-            self.LineFollowerSpeedControl = PidController(1.4, 0, 0, 800, 90)
-            self.LineFollowerHeadingControl = PidController(3, 0, 0.4, 800, -100, 100)
+            self.LineFollowerSpeedControl = PidController(1.4, 0, 0)
+            self.LineFollowerHeadingControl = PidController(3, 0, 0.4)
 
     def task_handler(self):
         """
@@ -85,30 +76,21 @@ class MbRobot():
         if self.active:
 
             self.Gyro.reset()
-            self.Motors.left_steering_motor.reset_angle()
-            self.Motors.right_steering_motor.reset_angle()
-
             self.TurnSpeedControl.reset()
             self.TurnSpeedControl.settings(self.TurnSpeedControl.kp if speed_kp == None else speed_kp,
                                            self.TurnSpeedControl.ki if speed_kp == None else speed_ki,
-                                           self.TurnSpeedControl.kd if speed_kp == None else speed_kd,
-                                           (abs(self.TurnSpeedControl.min_output) * (-1 if angle < 0 else 1)) if min_speed == None else min_speed,
-                                           (abs(self.TurnSpeedControl.max_output) * (-1 if angle < 0 else 1)) if max_speed == None else max_speed)
+                                           self.TurnSpeedControl.kd if speed_kp == None else speed_kd)
 
             moving = True
             while moving and self.active and not exit_exec():
                 error = angle - self.Gyro.angle()
-
+                print("error", error)
                 self.TurnSpeedControl.execute(error)
-
                 self.Motors.left_steering_motor.run(self.TurnSpeedControl.output)
                 self.Motors.right_steering_motor.run(-self.TurnSpeedControl.output)
 
-                # stall detection
                 if abs(self.Gyro.angle()) >= abs(angle)/2:
-                    if (self.Motors.left_steering_motor.is_stalled(self.TurnSpeedControl.min_output) or 
-                        self.Motors.right_steering_motor.is_stalled(self.TurnSpeedControl.min_output) or
-                        abs(self.Gyro.angle()) >= abs(angle) - 1):
+                    if -2 < error < 2:
                         moving = False
 
             self.Motors.left_steering_motor.hold()
@@ -119,8 +101,8 @@ class MbRobot():
     def run(self, 
             distance, 
             orientation=0, 
-            min_speed=None, 
-            max_speed=None, 
+            min_speed=90, 
+            max_speed=800, 
             speed_kp=None, 
             speed_ki=None, 
             speed_kd=None, 
@@ -145,9 +127,9 @@ class MbRobot():
             heading_kd (int, float): Derivative gain for the speed control
             exit_exec (Function): Function that returns True or False, the robots stops if returns True
         """
-        print("RUNN")
+       
         if self.active:
-            print("ACTIVE")
+
             self.Gyro.reset()
             self.Motors.left_steering_motor.reset_angle()
             self.Motors.right_steering_motor.reset_angle()
@@ -155,15 +137,15 @@ class MbRobot():
             self.RunSpeedControl.reset()
             self.RunSpeedControl.settings(self.RunSpeedControl.kp if speed_kp == None else speed_kp,
                                         self.RunSpeedControl.ki if speed_ki == None else speed_ki,
-                                        self.RunSpeedControl.kd if speed_kd == None else speed_kd,
-                                        (abs(self.RunSpeedControl.min_output) * (-1 if distance < 0 else 1)) if min_speed == None else min_speed,
-                                        (abs(self.RunSpeedControl.max_output) * (-1 if distance < 0 else 1)) if max_speed == None else max_speed,
-                                        abs(self.RunSpeedControl.max_integral) * (-1 if distance < 0 else 1))
+                                        self.RunSpeedControl.kd if speed_kd == None else speed_kd)
 
             self.RunHeadingControl.reset()
             self.RunHeadingControl.settings(self.RunHeadingControl.kp if heading_kp == None else heading_kp,
                                             self.RunHeadingControl.ki if heading_ki == None else heading_ki,
                                             self.RunHeadingControl.kd if heading_kd == None else heading_kd)
+
+            min_speed = abs(min_speed) * (-1 if distance < 0 else 1) 
+            max_speed = abs(max_speed) * (-1 if distance < 0 else 1) 
 
             # This allows that anything can control the robot heading, by default it would use the gyro sensor to control the heading
             # but you can also pass a function that returns a number so that it uses that function to control the heading
@@ -179,17 +161,20 @@ class MbRobot():
             while moving and self.active and not exit_exec():
                 motors_dg = (self.Motors.right_steering_motor.angle() + self.Motors.left_steering_motor.angle()) / 2
                
-                # Speed control error logic 
                 if abs(motors_dg) < abs(distance_dg)/2:
                     speed_error = distance_dg - (distance_dg - motors_dg)
                 else:
                     speed_error = distance_dg - motors_dg
                     moved_enough = True
 
-                # Speed and heading control
                 self.RunHeadingControl.execute(heading_error())
                 self.RunSpeedControl.execute(speed_error)
 
+                if abs(self.RunSpeedControl.output) < abs(min_speed):
+                    self.RunSpeedControl.output = min_speed
+                elif abs(self.RunSpeedControl.output) > abs(max_speed):
+                    self.RunSpeedControl.output = max_speed 
+                
                 self.Motors.left_steering_motor.run(self.RunSpeedControl.output)
                 self.Motors.right_steering_motor.run(self.RunSpeedControl.output - self.RunHeadingControl.output)
 
@@ -197,8 +182,8 @@ class MbRobot():
                 if moved_enough:
                     # stop if the robot either reached the target distance or got stalled
                     if (abs(motors_dg) >= abs(distance_dg) - 20 or 
-                        self.Motors.left_steering_motor.is_stalled(self.RunSpeedControl.min_output) or 
-                        self.Motors.right_steering_motor.is_stalled(self.RunSpeedControl.min_output)):
+                        self.Motors.left_steering_motor.is_stalled(min_speed) or 
+                        self.Motors.right_steering_motor.is_stalled(min_speed)):
                         moving = False
 
             self.Motors.left_steering_motor.brake()
@@ -240,28 +225,24 @@ class MbRobot():
         if self.active:
             # value between the white and the black line
             try:
-                target_value = self.color_sensor_calibration_file[0]/2 if target_value == None else target_value
+                target_value = self.colorsensor_calibration_file[0]/2 if target_value == None else target_value
             except Exception:
                 status_msg(False, "missing calibration_r file")
                 
             self.LineFollowerSpeedControl.reset()
             self.LineFollowerSpeedControl.settings(self.LineFollowerSpeedControl.kp if speed_kp == None else speed_kp,
                                                    self.LineFollowerSpeedControl.ki if speed_ki == None else speed_ki,
-                                                   self.LineFollowerSpeedControl.kd if speed_kd == None else speed_kd,
-                                                   self.LineFollowerSpeedControl.min_output if min_speed == None else min_speed,
-                                                   self.LineFollowerSpeedControl.max_output if max_speed == None else max_speed)
+                                                   self.LineFollowerSpeedControl.kd if speed_kd == None else speed_kd)
 
             self.LineFollowerHeadingControl.reset()
             self.LineFollowerHeadingControl.settings(self.LineFollowerHeadingControl.kp if heading_kp == None else heading_kp,
                                                     self.LineFollowerHeadingControl.ki if heading_ki == None else heading_ki,
-                                                    self.LineFollowerHeadingControl.kd if heading_kd == None else heading_kd,
-                                                    self.LineFollowerHeadingControl.min_output,
-                                                    self.LineFollowerHeadingControl.max_output)
+                                                    self.LineFollowerHeadingControl.kd if heading_kd == None else heading_kd)
             
             self.run(distance, 
                     orientation=lambda: sensor.reflection() - target_value, # heading control
-                    min_speed=self.LineFollowerSpeedControl.min_output, 
-                    max_speed=self.LineFollowerSpeedControl.max_output, 
+                    min_speed=90, 
+                    max_speed=800, 
                     speed_kp=self.LineFollowerSpeedControl.kp, 
                     speed_ki=self.LineFollowerSpeedControl.ki, 
                     speed_kd=self.LineFollowerSpeedControl.kd, 
@@ -283,8 +264,8 @@ class MbRobot():
                     heading_kp=None, 
                     heading_ki=None, 
                     heading_kd=None, 
-                    min_speed=None, 
-                    max_speed=None,
+                    min_speed=90, 
+                    max_speed=800,
                     exit_exec=lambda: False):
 
         """
@@ -309,7 +290,7 @@ class MbRobot():
         if self.active:
             sensor = self.ColorSensors.left_sensor if sensor == None else sensor
             try:
-                colors = self.color_sensor_calibration_file
+                colors = self.colorsensor_calibration_file
             except Exception:
                 status_msg(False, "missing calibration_r file")
 
@@ -402,7 +383,6 @@ class MbRobot():
         Args:
             path (Path): The path to follow
         """
-    
         for i in range(len(path) - 1):
             self.run(path[i])
             if i < len(path) - 2:
@@ -425,7 +405,6 @@ class MbRobot():
         Args:
             button_to_exit (Button): What button will cancel this pause
         """
-
         self.Ev3.light.on(Color.RED)
         while True:
             if button_to_exit in self.Ev3.buttons.pressed():

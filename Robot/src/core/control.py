@@ -11,26 +11,16 @@ class PidController():
         ki (int, float): Integral gain
         kd (int, float): Derivative gain
         max_integral (int, float): Sets the maximun value the Integral term can achieve
-        max_output (int, float): The maximun value the PID controller can output, the idea between
-            this and min_output is that sometimes you dont want to tune the PID controller as all you
-            need is an output and you dont care about a good performing PID controller. That 
-            behavior is not recommended but sometimes all you need is something quick
-        min_output (int, float): The minumun value the PID controller can output
     """
     def __init__(self, 
-                 kp, 
+                 kp=0, 
                  ki=0, 
                  kd=0, 
-                 max_integral=800, 
-                 min_output=0,
-                 max_output=800):
-
+                 max_integral=800):
         self.kp = kp
         self.ki = ki
         self.kd = kd
         self.max_integral = max_integral
-        self.max_output = max_output
-        self.min_output = min_output
 
         self.proportional = 0
         self.integral = 0
@@ -51,62 +41,37 @@ class PidController():
         """
             
         self.error = error
-        self.proportional = self.error * self.kp 
+        self.proportional = error * self.kp 
         self.integral = (self.integral + error) * self.ki 
         self.derivative = (error - self.last_error) * self.kd
         self.last_error = error
 
-        if self.max_integral > 0:
-            if self.integral > self.max_integral:
-                self.integral = self.max_integral
-        else:
-            if self.integral < self.max_integral:
-                self.integral = self.max_integral
+        if self.integral > self.max_integral:
+            self.integral = self.max_integral
 
         self.output = self.proportional + self.integral + self.derivative
 
-        if self.min_output > 0:
-            if self.output < self.min_output:
-                self.output = self.min_output
-        else:
-            if self.output > self.min_output:
-                self.output = self.min_output
-
-        if self.max_output > 0:
-            if self.output > self.max_output:
-                self.output = self.max_output
-        else:
-            if self.output < self.max_output:
-                self.output = self.max_output
-
         return self.output
 
-        
     def settings(self, 
                 kp=None, 
                 ki=None, 
                 kd=None, 
-                min_output=None, 
-                max_output=None, 
                 max_integral=None):
         """
-        Allows to set certaing values of the PID Controller
+        Allows to set certaing parameters of the PID Controller
 
         Args:
             kp (int, float): Proportional gain
             ki (int, float): Integral gain
             kd (int, float): Derivative gain
             max_integral (int, float): Sets the maximun value the Integral term can achieve
-            max_output (int, float): The maximun value the PID controller can output
-            min_output (int, float): The minumun value the PID controller can output
         """
 
         self.kp = kp if kp != None else self.kp 
         self.ki = ki if ki != None else self.ki 
         self.kd = kd if kd != None else self.kd 
         self.max_integral = max_integral if max_integral != None else self.max_integral 
-        self.max_output = max_output if max_output != None else self.max_output 
-        self.min_output = min_output if min_output != None else self.min_output 
 
     def reset(self):
         """
@@ -121,7 +86,7 @@ class PidController():
         self.output = 0
 
     def __repr__(self):
-        return "PID Controller:\nProportional: {}\nIntegral: {}\nDerivative: {}\nKp: {}\nKi: {}\nKd: {}\nMax Integral: {}\nMax Output: {}\nMin Output: {}".format(self.proportional, self.integral, self.derivative, self.kp, self.ki, self.kd, self.max_integral, self.max_output, self.min_output)
+        return "PID Controller:\nProportional: {}\nIntegral: {}\nDerivative: {}\nKp: {}\nKi: {}\nKd: {}\nMax Integral: {}".format(self.proportional, self.integral, self.derivative, self.kp, self.ki, self.kd, self.max_integral)
 
 
 class Path:
@@ -217,4 +182,3 @@ class Path:
                 self.path.append(self.get_angle(coordenates[i], coordenates[i+1], coordenates[i+2]))
 
         return self.path
-        
