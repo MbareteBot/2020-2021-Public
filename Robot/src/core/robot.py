@@ -1,10 +1,14 @@
-0#!/usr/bin/env pybricks-micropython
-
-import threading
+#!/usr/bin/env pybricks-micropython
 
 from pybricks.hubs import EV3Brick
 from pybricks.parameters import Button, Color, Port
 from pybricks.tools import wait
+
+import threading
+
+# from pybricks.hubs import EV3Brick
+# from pybricks.parameters import Button, Color, Port
+# from pybricks.tools import wait
 
 from .control import PidController
 from .device_managers import (ColorSensorManager, DeviceManager,
@@ -14,26 +18,23 @@ from .tools import RoboticTools
 
 class MbRobot():
     """
-    This class provides functionality to control an FLL robot
+    Control an FLL robot
     Allows more complex control to robots such as: (1) Smooth acceleration and deceleration based on a PID control,
     (2) Precise turns using a gyro sensor, (3) Distance control based on the lines that can be found on the field,
     (4) Asynchronous control of the robot movement, (5) Stall detection
     """
     def __init__(self):
-        self.setup_control(True, True, True)
         self.Tools = RoboticTools(wheel_diameter=6.24)
 
         self.Ev3 = EV3Brick()
         self.Gyro = GyroSensorManager()
         self.Motors = MotorManager(exit_exec=lambda: Button.LEFT in self.Ev3.buttons.pressed())
         self.ColorSensors = ColorSensorManager()
-        
         self.DeviceControl = DeviceManager()
             
         self.active = True # This will be used like a global switch
-
-        # Task handler
-        self.run_async(self.task_handler)
+        self.setup_control(True, True, True)
+        self.run_async(self.task_handler) # Task handler
 
     def setup_control(self, turn_control=False, run_control=False, line_follower_control=False):
         if turn_control:
@@ -47,7 +48,7 @@ class MbRobot():
 
     def task_handler(self):
         """
-        Stops any movement the robot is performing by pressing the LEFT button of the ev3 brick
+        Stop any movement the robot is performing by pressing the LEFT button of the ev3 brick
         """
         # This is gonna run asynchronously, works like a master switch
         while True:
@@ -64,7 +65,7 @@ class MbRobot():
             max_speed=None,
             exit_exec=lambda: False):  
         """
-        Allows the robot to rotate using a gyro sensor
+        Turn using a gyro sensor
 
         Args:
             angle (int): Angle in degrees to the which the robot is gonna turn to
@@ -143,8 +144,6 @@ class MbRobot():
                                             self.RunHeadingControl.ki if heading_ki == None else heading_ki,
                                             self.RunHeadingControl.kd if heading_kd == None else heading_kd)
 
-            min_speed = abs(min_speed) * (-1 if distance < 0 else 1) 
-            max_speed = abs(max_speed) * (-1 if distance < 0 else 1) 
 
             # This allows that anything can control the robot heading, by default it would use the gyro sensor to control the heading
             # but you can also pass a function that returns a number so that it uses that function to control the heading
@@ -154,12 +153,13 @@ class MbRobot():
             heading_error = (lambda: orientation - self.Gyro.angle()) if not callable(orientation) else orientation
 
             distance_dg = self.Tools.cm_to_degrees(distance)
-
+            min_speed = abs(min_speed) * (-1 if distance < 0 else 1) 
+            max_speed = abs(max_speed) * (-1 if distance < 0 else 1) 
             moved_enough = False
             moving = True
             while moving and self.active and not exit_exec():
                 motors_dg = (self.Motors.right_steering_motor.angle() + self.Motors.left_steering_motor.angle()) / 2
-               
+
                 if abs(motors_dg) < abs(distance_dg)/2:
                     speed_error = distance_dg - (distance_dg - motors_dg)
                 else:
@@ -223,7 +223,7 @@ class MbRobot():
 
         if self.active:
             # value between the white and the black line
-                target_value = self.colorsensor_calibration_file[0]/2 if target_value == None else target_value
+            target_value = self.ColorSensors.calibration_log()[0] if target_value == None else target_value
                 
             self.LineFollowerSpeedControl.reset()
             self.LineFollowerSpeedControl.settings(self.LineFollowerSpeedControl.kp if speed_kp == None else speed_kp,
@@ -251,8 +251,8 @@ class MbRobot():
             
     def run_to_line(self, 
                     distance,
-                    sensor=None, 
                     color="WHITE", 
+                    sensor=None, 
                     orientation=0, 
                     speed_kp=None, 
                     speed_ki=None, 
@@ -309,8 +309,9 @@ class MbRobot():
                 
     def square_line(self, 
                     forward=True,
-                    speed=150, 
-                    color="WHITE"):
+                    speed=180, 
+                    color="WHITE",
+                    backward=5):
 
         """
         Uses the a line to correct the robot orientation
@@ -338,24 +339,29 @@ class MbRobot():
                 left_steering_motor_exit_exec = lambda: self.ColorSensors.left_sensor.reflection() < black_value
                 right_steering_motor_exit_exec = lambda: self.ColorSensors.right_sensor.reflection() < black_value
             else:
-                raise Exception("Invalid color for self.square_line()")
+                raise Exception("Invalid color for MbRobot.square_line()")
                 
+            
             for repetition in range(2):
+                left_ok = False
+                right_ok = False
                 self.Motors.left_steering_motor.run(speed)
                 self.Motors.right_steering_motor.run(speed)
                 while self.active:
                     # Keep moving the left motor until it reaches the line
                     if left_steering_motor_exit_exec():
                         self.Motors.left_steering_motor.hold()
+                        left_ok = True
 
                     # Keep moving the right motor until it reaches the line
                     if right_steering_motor_exit_exec():
                         self.Motors.right_steering_motor.hold()
+                        right_ok = True
 
                     # If both sensors are on the line, go backwards and repeat the process one more time
-                    if left_steering_motor_exit_exec() and right_steering_motor_exit_exec():
+                    if left_ok and right_ok:
                         if repetition == 0:
-                            self.run(-5 if speed > 0 else 5, speed_kp=1)
+                            self.run(abs(backward) * (-1 if speed > 0 else 1), speed_kp=1)
                         break
 
                 if not self.active:
@@ -369,6 +375,7 @@ class MbRobot():
         """
         Move using a path with the following format: [MOVE_STRAIGHT, TURN, MOVE_STRAIGHT, TURN, ...]
         This is the same format that a Path object returns (refer to control.py)
+
 
         Args:
             path (Path): The path to follow
@@ -393,7 +400,7 @@ class MbRobot():
         Pause the robot until you press a Button
 
         Args:
-            button_to_exit (Button): What button will cancel this pause
+            button_to_exit (Button): What button will resume this pause
         """
         self.Ev3.light.on(Color.RED)
         while True:

@@ -226,12 +226,12 @@ class ColorSensorManager():
         self.left_sensor = None
         self.right_sensor = None
         self.front_sensor = None
-        self.calibration_file_path = "./colorsensor_calib"
+        self.CALIB_PATH = "./colorsensor_calib"
 
     @task_handler
     def set_sensors(self, left_sensor_port=None, right_sensor_port=None, front_sensor_port=None):
         """
-        Sets sensors to control
+        Set sensors to control
 
         Args:
             left_sensor_port (Port): Port where the left sensor is connected to
@@ -279,7 +279,7 @@ class ColorSensorManager():
                             pass
                         while running:
                             if Button.CENTER in ev3.buttons.pressed():
-                                with open(self.calibration_file_path, "wb") as f:
+                                with open(self.CALIB_PATH, "wb") as f:
                                     pickle.dump([white_value, black_value], f)
                                 running = False
                                 ev3.screen.clear()
@@ -293,8 +293,8 @@ class ColorSensorManager():
         Returns:
             calibration_log (int, float, str, bool): Calibration file values
         """
-        with open(self.calibration_file_path) as log:
-            return log[0] # will have values for a white and a black line
+        with open(self.CALIB_PATH) as log:
+            return eval(list(log)[0]) # values for a white and a black line
 
     @task_handler
     def __repr__(self):
@@ -319,7 +319,7 @@ class GyroSensorManager():
         Set sensor
 
         Args:
-            port (Port): Port to the which the sensor is connected to
+            port (Port): Port the sensor is connected to
             clockwise_direction (bool): Defines the default sign of the angle readings, clockwise or counterclockwise
         """
         self.core = MbGyroSensor(port, clockwise_direction)
@@ -327,7 +327,10 @@ class GyroSensorManager():
     @task_handler
     def angle(self):
         """
-        Gets the accumulated angle of the sensor
+        Get the accumulated angle of the sensor
+        
+        Returns:
+            angle (int): Accumulated angle of the sensor
         """
         return self.core.angle()
 
@@ -341,7 +344,7 @@ class GyroSensorManager():
     @task_handler
     def reset(self):
         """
-        Resets the accumulated angle of the sensor
+        Reset the accumulated angle of the sensor
         """
         self.core.reset()
     

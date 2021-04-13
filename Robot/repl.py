@@ -1,7 +1,7 @@
 #!/usr/bin/env pybricks-micropython
 
 from pybricks.parameters import Button, Port
-from src.core.init import fll_robot
+from src.core.setup import fll_robot
 from src.test import test
 
 def motor_control(Robot):

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+brickrun -r $1

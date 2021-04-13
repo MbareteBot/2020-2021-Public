@@ -29,7 +29,7 @@ class MbMotor():
     Args:
         port (Port): The port of the device
         clockwise_direction (bool): Sets the defualt movement of the motor clockwise or counterclockwise, True for clockwise else counterclockwise
-        exit_exec (Function) = Function that returns True or False, the motor will stop if returns True
+        exit_exec (Function): Function that returns True or False, the motor will stop if returns True
     """
     def __init__(self, port, clockwise_direction=True, exit_exec=lambda: False):
         self.core = Motor(port)
@@ -39,7 +39,7 @@ class MbMotor():
     
     def angle(self):
         """
-        Gets the distance the robot has moved in degrees
+        Get the distance the robot has moved in degrees
 
         Returns:
             angle (int): The distance the robot has moved in degrees
@@ -48,7 +48,7 @@ class MbMotor():
 
     def speed(self):
         """
-        Gets the speed of the motor
+        Get the speed of the motor
 
         Returns:
             speed (int): The current speed of the motor
@@ -57,7 +57,7 @@ class MbMotor():
 
     def run_angle(self, speed, angle, wait=True):
         """
-        Runs the motor to a specific angle
+        Run the motor to a specific angle
 
         Args:
             speed (int): The speed of the motor
@@ -79,11 +79,11 @@ class MbMotor():
 
     def run_time(self, speed, msec, wait=True):
         """
-        Runs the motor to a amount of time
+        Run the motor to a amount of time
 
         Args:
             speed (int): The speed of the motor
-            msec (int): How much time to move the robot
+            msec (int): Time to move the robot
             wait (bool): Sets if the robot is going to stop for the motor to complete this method or not
         """
         def exec(self, speed, msec):
@@ -102,7 +102,7 @@ class MbMotor():
 
     def run(self, speed):
         """
-        Runs the motor to a constant speed
+        Run the motor to a constant speed
 
         Args:
             speed (int): Speed to run at
@@ -114,7 +114,7 @@ class MbMotor():
 
     def dc(self, speed):
         """
-        Runs the motor to a constant speed
+        Run the motor to a constant speed
 
         Args:
             speed (int): Speed to run at
@@ -184,7 +184,7 @@ class MbColorSensor(ColorSensor):
 
 class MbGyroSensor():
     """
-    Control a gyro sensor. 
+    Control a gyro sensor.
     This is build on top of pybricks.iodevices.Ev3devSensor
 
     Args:
@@ -213,7 +213,7 @@ class MbGyroSensor():
 
     def angle(self):
         """
-        Gets the angle of the gyro sensor
+        Get the angle of the gyro sensor
 
         Returns:
             angle (int): The current angle of the gyro sensor
@@ -222,7 +222,7 @@ class MbGyroSensor():
 
     def reset(self):
         """
-        Resets the accumulated angle of the sensor
+        Reset the accumulated angle of the sensor
         """
         self.angle_counter = int(self.core.read("GYRO-ANG")[0]) * self.direction
 

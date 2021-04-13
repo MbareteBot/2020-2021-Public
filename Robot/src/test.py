@@ -1,4 +1,4 @@
-from .core.init import fll_robot
+from .core.setup import fll_robot
 
 Robot = fll_robot()
 

@@ -77,7 +77,7 @@ class RoboticTools():
 
     def degrees_to_cm(self, degrees, wheel_diameter="default"):
         """
-        Receives a distance in degrees and outputs the distance in cm
+        Receive a distance in degrees and outputs the distance in cm
 
         Args:
             degrees (int, float): Distance in degrees
@@ -92,7 +92,7 @@ class RoboticTools():
 
     def cm_to_degrees(self, cm, wheel_diameter="default"):
         """
-        Receives a distance in cm and outputs the distance in degrees
+        Receive a distance in cm and outputs the distance in degrees
 
         Args:
             cm (int, float): Distance in cm
