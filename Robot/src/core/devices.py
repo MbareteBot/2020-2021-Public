@@ -55,7 +55,12 @@ class MbMotor():
         """
         return self.core.speed() * self.direction
 
-    def run_angle(self, speed, angle, wait=True):
+    def stalled(self, min_speed=0):
+        if abs(self.speed()) <= abs(min_speed):
+            return True
+        return False
+
+    def run_angle(self, speed, angle, wait=True, detect_stall=False):
         """
         Run the motor to a specific angle
 
@@ -65,9 +70,17 @@ class MbMotor():
             wait (bool): Sets if the robot is going to stop for the motor to complete this method or not
         """
         def exec(self, speed, angle):
+            moved_enough = False
             self.reset_angle()
+            self.run(speed)
             while True:
-                self.run(speed)
+                if abs(self.angle()) > 50:
+                    moved_enough = True
+
+                if moved_enough and detect_stall:
+                    if self.stalled():
+                        break
+
                 if abs(self.angle()) > abs(angle) or self.exit_exec():
                     break
             self.hold()
@@ -88,9 +101,9 @@ class MbMotor():
         """
         def exec(self, speed, msec):
             self.reset_angle()
+            self.run(speed)
             s = time()
             while True:
-                self.run(speed)
                 if round(time() - s, 2) * 1000 >= abs(msec) or self.exit_exec():
                     break
             self.hold()

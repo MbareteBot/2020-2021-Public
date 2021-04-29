@@ -2,46 +2,55 @@
 
 info = "a.py"
 
-from pybricks.tools import wait
-
 def color_code(Color):
     return Color.GREEN
 
 def run(Robot):
     # bench
-    Robot.run(35)
-    Robot.run(15, speed_kp=2.5)
+    Robot.drive(35, speed_kp=2)
+    Robot.drive(15, -2, speed_kp=2.5)
 
     # slide
     Robot.Motors.left_action_motor.run_angle(800, 350)
-    Robot.run(-48, speed_kp=4)
-    wait(100)
-    Robot.run(20)
-    Robot.turn(60)
-    Robot.run(63)
+    Robot.drive(-48, 1)
+    Robot.wait(100)
+    Robot.drive(30)
+    Robot.turn(58)
+    Robot.drive(63)
     Robot.Motors.right_action_motor.run_angle(800, 590)
-    Robot.run(-8, speed_kp=2)
+    Robot.drive(-11, speed_kp=2)
     Robot.Motors.right_action_motor.run_angle(-800, 630)
 
     # basket
-    Robot.run(-20)
-    Robot.run_to_line(15, Robot.ColorSensors.right_sensor, color="BLACK", speed_kp=1) 
-    wait(100)
-    Robot.run(-6)
-    wait(100)
+    Robot.drive(-20)
+    Robot.drive_to_line(15, "BLACK", Robot.ColorSensors.right_sensor, speed_kp=1) 
+    Robot.wait(100)
+    Robot.drive(-6)
+    Robot.wait(100)
     Robot.turn(-65)
-    wait(100)
-    Robot.run(15)
+    Robot.wait(100)
+    Robot.drive(10)
     Robot.square_line()
-    Robot.run(23)
-    Robot.turn(-68)
+
+    Robot.drive(23)
+    Robot.turn(-61)
     Robot.run_async(Robot.Motors.left_action_motor.run_angle, (800, 200))
-    Robot.run(-12)
+    Robot.drive(-12)
     Robot.Motors.left_action_motor.run_angle(-800, 550)
-    Robot.run(16)
-    Robot.Motors.left_action_motor.run_angle(800, 4150)
+    Robot.drive(16)
+
+    Robot.Motors.left_action_motor.run_angle(800, 4400)
     Robot.run_async(Robot.Motors.left_action_motor.run_angle, (-800, 3000))
-    wait(700)
-    Robot.run(-18)
+    Robot.wait(700)
+    Robot.drive(-17)
     Robot.turn(90)
-    Robot.run(-80)
+    Robot.drive(-80, speed_kp=10)
+
+# 1) Oro ( I) + Oxígeno 
+# 2) Hierro ( III) + Oxígeno 
+# 3) Bromo ( III) + Oxígeno 
+# 4 Azufre ( VI) + Oxígeno 
+# 5) Óxido de Litio + H2O 
+# 6) Óxido de Bario + H2O 
+# 7) Hidróxido de Aluminio + Ácido metafosforoso 
+# 8) Hidróxido de Potasio + Ácido cloroso 

@@ -3,7 +3,7 @@
 from pybricks.media.ev3dev import Font
 from pybricks.hubs import EV3Brick
 from pybricks.tools import DataLog
-
+from pybricks.parameters import Port, Color, Button
     
 class LogSystem:
     def __init__(self):
@@ -104,3 +104,13 @@ class RoboticTools():
         # making this "modular"
         wheel_diameter = self.wheel_diameter if wheel_diameter == "default" else wheel_diameter
         return (cm / (wheel_diameter * 3.141)) * 360
+
+
+class Parameters:
+    """
+    Parameters (Color, Port)
+    """
+    def __init__(self):
+        self.Color = Color
+        self.Port = Port
+        self.Button = Button

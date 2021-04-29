@@ -28,7 +28,7 @@ class DeviceManager():
     Control the devices connected to the ev3. Detect what devices are connected to the ev3 and tell if any was
     accidentally disconnected.
 
-    The devices it can detect are from pybricks.ev3devices: ColorSensor, GyroSensor and Motor
+    The devices it can detect are from pybricks.ev3devices(ColorSensor, GyroSensor, Motor)
     """
 
     def __init__(self):
@@ -283,6 +283,8 @@ class ColorSensorManager():
                                     pickle.dump([white_value, black_value], f)
                                 running = False
                                 ev3.screen.clear()
+                                while Button.CENTER in ev3.buttons.pressed():
+                                    pass
         ev3.light.on(Color.GREEN)
         print("Sensor calibration finished!")
         print("-------ColorSensors-------\n")

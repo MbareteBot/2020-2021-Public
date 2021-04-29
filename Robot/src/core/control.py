@@ -2,6 +2,7 @@
 
 import math
 
+
 class PidController():
     """
     Provides functionality to execute a PID controller
@@ -120,7 +121,7 @@ class Path:
 
     def get_distance(self, xy1, xy2):
         """
-        Get the distance between two points
+        Gets the distance between two points
         
         Args:
             xy1 (List): The coordenates of the first point
@@ -133,7 +134,7 @@ class Path:
 
     def get_angle(self, xy1, xy2, xy3):
         """
-        Get the angle between two vectors, in this particular case it also needs the origin of the vectors 
+        Gets the angle between two vectors, in this particular case it also needs the origin of the vectors 
         that should be the same from both
 
         Args:
@@ -164,7 +165,7 @@ class Path:
         
     def set_path(self, coordenates):
         """
-        Compute all the math to create a path the robot can follow (distances and angles)
+        Computes all the math to create a path the robot can follow (distances and angles)
 
         Args:
             coordenates (List): The coordenates to follow

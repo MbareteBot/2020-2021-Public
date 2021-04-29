@@ -6,14 +6,10 @@ from pybricks.tools import wait
 
 import threading
 
-# from pybricks.hubs import EV3Brick
-# from pybricks.parameters import Button, Color, Port
-# from pybricks.tools import wait
-
 from .control import PidController
 from .device_managers import (ColorSensorManager, DeviceManager,
                               GyroSensorManager, MotorManager)
-from .tools import RoboticTools
+from .tools import RoboticTools, Parameters
 
 
 class MbRobot():
@@ -31,6 +27,7 @@ class MbRobot():
         self.Motors = MotorManager(exit_exec=lambda: Button.LEFT in self.Ev3.buttons.pressed())
         self.ColorSensors = ColorSensorManager()
         self.DeviceControl = DeviceManager()
+        self.Parameters = Parameters()
             
         self.active = True # This will be used like a global switch
         self.setup_control(True, True, True)
@@ -78,9 +75,7 @@ class MbRobot():
 
             self.Gyro.reset()
             self.TurnSpeedControl.reset()
-            self.TurnSpeedControl.settings(self.TurnSpeedControl.kp if speed_kp == None else speed_kp,
-                                           self.TurnSpeedControl.ki if speed_kp == None else speed_ki,
-                                           self.TurnSpeedControl.kd if speed_kp == None else speed_kd)
+            self.TurnSpeedControl.settings(speed_kp, speed_ki, speed_kd)
 
             moving = True
             while moving and self.active and not exit_exec():
@@ -98,7 +93,7 @@ class MbRobot():
 
             self.setup_control(turn_control=True)
 
-    def run(self, 
+    def drive(self, 
             distance, 
             orientation=0, 
             min_speed=90, 
@@ -135,14 +130,10 @@ class MbRobot():
             self.Motors.right_steering_motor.reset_angle()
             
             self.RunSpeedControl.reset()
-            self.RunSpeedControl.settings(self.RunSpeedControl.kp if speed_kp == None else speed_kp,
-                                        self.RunSpeedControl.ki if speed_ki == None else speed_ki,
-                                        self.RunSpeedControl.kd if speed_kd == None else speed_kd)
+            self.RunSpeedControl.settings(speed_kp, speed_ki, speed_kd)
 
             self.RunHeadingControl.reset()
-            self.RunHeadingControl.settings(self.RunHeadingControl.kp if heading_kp == None else heading_kp,
-                                            self.RunHeadingControl.ki if heading_ki == None else heading_ki,
-                                            self.RunHeadingControl.kd if heading_kd == None else heading_kd)
+            self.RunHeadingControl.settings(heading_kp, heading_ki, heading_kd)
 
 
             # This allows that anything can control the robot heading, by default it would use the gyro sensor to control the heading
@@ -226,16 +217,12 @@ class MbRobot():
             target_value = self.ColorSensors.calibration_log()[0] if target_value == None else target_value
                 
             self.LineFollowerSpeedControl.reset()
-            self.LineFollowerSpeedControl.settings(self.LineFollowerSpeedControl.kp if speed_kp == None else speed_kp,
-                                                   self.LineFollowerSpeedControl.ki if speed_ki == None else speed_ki,
-                                                   self.LineFollowerSpeedControl.kd if speed_kd == None else speed_kd)
+            self.LineFollowerSpeedControl.settings(speed_kp, speed_ki, speed_kd)
 
             self.LineFollowerHeadingControl.reset()
-            self.LineFollowerHeadingControl.settings(self.LineFollowerHeadingControl.kp if heading_kp == None else heading_kp,
-                                                    self.LineFollowerHeadingControl.ki if heading_ki == None else heading_ki,
-                                                    self.LineFollowerHeadingControl.kd if heading_kd == None else heading_kd)
+            self.LineFollowerHeadingControl.settings(heading_kp, heading_ki, heading_kd)
             
-            self.run(distance, 
+            self.drive(distance, 
                     orientation=lambda: sensor.reflection() - target_value, # heading control
                     min_speed=90, 
                     max_speed=800, 
@@ -249,7 +236,7 @@ class MbRobot():
 
             self.setup_control(line_follower_control=True)
             
-    def run_to_line(self, 
+    def drive_to_line(self, 
                     distance,
                     color="WHITE", 
                     sensor=None, 
@@ -288,13 +275,13 @@ class MbRobot():
             colors = self.ColorSensors.calibration_log()
 
             if color.upper() == "WHITE":
-                exit_exec = lambda: sensor.reflection() > colors[0] - 10 # white value from calib file
+                exit_exec = lambda: sensor.reflection() > colors[0] - 5 # white value from calib file
             elif color.upper() == "BLACK":
-                exit_exec = lambda: sensor.reflection() < colors[1] + 10 # black value from calib file
+                exit_exec = lambda: sensor.reflection() < colors[1] + 5 # black value from calib file
             else:
                 raise Exception("Invalid color for self.run_to_line()")
                             
-            self.run(distance, 
+            self.drive(distance, 
                     orientation=orientation, 
                     min_speed=min_speed, 
                     max_speed=max_speed, 
@@ -306,15 +293,13 @@ class MbRobot():
                     heading_kd=heading_kd,
                     exit_exec=exit_exec) # Check if the robot reached a white line
 
-                
     def square_line(self, 
                     forward=True,
-                    speed=180, 
-                    color="WHITE",
-                    backward=5):
+                    speed=170, 
+                    color="WHITE"):
 
         """
-        Uses the a line to correct the robot orientation
+        Use a line to correct the robot orientation
 
         Args:
             forward (bool): The robot will move forward if set to True else Backwards
@@ -339,29 +324,28 @@ class MbRobot():
                 left_steering_motor_exit_exec = lambda: self.ColorSensors.left_sensor.reflection() < black_value
                 right_steering_motor_exit_exec = lambda: self.ColorSensors.right_sensor.reflection() < black_value
             else:
-                raise Exception("Invalid color for MbRobot.square_line()")
+                raise Exception("Invalid color for Robot.square_line()")
                 
-            
             for repetition in range(2):
-                left_ok = False
-                right_ok = False
                 self.Motors.left_steering_motor.run(speed)
                 self.Motors.right_steering_motor.run(speed)
+                left_ok = False
+                right_ok = False
                 while self.active:
                     # Keep moving the left motor until it reaches the line
                     if left_steering_motor_exit_exec():
-                        self.Motors.left_steering_motor.hold()
                         left_ok = True
+                        self.Motors.left_steering_motor.hold()
 
                     # Keep moving the right motor until it reaches the line
                     if right_steering_motor_exit_exec():
-                        self.Motors.right_steering_motor.hold()
                         right_ok = True
+                        self.Motors.right_steering_motor.hold()
 
                     # If both sensors are on the line, go backwards and repeat the process one more time
                     if left_ok and right_ok:
                         if repetition == 0:
-                            self.run(abs(backward) * (-1 if speed > 0 else 1), speed_kp=1)
+                            self.drive(-5 if speed > 0 else 5, speed_kp=1.2)
                         break
 
                 if not self.active:
@@ -407,3 +391,6 @@ class MbRobot():
             if button_to_exit in self.Ev3.buttons.pressed():
                 break
         self.Ev3.light.on(Color.GREEN)
+
+    def wait(self, msec):
+        wait(msec)

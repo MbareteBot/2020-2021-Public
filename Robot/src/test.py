@@ -1,8 +1,6 @@
-from .core.setup import fll_robot
+#!/usr/bin/env pybricks-micropython
 
-Robot = fll_robot()
-
-def test():
+def test(Robot):
     Robot.Motors
     Robot.Motors.left_steering_motor
     Robot.Motors.right_steering_motor
