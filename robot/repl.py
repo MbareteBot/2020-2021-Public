@@ -1,7 +1,7 @@
 #!/usr/bin/env pybricks-micropython
 
-from .setup import FLLRobot
-from .test import test
+from src.setup import FLLRobot
+from src.test import test
 
 def motor_control(Robot):
     print("====Motor Control====")
@@ -38,16 +38,21 @@ def motor_control(Robot):
     except KeyboardInterrupt:
         print()
 
-def main():
+if __name__ == "__main__":
+
     print("======Repl======")
     print('Type "exit" plus Return to exit')
     print('Type "motor" plus Return to start Motor control')
     print("MbRobot is initalized as Robot")
 
     Robot = FLLRobot()
-
+    print("robot motors:", Robot.Motors)
     while True:
-            command = input(">>> ")
+            try:
+                command = input(">>> ")
+            except KeyboardInterrupt:
+                print("EXIT")
+                break
             if command == "exit":
                 break
             elif command == "motor":
@@ -69,5 +74,3 @@ def main():
                     Robot.Motors.left_action_motor.hold()
                     Robot.Motors.right_action_motor.hold()
 
-if __name__ == "__main__":
-    main()

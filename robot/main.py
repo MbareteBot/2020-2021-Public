@@ -1,7 +1,7 @@
 #!/usr/bin/env pybricks-micropython
 
 from src.setup import FLLRobot, Paths
-from src.repl import motor_control
+from repl import motor_control
 
 
 def read_attachment(Robot, paths):
@@ -25,6 +25,7 @@ def handle_input(Robot):
     elif Robot.Parameters.Button.UP in pressed_buttons:
         print("Calibrate Gyro")
         Robot.Gyro.calibrate()
+        Robot.Ev3.screen.print("CALIB GYRO")
         last_pressed_button = Robot.Parameters.Button.UP
 
     elif Robot.Parameters.Button.DOWN in pressed_buttons:
@@ -46,11 +47,8 @@ def main():
     PATHS = Paths()
     Robot.Ev3.light.on(Robot.Parameters.Color.YELLOW)
     while True:
-        
         handle_input(Robot)
         
-        if not Robot.active:
-            Robot.active = True
 
 if __name__ == "__main__":
     main()

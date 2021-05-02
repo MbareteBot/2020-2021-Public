@@ -275,7 +275,7 @@ class MbRobot():
             colors = self.ColorSensors.calibration_log()
 
             if color.upper() == "WHITE":
-                exit_exec = lambda: sensor.reflection() > colors[0] - 5 # white value from calib file
+                exit_exec = lambda: sensor.reflection() > colors[0] - 7 # white value from calib file
             elif color.upper() == "BLACK":
                 exit_exec = lambda: sensor.reflection() < colors[1] + 5 # black value from calib file
             else:
